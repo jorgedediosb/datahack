@@ -21,7 +21,7 @@ http://localhost:8889/
 en Safari:
 http://127.0.0.1:8889
 
-Abrir Browser:
+Abrir Browser Neo4j:
 http://127.0.0.1:7474/browser/
 user: neo4j
 pass: 1234
