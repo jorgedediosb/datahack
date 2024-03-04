@@ -1,0 +1,39 @@
+PRÁCTICA PAG 62: DOCKERFILE - WORKDIR
+
+• Crear un archivo dockerfile con el contenido:
+FROM alpine:3.17.1
+WORKDIR /opt
+RUN echo "Welcome to Docker Labs" > opt.txt
+WORKDIR folder1
+RUN echo "Welcome to Docker Labs folder 1" > folder1.txt
+WORKDIR folder2
+RUN echo "Welcome to Docker Labs folder 2" > folder2.txt
+
+• Construir la imagen con la etiqueta app_workdir:v1.
+$ docker build -t app_workdir:v1 .
+
+• Ejecutar con el comando pwd
+$ docker run --rm app_workdir:v1 pwd
+> salida: /opt/folder1/folder2
+> 2 formas para comprobar que los archivos son correctos:
+
+  1. Ejecutar un contenedor y acceder a él:
+  $ docker run -it --rm app_workdir:v1 /bin/sh
+  Esto iniciará un contenedor interactivo en shell dentro del contenedor.
+  Desde allí, navegar por los directorios y verificar la existencia de los archivos:
+  $ cd /opt
+  $ ls -la
+  $ cd folder1
+  $ ls -la
+  $ cd folder2
+  $ ls -la
+  $ exit
+
+  2. Inspeccionar el contenido de la imagen y buscar la sección "Layers" en la salida del comando:
+  $ docker image inspect app_workdir:v1
+  
+  > Puedes usar el ID de la capa para extraer el contenido de esa capa:
+  $ docker run --rm tu_imagen:etiqueta cat /opt/opt.txt
+  $ docker run --rm tu_imagen:etiqueta cat /opt/folder1/folder1.txt
+  $ docker run --rm tu_imagen:etiqueta cat /opt/folder1/folder2/folder2.txt
+

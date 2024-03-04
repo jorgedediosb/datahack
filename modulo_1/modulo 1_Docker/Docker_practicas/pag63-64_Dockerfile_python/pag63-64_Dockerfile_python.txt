@@ -1,0 +1,28 @@
+PRÁCTICA PAG 63 Y 64: DOCKERFILE - PYTHON
+
+• Crear un archivo hello.py con el siguiente contenido:
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def hello():
+    return "welcome to Dockerlabs!! successfully done !!" if __name__ == "__main__":
+        app.run()
+
+• Y el archivo Dockerfile con el contenido:
+FROM python:3.5
+RUN apt-get update
+RUN pip install Flask
+ADD . /opt/webapp/
+WORKDIR /opt/webapp
+ENV FLASK_APP=hello.py
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0"]
+
+• Construir la imagen con la etiqueta app_python:v1
+$ docker build -t app_python:v1 .
+
+• Ejecutar la imagen especificando el puerto:
+$ docker run --rm -p 5000:5000 -d app_python:v1
+
+• Navegar a la url http://localhost:5000/
+> salida: welcome to Dockerlabs!! successfully done !!

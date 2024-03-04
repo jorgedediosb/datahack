@@ -1,0 +1,13 @@
+PRÁCTICA PAG 61: DOCKERFILE - ENTRYPOINT
+
+• Crear un archivo dockerfile con el contenido:
+FROM alpine:3.19.0
+LABEL maintainer="datahack"
+ENTRYPOINT ["/bin/echo", "Hola, tu ENTRYPOINT en formato EXEC !"]
+
+• Construir y ejecutar con la etiqueta app_entrypoint:v1 y ver el resultado:
+$ docker build -t app_entrypoint:v1 .
+
+• Ejecutar el siguiente comando:
+$ docker run --entrypoint "/bin/echo" app_entrypoint:v1 'Hola, desde consola!'
+=> el mensaje de salida debe ir con comillas simples 'mensaje'

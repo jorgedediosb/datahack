@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+   mysql:
+      image: mysql:5.7
+      volumes:
+         - mysql-data:/var/lib/mysql
+      restart: none
+      environment:
+         MYSQL_DATABASE: exampledb
+         MYSQL_USER: exampleuser
+         MYSQL_PASSWORD: examplepass
+         MYSQL_RANDOM_ROOT_PASSWORD: '1'
+   wordpress:
+      depends_on:
+         - mysql
+      image: wordpress
+      restart: none
+      ports:
+         - 8080:80
+      environment:
+         WORDPRESS_DB_HOST: mysql:3306
+         WORDPRESS_DB_USER: exampleuser
+         WORDPRESS_DB_PASSWORD: examplepass
+         WORDPRESS_DB_NAME: exampledb 
+      volumes:
+         - wordpress:/var/www/html
+volumes:
+   mysql-data: 
+   wordpress: 
+    external: true

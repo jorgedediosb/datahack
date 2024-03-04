@@ -1,0 +1,43 @@
+PRÁCTICA PAG 89-90: REDES
+
+• Mostrar la IP que estamos usando
+$ ipconfig getifaddr en0
+
+• Crear una red con un controlador bridge.
+$ docker network create -d bridge my-bridge-network
+
+• Ejecutar un contenedor enlazado a la red creada.
+$ docker run -d -p 8081:8081 -e "port=8081" --name app --network=my-bridge-network edelpa/python-app:1.0
+
+• Encontrar la IP interna del contenedor.
+$ docker inspect app
+______
+• En otro terminal, ejecutar un contenedor de alpine en forma interactiva.
+$ docker run -it --name client alpine:latest
+
+• Instalar el cliente curl en el contenedor.
+$ apk --no-cache add curl
+
+• Desde el contenedor, llamar a la aplicación del contenedor anterior (Cambiar la IP con la que le corresponda).
+¿Qué ha sucedido?
+$ curl 172.21.0.2:8081 --connect-timeout 5
+____
+Retornar al terminal anterior y enlazar el contenedor client a la red creada.
+$ docker network connect my-bridge-network client
+
+• Retornar al terminal del contenedor client y volver a realizar la llamada. (Cambiar la IP con la que le corresponda)
+¿Cuál ha sido el resultado?
+$ curl 172.21.0.2:8081 --connect-timeout 5
+
+• Retornar al terminar anterior e inspeccionar la red creada.
+$ docker inspect my-bridge-network
+______
+• Desconectar ambos contenedores de la red creada
+$ docker network disconnect my-bridge-network app
+$ docker network disconnect my-bridge-network client
+
+• Eliminar la red creada
+$ docker network rm my-bridge-network
+
+• Asegurarse que la red esté eliminada y salir de los terminales.
+$ docker network ls

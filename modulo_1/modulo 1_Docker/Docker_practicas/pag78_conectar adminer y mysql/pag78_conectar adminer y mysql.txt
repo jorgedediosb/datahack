@@ -1,0 +1,37 @@
+PRÁCTICA PAG. 78 - Conectar a mysql desde adminer
+
+• Descargar la imagen de MySQL desde Docker Hub.
+$ docker run --name mysql \
+-e MYSQL_ROOT_PASSWORD=my-root-pwd \
+-e MYSQL_USER=my-user \
+-e MYSQL_PASSWORD=my-sqlpwd \
+-e MYSQL_DATABASE=dbtest \
+-d -p 3306:3306 mysql
+
+• Descargar la imagen de adminer Docker Hub.
+$ docker run --name adminer -d -p 8080:8080 adminer
+
+• Conectar a mysql desde adminer (http://localhost:8080 ó http://<local-ip:8080>). Probar crear una tabla e insertar registros.
+$ ipconfig getifaddr en0 => muestra la IP que estamos usando
+
+> En navegador: http://192.168.0.10:8080 => IP que usamos
+> Ingresamos los datos (servidor es la IP)
+> Creamos tabla e insertamos datos
+
+• Eliminar los contenedores, volver a ejecutar las instrucciones anteriores y verificar si existe la tabla y los registros insertados.
+> Al eliminar los contenedores, desaparece el acceso y con él los datos
+
+• Volver a crear los contenedores, pero esta vez crear volúmenes para el archivo de configuración de MySQL (/etc/mysql/conf)
+y para el directorio de base de MySQL (/var/lib/mysql).
+docker run --name mysql \
+  -e MYSQL_ROOT_PASSWORD=my-root-pwd \
+  -e MYSQL_USER=my-user \
+  -e MYSQL_PASSWORD=my-sqlpwd \
+  -e MYSQL_DATABASE=dbtest \
+  -v /ruta/local/conf:/etc/mysql/conf.d \ => con $(pwd) especificamos ruta actual: -v $(pwd)/conf:/etc/mysql/conf.d
+  -v /ruta/local/mysql-data:/var/lib/mysql \ => idem $(pwd): -v $(pwd)/mysql-data:/var/lib/mysql
+  -d -p 3306:3306 mysql
+
+docker run --name adminer \
+  -v /ruta/local/adminer-config:/var/www/html \ => idem $(pwd): -v $(pwd)/adminer-config:/var/www/html
+  -d -p 8080:8080 adminer

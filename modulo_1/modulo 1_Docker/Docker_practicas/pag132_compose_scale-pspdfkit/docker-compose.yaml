@@ -1,0 +1,41 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: pspdfkit
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pspdfkit
+  pspdfkit:
+    image: "pspdfkit/pspdfkit:latest"
+    #container_name: scale_pr_pspdfkit -> No permite escalar
+    environment:
+      PGUSER: pspdfkit
+      PGPASSWORD: password
+      PGDATABASE: pspdfkit
+      PGHOST: db
+      PGPORT: 5432
+      DASHBOARD_USERNAME: dashboard
+      DASHBOARD_PASSWORD: secret
+      SECRET_KEY_BASE: secret-key-base
+      JWT_PUBLIC_KEY: |
+        -----BEGIN PUBLIC KEY-----
+        MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALd41vG5rMzG26hhVxE65kzWC+bYQ94t
+        OxsSxIQZMOc1GY8ubuqu2iku5/5isaFfG44e+VAe+YIdVeQY7cUkaaUCAwEAAQ==
+        -----END PUBLIC KEY-----
+      JWT_ALGORITHM: RS256
+      API_AUTH_TOKEN: secret
+      ASSET_STORAGE_BACKEND: built-in
+    depends_on:
+       - db
+    expose:
+      - "5000"
+  nginx:
+    image: nginx:latest
+    container_name: scale_pr_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - pspdfkit
+    ports:
+      - "4000:4000"
