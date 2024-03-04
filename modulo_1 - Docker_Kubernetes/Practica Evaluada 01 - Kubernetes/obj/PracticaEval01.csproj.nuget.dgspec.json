@@ -1,0 +1,96 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/jorge/PERSONAL/iCode/DataHack/Master Architecture & Engineering/proyecto_módulo1/Practica Evaluada 01 - Docker Kubernetes/PracticaEval01.csproj": {}
+  },
+  "projects": {
+    "/Users/jorge/PERSONAL/iCode/DataHack/Master Architecture & Engineering/proyecto_módulo1/Practica Evaluada 01 - Docker Kubernetes/PracticaEval01.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/jorge/PERSONAL/iCode/DataHack/Master Architecture & Engineering/proyecto_módulo1/Practica Evaluada 01 - Docker Kubernetes/PracticaEval01.csproj",
+        "projectName": "PracticaEval01",
+        "projectPath": "/Users/jorge/PERSONAL/iCode/DataHack/Master Architecture & Engineering/proyecto_módulo1/Practica Evaluada 01 - Docker Kubernetes/PracticaEval01.csproj",
+        "packagesPath": "/Users/jorge/.nuget/packages/",
+        "outputPath": "/Users/jorge/PERSONAL/iCode/DataHack/Master Architecture & Engineering/proyecto_módulo1/Practica Evaluada 01 - Docker Kubernetes/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/jorge/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[6.0.5, )"
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.15.1, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.15.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-x64",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

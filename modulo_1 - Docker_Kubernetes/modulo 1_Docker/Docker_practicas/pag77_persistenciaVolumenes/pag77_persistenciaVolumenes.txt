@@ -1,0 +1,17 @@
+
+$ docker volume create my-volume
+$ docker volume inspect my-volume
+$ docker run -it -v my-volume:/data --name my-container selaworkshops/busybox:latest
+$ cd /data
+$ echo “prueba de persistencia” > prueba.txt
+$ ls
+(en otro terminal)
+$ docker run -it -v my-volume:/data --name my-container-2 selaworkshops/busybox:latest $ cd /data
+$ ls
+$ exit (de ambos contenedores)
+$ docker rm -f my-container my-container-2
+$ docker ps -a
+$ docker run -it -v my-volume:/data --name new-container selaworkshops/busybox:latest $ cd data
+$ ls
+$ exit
+$ docker rm -f new-container

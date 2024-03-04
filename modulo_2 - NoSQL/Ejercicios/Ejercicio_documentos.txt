@@ -1,0 +1,71 @@
+SÓLO 2 COLECCIONES
+- Usuarios
+- POST
+
+Colección de Usuarios:
+{
+  "_id": ObjectId("user_id"),
+  "full_name": "Nombre Completo",
+  "email": "correo@ejemplo.com",
+  "alias": "nombre_de_usuario",
+  "city": "Ciudad",
+  "country": "País",
+  "registration_date": ISODate("fecha_de_alta")
+}
+
+Colección de Posts:
+{
+  "_id": ObjectId("post_id"),
+  "title": "Título del Post",
+  "summary": "Resumen del Post",
+  "content": "Contenido del Artículo",
+  "publication_date": ISODate("fecha_de_publicacion"),
+  "author": ObjectId("user_id"),  // Referencia al usuario
+  "category": ObjectId("category_id"),  // Referencia a la categoría
+  "tags": [
+    ObjectId("tag_id"),  // Referencia a etiquetas
+    // Otras etiquetas si es necesario
+  ],
+  "comments": [
+    {
+      "_id": ObjectId("comment_id"),
+      "text": "Texto del Comentario",
+      "publication_date": ISODate("fecha_de_publicacion"),
+      "author": ObjectId("user_id")  // Referencia al usuario
+    },
+    // Otros comentarios si es necesario
+  ]
+}
+
+Colección de Categorías:
+{
+  "_id": ObjectId("category_id"),
+  "name": "Nombre de la Categoría",
+  "url": "url_de_la_categoria"
+}
+
+Colección de Etiquetas:
+{
+  "_id": ObjectId("tag_id"),
+  "name": "Nombre de la Etiqueta",
+  "url": "url_de_la_etiqueta"
+}
+
+colección de resumen de posts para la página principal:
+{
+  "_id": ObjectId("summary_post_id"),
+  "title": "Título del Post",
+  "summary": "Resumen del Post",
+  "publication_date": ISODate("fecha_de_publicacion"),
+  "author_alias": "nombre_de_usuario",
+  "category_name": "Nombre de la Categoría",
+  "tags": [
+    "Nombre de la Etiqueta",
+    // Otras etiquetas si es necesario
+  ],
+  "comment_count": 10  // Número de comentarios
+}
+
+10 post publicados (si no se hace coleccion home):
+db.posts.find().sort({ "publication_date": -1 }).limit(10);
+

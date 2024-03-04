@@ -1,0 +1,7 @@
+Comandos para crear etiquetas:
+$ kubectl get po --show-labels
+$ kubectl label po NAME environment=dev
+$ kubectl label pods --all status=unhealthy
+$ kubectl get po --show-labels
+$ kubectl label po NAME status- (quitamos etiqueta)
+$ kubectl label pods X environment - (quitamos etiqueta)

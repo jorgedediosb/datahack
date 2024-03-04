@@ -1,0 +1,22 @@
+PRÁCTICA REDES - COMANDOS BÁSICOS
+
+• Mostrar la IP que estamos usando
+$ ipconfig getifaddr en0
+
+• Listar todas las redes disponibles en el servidor Docker
+$ docker network ls
+
+• Conectar un contenedor en ejecución a una red
+$ docker network connect multi-host-network container
+
+• Especificar una dirección IP que desea asignar a un contenedor.
+$ docker network connect --ip 10.10.36.122 multi-host-network container
+
+• Desconectar un contenedor de una red
+$ docker network disconnect multi-host-network container
+
+• Eliminar una red.
+$ docker network rm network_name
+
+• Eliminar múltiples redes.
+$ docker network rm network_name network_name

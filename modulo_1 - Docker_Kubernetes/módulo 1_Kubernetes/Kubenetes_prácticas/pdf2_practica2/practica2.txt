@@ -1,0 +1,95 @@
+(base) ernesto@emacpro:~$ kubectl run practica2 --image=xstabel/dotnet-core-publish --dry-run -o yaml
+W0127 12:41:15.106576  101558 helpers.go:704] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: practica2
+  name: practica2
+spec:
+  containers:
+  - image: xstabel/dotnet-core-publish
+    name: practica2
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+(base) ernesto@emacpro:~$ kubectl run practica2 --image=xstabel/dotnet-core-publish --dry-run -o yaml >practica2.yaml
+W0127 12:43:10.515367  103298 helpers.go:704] --dry-run is deprecated and can be replaced with --dry-run=client.
+(base) ernesto@emacpro:~$ kubectl run practica2 --image=xstabel/dotnet-core-publish --port=8080 --dry-run -o yaml >practica2.yaml
+W0127 12:48:11.856995  108786 helpers.go:704] --dry-run is deprecated and can be replaced with --dry-run=client.
+(base) ernesto@emacpro:~$ kubectl apply -f practica2.yaml 
+pod/practica2 created
+(base) ernesto@emacpro:~$ kubectl get pods
+NAME        READY   STATUS    RESTARTS   AGE
+practica2   1/1     Running   0          26s
+(base) ernesto@emacpro:~$ kubectl describe practica2
+error: the server doesn't have a resource type "practica2"
+(base) ernesto@emacpro:~$ kubectl describe po/practica2
+Name:             practica2
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Sat, 27 Jan 2024 12:49:59 +0100
+Labels:           run=practica2
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.7
+IPs:
+  IP:  10.244.0.7
+Containers:
+  practica2:
+    Container ID:   docker://1bcfa192f2e6ebdada15e803168729ae68bcfeccbe59067c2c9c49fbc11ef709
+    Image:          xstabel/dotnet-core-publish
+    Image ID:       docker-pullable://xstabel/dotnet-core-publish@sha256:c2c45375d6943903263b87a5359ebe5f1634eb010f754746c75422101d3f261c
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sat, 27 Jan 2024 12:50:17 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m4qgh (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-m4qgh:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  6m26s  default-scheduler  Successfully assigned default/practica2 to minikube
+  Normal  Pulling    6m23s  kubelet            Pulling image "xstabel/dotnet-core-publish"
+  Normal  Pulled     6m11s  kubelet            Successfully pulled image "xstabel/dotnet-core-publish" in 11.825s (11.825s including waiting)
+  Normal  Created    6m8s   kubelet            Created container practica2
+  Normal  Started    6m8s   kubelet            Started container practica2
+(base) ernesto@emacpro:~$ kubectl describe po/practica2 > practica2pod_descripcion.txt
+(base) ernesto@emacpro:~$ kubectl exec -it practica2 -- bash
+root@practica2:/app# echo "hello"
+hello
+root@practica2:/app# whoami
+root
+root@practica2:/app# lsb_release -a
+bash: lsb_release: command not found
+root@practica2:/app# exit          
+exit
+command terminated with exit code 127
+(base) ernesto@emacpro:~$ kubectl delete pod practica2
+pod "practica2" deleted
+(base) ernesto@emacpro:~$ 
+

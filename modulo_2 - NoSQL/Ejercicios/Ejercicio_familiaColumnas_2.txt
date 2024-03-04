@@ -1,0 +1,95 @@
+EJERCICIOS - NOSQL
+
+EJERCICIO 2 - FAMILIA COLUMNAS.
+
+Gestión de reservas de hoteles.
+
+Nuestro dominio conceptual contiene hoteles, huéspedes que se alojan en los hoteles, un
+conjunto de habitaciones para cada hotel, y un registro de las reservas.
+
+Los hoteles también mantienen una colección de puntos de interés los cuales son museos,
+parques, almacenes de compras, monumentos u otros lugares cercanos al hotel que los
+huéspedes quieran visitar durante su estancia.
+
+Tanto hoteles como puntos de interés necesitan mantener datos de localización geográfica para
+ser localizados en mapas y para calcular distancias.
+
+Queremos realizar las siguientes gestiones:
+1. Encontrar hoteles de una ciudad concreta de un país concreto.
+2. Encontrar información acerca de un hotel específico como nombre y localización.
+3. Encontrar puntos de interés más cercanos al hotel específico ordenados por distancia.
+4. Encontrar puntos de interés más cercanos al hotel específico ordenados por distancia y en función de su categoría.
+   Por ejemplo, los monumentos más cercanos.
+5. Encontrar una habitación disponible en una fecha dada.
+6. Encontrar precios y características de las habitaciones.
+7. Reservar la habitación seleccionada agregando los datos del huésped.
+
+MODELADO CON CASSANDRA:
+
+    1. Familia de Columnas para Hoteles:
+        CREATE TABLE hoteles (
+            pais TEXT,
+            ciudad TEXT,
+            hotel_id UUID PRIMARY KEY,
+            nombre TEXT,
+            localizacion TEXT
+        );
+        
+        Ejemplo para insertar datos:
+        INSERT INTO hoteles (pais, ciudad, hotel_id, nombre, localizacion)
+        VALUES ('España', 'Barcelona', uuid(), 'Barcelona Palace', '41.3833° N, 2.1834° E');
+        > La función uuid() genera automáticamente el identificador únnico.
+
+    2. Familia de Columnas para Puntos de Interés:
+        CREATE TABLE puntos_interes (
+            hotel_id UUID,
+            categoria TEXT,
+            punto_interes_id UUID PRIMARY KEY,
+            nombre TEXT,
+            localizacion TEXT,
+            distancia DOUBLE
+        );
+
+    3. Familia de Columnas para Habitaciones:
+        CREATE TABLE habitaciones (
+            hotel_id UUID,
+            fecha DATE,
+            habitacion_id UUID PRIMARY KEY,
+            disponible BOOLEAN,
+            precio DECIMAL,
+            caracteristicas SET<TEXT>
+        );
+
+    4. Familia de Columnas para Reservas:
+        CREATE TABLE reservas (
+            habitacion_id UUID,
+            fecha DATE,
+            huesped_id UUID,
+            PRIMARY KEY (habitacion_id, fecha)
+        );
+
+
+CONSULTAS CON CASSANDRA:
+
+    1. Encontrar hoteles de una ciudad concreta de un país concreto:
+        SELECT * FROM hoteles WHERE pais = 'NombrePais' AND ciudad = 'NombreCiudad';
+
+    2. Encontrar información acerca de un hotel específico como nombre y localización:
+        SELECT nombre, localizacion FROM hoteles WHERE pais = 'España' AND ciudad = 'Barcelona' AND nombre = 'Barcelona Palace';
+
+    3. Encontrar puntos de interés más cercanos al hotel específico ordenados por distancia:
+        SELECT * FROM puntos_interes WHERE nombre = 'NombreHotel' ORDER BY distancia ASC;
+
+    4. Encontrar puntos de interés más cercanos al hotel específico ordenados por distancia y categoría:
+        SELECT * FROM puntos_interes WHERE nombre = 'NombreHotel' AND categoria = 'Categoria' ORDER BY distancia ASC;
+
+    5. Encontrar una habitación disponible en una fecha dada:
+        SELECT * FROM habitaciones WHERE nombre = 'NombreHotel' AND fecha = 'Fecha' AND disponible = true;
+
+    6. Encontrar precios y características de las habitaciones:
+        SELECT habitacion_id, precio, caracteristicas FROM habitaciones WHERE nombre = 'NombreHotel';
+
+    7. Reservar la habitación seleccionada agregando los datos del huésped:
+        INSERT INTO reservas (habitacion_id, fecha, huesped_id) VALUES ('HabitacionID', 'Fecha', 'HuespedID');
+
+

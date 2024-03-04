@@ -1,0 +1,115 @@
+EJERCICIOS - NOSQL
+
+EJERCICIO 1 - CLAVE/VALOR.
+
+1. Gestión de compras de una asociación
+
+Queremos registrar todas las compras que realizan los miembros de una asociación
+para realizar tareas de control y de estadísticas sobre las compras.
+Se guardan datos de los usuarios,
+de las transacciones realizadas
+y de los establecimientos donde realizamos las compras.
+
+Pretendemos realizar las siguientes consultas sobre los datos:
+1. Datos de una compra concreta.
+2. Datos del miembro que realiza una determinada compra.
+3. Datos de las compras realizadas por un determinado miembro.
+4. Datos de las compras realizadas en un determinado comercio.
+
+
+SOLUCIÓN:
+
+> con MONGODB como base de datos (documentos BSON (Binary JSON)):
+  
+  > Crear la base de datos:
+    $ use datahackEj1
+
+  1. COLECCIONES:
+    · Ingresar colección "usuarios":
+        db.users.insertOne({
+          "nombre": "Jorge",
+          "email": "jorge@example.com"
+        })
+
+    · Ingresar colección "transacciones":
+      db.transacciones.insertOne({
+        "usuario_id": ObjectId("65d63fcca7b7e9777e21cdc8"),
+        "establecimiento": "La Carmen",
+        "monto": 50.25,
+        "productos": ["productoA", "productoB"],
+        "fecha": ISODate("2024-02-21T14:30:00Z")
+      })
+
+    > ISODate es un tipo de dato utilizado para representar fechas y horas en formato ISO 8601.
+
+    · Insertar colección "establecimientos":
+      db.establecimientos.insertOne({
+        "nombre": "La Carmen",
+        "direccion": "Calle Ramón y Cajal, 24"
+      })
+
+  2. CONSULTAS EN MONGODB (a través de la terminal):
+
+    1. Datos de una compra concreta:
+      $ db.transacciones.findOne({ "_id": ObjectId("transaccion_id") })
+
+    2. Datos del miembro que realiza una determinada compra:
+      > Buscar una compra concreata por id:
+      $ db.transacciones.find({"_id": ObjectId("65d6431e7ea520f9161af126")})
+      > Buscar los datos del usuario de esa compra por id:
+      $ db.users.find({'_id': ObjectId('65d63fcca7b7e9777e21cdc8')})
+
+    3. Datos de las compras realizadas por un determinado miembro:
+      $ db.transacciones.find({'usuario_id': ObjectId('65d63fcca7b7e9777e21cdc8')})
+
+    4. Datos de las compras realizadas en un determinado establecimiento:
+      $ db.transacciones.find({'establecimiento': 'La Carmen'})
+
+
+> Usando REDIS como base de datos (Clave/Valor) usando la terminal:
+
+  ALMACENAMIENTO DE DATOS:
+
+    # Almacenar datos de un usuario individualmente con 'hash':
+      HSET usuario:1 nombre "John Doe"
+      HSET usuario:1 email "john@hotmail.com"
+
+    # Crear un grupo de usuarios en un único grupo:
+      SADD usuarios 1
+      HSET usuario:1 nombre "John Doe"
+      HSET usuario:1 correo "john@hotmail.com"
+
+    # Crear un grupo de usuarios para una asociación específica
+      SADD asociacion:1:usuarios 1
+      HSET usuario:1 nombre "John Doe"
+      HSET usuario:1 correo "john@hotmail.com"
+
+    # Almacenar transacciones con listas y 'hashes':
+      LPUSH transacciones usuario:1:compras
+      HSET transaccion:1 usuario_id 1
+      HSET transaccion:1 establecimiento "La Carmen"
+      HSET transaccion:1 monto 50.00
+      HSET transaccion:1 productos "patatas, carne, pescado"
+
+    # Almacenar datos de un establecimiento con conjuntos:
+      SADD establecimientos 1
+      HSET establecimiento:1 nombre "La Carmen"
+      HSET establecimiento:1 ubicacion "Avila"
+
+
+  CONSULTAS:
+    > Se permite expresiones regulares.
+    > Las claves tienen índices secundarios.
+
+    1. Datos de una compra concreta:
+      $ HGETALL transaccion:1
+
+    2. Datos del miembro que realiza una determinada compra:
+      $ HGETALL usuario:1
+
+    3. Datos de las compras realizadas por un determinado miembro.
+      $ LRANGE usuario:1:compras 0 -1
+
+    4. Datos de las compras realizadas en un determinado comercio.
+      $ SMEMBERS comercio:"La Carmen"
+    

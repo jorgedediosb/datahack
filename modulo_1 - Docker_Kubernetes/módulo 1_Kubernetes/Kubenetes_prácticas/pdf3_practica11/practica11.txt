@@ -1,0 +1,6 @@
+$ minikube addons enable ingress
+$ kubectl get pods -n ingress-nginx
+$ kubectl get services
+$ curl --resolve "hello-world.info:80:$( minikube ip )" -i http://hello-world.info
+$ kubectl port-forward deployment.apps/ingress-nginx-controller -n ingress-nginx 8080:80
+

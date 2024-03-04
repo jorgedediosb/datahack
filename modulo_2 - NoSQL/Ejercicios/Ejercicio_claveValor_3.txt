@@ -1,0 +1,135 @@
+EJERCICIOS - NOSQL
+
+EJERCICIO 3 - CLAVE/VALOR.
+
+Kickstarter es una web donde proyectos de todo tipo (arte, ocio, diseño, tecnología...) buscan
+financiación privada, pledges (básico, intermedio y avanzado), de usuarios privados, llamados backers, ofreciendo productos únicos,
+en primicia y, en ocasiones, regalos adicionales si se alcanzan ciertos hitos de recaudación.
+
+Cada proyecto tiene una fecha límite para conseguir su objetivo mínimo de recaudación, fijando
+distintos tipos de pledges que incluyen distintos niveles de recompensa por el dinero aportado.
+
+Kickstarter se ha convertido en un referente entre un grupo nutrido de webs de semejante
+propósito donde las campañas llegan a alcanzar los miles de backers y millones de dólares en
+financiación.
+
+Queremos realizar las siguientes consultas:
+1. Datos de un proyecto.
+2. Datos de una categoría ¿??¿
+3. Datos de los creadores.
+4. Proyectos de una determinada categoría.
+5. Proyectos de un creador.
+6. Proyectos de una determinada localización.
+
+
+SOLUCIÓN
+
+MODELADO Y ALMACENAMIENTO DE DATOS CON MONGODB
+
+    > Crear la base de datos:
+        $ use datahackEj3
+
+    > Ingresar datos:
+        $ db.createCollection("nombre_de_tu_coleccion")
+        $ db.proyectos.insertMany([
+        {
+        "nombre": "On Mars",
+        "descripcion": "Juego de mesa sobre la colonización de Marte",
+        "objetivo_recaudacion": 10000,
+        "fecha_limite": ISODate("2024-12-31T23:59:59Z"),
+        "categorias": ["ocio", "juegos mesa"],
+        "creador": {
+            "nombre": "Vital Lacerda",
+            "email": "vital@icloud.com",
+            "Ciudad": "Lisboa",
+            "Pais": "Portugal"
+        },
+        "Recompensas": [
+            {
+            "nivel": "Básico",
+            "recompensa": "Agradecimiento en la página del proyecto"
+            },
+            {
+            "nivel": "Intermedio",
+            "recompensa": "Agradecimiento en pag + Producto exclusivo del proyecto"
+            },
+            {
+            "nivel": "Avanzado",
+            "recompensa": "Agradecimiento en pag + Producto exclusivo + Regalo adicional"
+            }
+        ],
+        "Patrocinadores": [
+            {
+            "nombre": "Jorge",
+            "email": "jorge@gmail.com",
+            "cantidad_aportada": 150.00
+            },
+             {
+            "nombre": "Elena",
+            "email": "elena@hotmail.com",
+            "cantidad_aportada": 200.00
+            },
+        ]
+        }
+    ])
+
+2. CONSULTAS CON MONGODB:
+
+    1. Datos de un proyecto:
+        $ db.proyectos.findOne({"nombre": "On Mars"})
+
+    2. Datos de una categoría:
+        $ db.proyectos.find({"categorias": "tecnología"})
+
+    3. Datos de los creadores de un proyecto:
+        $ db.proyectos.findOne({nombre:"On Mars"}, {_id:0, creador:1})
+
+    4. Proyectos de una determinada categoría
+        $ db.proyectos.find({"categorias": "arte"})
+
+    5. Proyectos de un creador:
+        $ db.proyectos.findOne({"creador.nombre":"Vital Lacerda"}, {"_id":0, "nombre":1})
+
+    6. Proyectos de una determinada localización
+        $ db.proyectos.find({"creador.Ciudad": "Lisboa"}, {"_id":0, "nombre":1})
+
+
+CON REDIS:
+
+    1. MODELADO Y ALMACENAMIENTO DE DATOS CON REDIS (opción 1)
+
+        # Datos del proyecto:
+        HSET proyecto:project_id nombre "Nombre del Proyecto"
+        HSET proyecto:project_id objetivo_recaudacion 10000
+        HSET proyecto:project_id fecha_limite "2024-12-31T23:59:59Z"
+        HSET proyecto:project_id creador "creator_id"
+        SADD proyecto:project_id:categorias "arte" "ocio" "diseño" "tecnología"
+
+        # Recompensas:
+        SADD pledges:project_id 'Básico' 'Intermedio' 'Avanzado'
+
+        # Patrocinadores:
+        SADD backers:project_id 'backer_id1' 'backer_id2' 'backer_id3'
+
+
+    2. CONSULTAS EN REDIS:
+
+        1. Datos de un proyecto:
+        HGETALL proyecto:project_id
+    
+        2. Datos de una categoría:
+        SMEMBERS proyectos:categoria:tecnologia
+
+        3. Datos de los creadores de un proyecto:
+        SMEMBERS proyectos:creador:creator_id
+
+        4. Proyectos de una determinada categoría
+        SMEMBERS proyectos:categoria:tecnologia
+
+        5. Proyectos de un creador:
+        SMEMBERS proyectos:creador:creator_id
+
+        6. Proyectos de una determinada localización
+        SMEMBERS proyectos:localizacion:'Ciudad, Pais'
+
+

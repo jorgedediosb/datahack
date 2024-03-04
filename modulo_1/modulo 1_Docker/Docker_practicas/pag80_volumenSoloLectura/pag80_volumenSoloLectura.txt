@@ -1,8 +1,0 @@
-• En este caso ejecutaremos el mismo comando que en la pag 79 con la diferencia de que esta vez el volumen será sólo de lectura
-$ docker run -d -it --name devtest --mount type=bind, source="$(pwd)"/target, target=/app, readonly nginx:latest
-
-• Ejecutar el siguiente comando y revisar la sección “Mount”
-$ docker inspect devtest
-
-• Detener el cometedor y eliminarlo después
-$ docker stop devtest $ docker rm devtest

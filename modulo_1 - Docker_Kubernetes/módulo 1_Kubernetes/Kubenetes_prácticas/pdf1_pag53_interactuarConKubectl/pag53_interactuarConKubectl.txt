@@ -1,0 +1,23 @@
+
+PRÁCTICA 1 - INICIAR KUBERNETES
+
+• Iniciar Minikube (especificar el hipervisor https://kubernetes.io/docs/tasks/tools/#specifying-the-vm-driver)
+$ minikube start
+
+> para indicar el uso del api apps/v1
+$ --extra-config=apiserver.runtime-config=apps/v1beta1=true,extensions/v1beta1/deployments=true
+
+• Configurar el contexto
+$ kubectl config use-context minikube
+
+• Seleccionar el contexto en línea:
+$ kubectl get pods --context=minikube
+
+• Visualizar el Kubernetes Dashboard
+$ minikube dashboard
+
+• Ver los Addons disponibles
+$minikube addons list
+
+Comandos de Kubectl :
+> Contexto y configuración: https://kubernetes.io/docs/reference/kubectl/quick-reference/#kubectl-context-and-configuration

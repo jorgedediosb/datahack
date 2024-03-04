@@ -1,0 +1,30 @@
+NOTAS COMANDOS CASSANDRA
+
+Iniciar/detener servicio:
+    $ brew services start cassandra
+    $ brew services stop cassandra
+
+ver información del servicio:
+    $ brew services list
+    $ brew services info cassandra
+
+Iniciar interfaz línea de comandos:
+    $ cqlsh
+
+ver los keyspaces (bases de datos en cassandra) / tablas / datos:
+    $ DESCRIBE KEYSPACES;
+    $ DESCRIBE TABLES;
+    $ SELECT * FROM nombre_de_la_tabla;
+
+crear keyspace / tabla (indicar simbre ';'):
+    $ CREATE KEYSPACE nombre_del_keyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+    $ USE nombre_del_keyspace; > acceder
+    $ CREATE TABLE table_name (usuario_id UUID PRIMARY KEY, nombre TEXT, edad INT);
+
+añadir atributo a tabla:
+    $ ALTER TABLE nombre_tabla ADD nombre_atributo TIPO_DE_DATO;
+
+borrar keyspace / tabla:
+    $ DROP KEYSPACE IF EXISTS mi_keyspace;
+    $ DROP TABLE nombre_del_keyspace.nombre_de_la_tabla;
+

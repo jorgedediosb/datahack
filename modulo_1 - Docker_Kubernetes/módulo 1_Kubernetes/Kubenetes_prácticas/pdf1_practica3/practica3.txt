@@ -1,0 +1,13 @@
+(base) ernesto@emacpro:~$ kubectl apply -f practica3.yaml
+replicaset.apps/front created
+(base) ernesto@emacpro:~$ kubectl get rs
+NAME    DESIRED   CURRENT   READY   AGE
+front   3         3         2       20s
+(base) ernesto@emacpro:~$ kubectl delete rs front
+replicaset.apps "front" deleted
+(base) ernesto@emacpro:~$ kubectl delete pod practica3
+Error from server (NotFound): pods "practica3" not found
+(base) ernesto@emacpro:~$ kubectl get pod
+No resources found in default namespace.
+(base) ernesto@emacpro:~$ 
+

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  labels:
+    run: practica3
+  name: front
+spec:
+ template:
+  metadata:
+   name: practica3
+   labels:
+    type: front 
+  spec:
+   containers:
+   - image: xstabel/dotnet-core-publish
+     name: practica3container
+     ports:
+     - containerPort: 8080
+     resources: {}
+   dnsPolicy: ClusterFirst
+   restartPolicy: Always
+ replicas: 3
+ selector:
+  matchLabels:
+      type: front
+

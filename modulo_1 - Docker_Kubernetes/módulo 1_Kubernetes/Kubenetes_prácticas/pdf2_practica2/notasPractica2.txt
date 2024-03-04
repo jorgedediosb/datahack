@@ -1,0 +1,17 @@
+Comandos Kubernetes:
+https://kubernetes.io/docs/reference/kubectl/quick-reference/
+
+--dry-run se usa para probar:
+    · No ejecuta el comando pero te dice que ocurriría si lo hicieses.
+    · Da una salida en yml
+
+Comandos práctica 2:
+$ kubectl run nginx --image=nginx --dry-run=client --o ymal > pod.yaml
+$ cat pod.yaml
+$ k apply -f pod.yaml
+$ k get po
+$ k get po --watch
+$ k delete po nginx
+$ k get no 
+$ k get nodes
+$ k get nodes -o wide

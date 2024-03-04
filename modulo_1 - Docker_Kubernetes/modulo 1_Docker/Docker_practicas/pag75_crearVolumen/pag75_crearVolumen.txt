@@ -1,0 +1,14 @@
+• Crear un volumen
+$ docker volume create my-volume
+
+• Crear y correr un volumen en un contenedor con una imagen específica
+$ docker run -it -v my-volume:/data --name my-container selaworkshops/busybox:latest
+
+• Listar los volúmenes
+$ docker volumen ls
+
+• Ver los detalles de un volumen
+$ docker volumen inspect my-volume
+
+• Eliminar un volumen
+$ docker volumen rm my-volume

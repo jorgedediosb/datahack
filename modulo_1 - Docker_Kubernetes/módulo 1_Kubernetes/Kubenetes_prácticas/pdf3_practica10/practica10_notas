@@ -1,0 +1,3 @@
+$ kubectl expose deployment front8 --type=NodePort --port=8080
+
+$ kubectl port-forward deployment/my-deployment 8080:8080

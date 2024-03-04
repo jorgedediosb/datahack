@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  labels:
+    run: practica3
+  name: front
+spec:
+  template:
+    metadata:
+      name: practica3
+      labels:
+        type: front
+    spec:
+      containers:
+      - name: practica3
+        image: xstabel/dotnet-core-publish
+
+    replicas: 3
+    selector:
+      matchLabels:
+        type: front
+
+status: {}

@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - Entorno=${Entorno}
+    image: web_practicadatahack:${Version}
+    container_name: web-container
+    networks:
+      - mynetwork
+    ports:
+      - 7007:7007
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+    environment:
+      Version: ${Version}
+      Entorno: ${Entorno}
+      MONGODB_CONNECTION: mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.0.7
+    container_name: mongodb-container
+    networks:
+      - mynetwork
+    volumes:
+      - mongodb-volume:/data/db
+    ports:
+      - 27017:27017
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+    environment:
+      MONGO_DATABASE: mongodb
+      MONGO_USER: jorgedb
+      MONGO_PASSWORD_FILE: /secrets/mongodb_password
+      MONGO_ROOT_PASSWORD_FILE: /secrets/mongodb_root_password
+    secrets:
+      - db_password
+      - db_root_password
+
+secrets:
+  db_password:
+    file: ./secrets/mongodb_password.txt
+  db_root_password:
+    file: ./secrets/mongodb_root_password.txt
+
+volumes:
+  mongodb-volume:
+
+networks:
+  mynetwork:
+    driver: bridge

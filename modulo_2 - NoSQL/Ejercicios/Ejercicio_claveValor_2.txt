@@ -1,0 +1,190 @@
+EJERCICIOS - NOSQL
+
+EJERCICIO 2 - CLAVE/VALOR.
+
+2. Clasificador y buscador de Anime.
+Queremos construir una aplicación que nos ayude a clasificar animes para poder realizar búsquedas de forma sencilla
+y encontrar el anime que más se adecue a nuestras necesidades.
+
+Por cada anime guardamos los siguientes datos:
+- El nombre, su género (acción, aventuras, comedia, ...),
+- el tipo (televisión, especial, libro, ...),
+- el número de episodios si aplica
+- y la valoración de los usuarios.
+
+Para implementar el buscador se quieren realizar las siguientes consultas:
+1. Animes por un género concreto.
+2. Número de animes almacenados para un género concreto.
+3. La valoración de un determinado anime.
+
+
+MODELADO Y ALMACENAMIENTO DE DATOS CON MONGODB (documentos BSON (Binary JSON))
+    
+    > Crear la base de datos:
+        $ use datahackEj2
+
+    # Ingresar datos:
+        db.animes.insertMany([
+            {
+                "nombre": "One Piece",
+                "genero": ["acción", "aventuras"],
+                "tipo": "televisión",
+                "numero_episodios": 1000,
+                "rating": 4.5
+            },
+            {
+                "nombre": "Attack on Titan",
+                "genero": ["acción", "drama", "fantasía"],
+                "tipo": "especial",
+                "numero_episodios": 75,
+                "rating": 4.8
+            }
+        ])
+
+CONSULTAS EN MONGODB:
+
+    1. Animes por un género concreto:
+    · Con Terminal:
+        $ db.animes.find({ "genero": "acción" })
+        > OJO con las tildes!
+
+    · Con Python:
+        genero_buscado = "acción"
+        animes_por_genero = db.animes.find({"genero": genero_buscado})
+        print(f"Animes del género {genero_buscado}:")
+        for anime in animes_por_genero:
+            print(anime["nombre"])
+
+    2. Número de animes almacenados para un género concreto:
+    · Con Terminal:
+        $ db.animes.count({ "genero": "acción" })
+
+    · Con Python:
+        num_animes_por_genero = db.animes.count_documents({"genero": genero_buscado})
+        print(f"Número de animes del género {genero_buscado}: {num_animes_por_genero}")
+
+    3. La valoración de un determinado anime:
+    · Con Terminal:
+        $ db.animes.find({ "nombre": "One Piece" }, { "_id": 0, "rating": 1 })
+        > Busca "One Piece" y devuelve SOLO el campo "rating" (excluyendo '_id').
+    
+    · Con Python:
+        anime_buscado = "One Piece"
+        valoracion_anime = db.animes.find_one({"nombre": anime_buscado}, {"rating": 1})
+        print(f"Valoración de {anime_buscado}: {valoracion_anime['rating']}")
+
+
+MODELADO Y ALMACENAMIENTO DE DATOS CON REDIS (CLAVE/VALOR)
+     OPCCION 1:
+
+    # Guardar datos de un anime como hash
+    HSET anime:1 nombre "One Piece"
+    HSET anime:1 genero "Aventuras"
+    HSET anime:1 tipo "Televisión"
+    HSET anime:1 episodios 1000
+    HSET anime:1 valoracion 4.5
+    SADD generos:Aventuras 1 > Agregar el género "Aventuras" al conjunto de géneros del anime 1
+    HSET animes:nombres "One Piece" 1 > Establecer la correspondencia del nombre del anime al identificador 
+
+    # Otro anime
+    HSET anime:2 nombre "Attack on Titan"
+    HSET anime:2 genero "Acción"
+    HSET anime:2 tipo "Televisión"
+    HSET anime:2 episodios 75
+    HSET anime:2 valoracion 4.8
+    SADD generos:Acción 2 > Agregar el género "Acción" al conjunto de géneros del anime 2
+    HSET animes:nombres "Attack on Titan" 2 > Establecer la correspondencia del nombre del anime al identificador 
+
+    CONSULTAS
+    1. Animes por un género concreto (por ejemplo, "Aventuras")
+    SMEMBERS generos:Aventuras
+    HGET anime:1 nombre
+
+    2. Número de animes almacenados para un género concreto (por ejemplo, "Acción")
+    SCARD generos:Acción
+
+    3. La valoración de un determinado anime:
+    HGET animes:nombres "One Piece"
+    HGET anime:1 valoracion
+
+
+    OPCCION 2:
+
+    # Datos tipo JSON:
+    anime_data = {
+        "One Piece": {
+            "genero": ["acción", "aventuras"],
+            "tipo": "televisión",
+            "numero_episodios": 1000,
+            "rating": 4.5
+        },
+        "Attack on Titan": {
+            "genero": ["acción", "drama", "fantasía"],
+            "tipo": "televisión",
+            "numero_episodios": 75,
+            "rating": 4.8
+        },
+        # Agregar más animes según sea necesario
+    }
+
+    # Almacenar datos en Redis con conmandos en terminal:
+        SET anime:one_piece '{"nombre": "One Piece", "genero": ["acción", "aventuras"],
+        "tipo": "televisión", "numero_episodios": 1000, "rating": 4.5}'
+
+        SET anime:attack_on_titan '{"nombre": "Attack on Titan", "genero": ["acción", "drama", "fantasía"],
+        "tipo": "televisión", "numero_episodios": 75, "rating": 4.8}'
+
+        # Utilizar conjuntos para almacenar las relaciones entre géneros y animes:
+        SADD genero:accion anime:one_piece anime:attack_on_titan
+        SADD genero:aventuras anime:one_piece
+        SADD genero:drama anime:attack_on_titan
+        SADD genero:fantasia anime:attack_on_titan
+
+    # Almacenar datos utilizando hashes:
+        for nombre, datos in anime_data.items():
+            key = f"anime:{nombre}"
+            r.hmset(key, datos)
+
+CONSULTAS EN REDIS:
+    > Se permite expresiones regulares.
+    > Las claves tienen índices secundarios.
+        id_anime:genero > {...}
+        25:*
+        *:accion
+
+    1. Animes por un género concreto:
+    · Con terminal:
+        KEYS anime:*:genero:acción
+        o utilizando los conjuntos:
+        SMEMBERS genero:accion
+
+    · Con Python:
+        genero_buscado = "acción"
+        animes_por_genero = []
+        for nombre in anime_data.keys():
+            key = f"anime:{nombre}"
+            genero_actual = r.hget(key, "genero")
+            if genero_buscado in genero_actual:
+                animes_por_genero.append(nombre)
+        print(f"Animes del género {genero_buscado}: {animes_por_genero}")
+
+    2. Número de animes almacenados para un género concreto:
+    · Con terminal utilizando los conjuntos:
+        SCARD genero:accion
+
+    · Con Python:
+        num_animes_por_genero = sum(1 for nombre in anime_data.keys() if genero_buscado in r.hget(f"anime:{nombre}", "genero"))
+        print(f"Número de animes del género {genero_buscado}: {num_animes_por_genero}")
+
+    3. La valoración de un determinado anime:
+    · Con terminal utilizando los conjuntos:
+        GET anime:one_piece
+
+    · Con Python:
+        anime_buscado = "One Piece"
+        valoracion_anime = r.hget("anime:" + anime_buscado, "rating")
+        print(f"Valoración de {anime_buscado}: {valoracion_anime}")
+
+    > Los datos de cada anime se almacenan como un hash en Redis, donde la clave es "anime:{nombre}" y
+      los campos del hash son los atributos del anime.
+    > Las consultas se realizan iterando a través de las claves y accediendo a los valores correspondientes. 

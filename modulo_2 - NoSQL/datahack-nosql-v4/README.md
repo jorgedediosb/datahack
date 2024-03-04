@@ -1,0 +1,34 @@
+# NoSQL Datahack Lab
+
+Repo to build virtual machine for NoSQL Module Lab of Datahack BigData Master Class
+
+## Sofware
+### Service versions
+* mongoDB: 4.2
+* neo4j: 3.5.8
+
+## How to run
+Access to root project folder and run:
+```
+$ docker-compose up -d
+o
+$ docker-compose -f docker-compose.yaml up jupyter mongo 
+> si sólo queremos esos servicios
+```
+Abrir jupiter:
+en chrome:
+http://localhost:8889/
+en Safari:
+http://127.0.0.1:8889
+
+Abrir Browser:
+http://127.0.0.1:7474/browser/
+user: neo4j
+pass: 1234
+(en los notebook introsucimos el user y pass)
+```
+To stop environment:
+$ docker compose stop
+$ docker compose down
+```
+

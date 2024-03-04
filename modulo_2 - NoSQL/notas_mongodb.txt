@@ -1,0 +1,91 @@
+COMANDOS mondodb
+
+> Iniciar mongodb como servicio:
+    $ brew services start mongodb-community@7.0
+
+> Detener mondodb como servicio:
+    $ brew services stop mongodb-community@7.0
+
+ver información del servicio:
+    $ brew services list
+    $ brew services info mongodb
+    
+> Iniciar mongo compass (Desktop):
+    mongodb://127.0.0.1:27017/
+
+> Iniciar mongo shell:
+    $ mongosh
+
+> Salir de mongo shell:
+    $ exit
+
+> Limpiar consola:
+    $ cls
+
+> Ver bases de datos:
+    $ show dbs
+
+> Crear/Entrar en base de datos:
+    $ use nombreDataBase
+    > No aparece la base de datos hasta que no metamos datos.
+
+> Crear colección:
+    $ db.createCollection("nombre_de_tu_coleccion")
+
+> Insertar datos en la base de datos:
+    > Desde la base de datos:
+    $ db.NombreColeccion.insert({clave:valor})
+    $ db.NombreColeccion.insertOne({name: "Henry"})
+    $ db.NombreColeccion.insertMany({name: "Henry"}, {name: "Mary"})
+    > si la colección no está creada se creará.
+
+> modificar valores:
+    $ db.nombreColeccion.updateOne({age:20}, {$set: {"age": 57}}) > Actualiza la edad 20  a 57
+    $ db.nombreColeccion.updateMany({age: {exists: true}}, {$set: {"age": 57}}) > Actualiza a todos los usuarios con 'edad'
+    $ db.NombreColeccion.replace()
+
+> Ver colecciones:
+    $ show collections
+    $ db.getCollectionNames()
+
+> Ver objetos de una colección:
+    $ db.nombreColeccion.find()
+    $ db.nombreColeccion.find().limit(5) > usando modificador de cursor delimitadora.
+    $ db.nombreColeccion.find().sort(name: 1) > ordenar alfabéticamente por nombre
+    $ db.nombreColeccion.find().sort(name: -1) > ordenar alfabéticamente (desde el final) por nombre_de_tu_coleccion$ db.nombreColeccion.find({name: "Rosa"}) > busca al usuario 'Rosa'
+    $ db.nombreColeccion.find({"address.street": "246 Main St"}) > busca al usuario cuyo objeto address y su propiedad street son "246 Main St"
+    $ db.nombreColeccion.find({name: "Rosa"}, {name: 1, age:1}) > busca al usuario 'Rosa' y muestra nombre y edad (junto con id)
+    $ db.nombreColeccion.find({name: "Rosa"}, {name: 1, age:1, _id: 0}) > busca al usuario 'Rosa' y muestra nombre y edad (SIN id)
+    $ db.nombreColeccion.find({name: {$eq: "Rosa"}}) > busca al usuario = 'Rosa'
+    $ db.nombreColeccion.find({name: {$ne: "Rosa"}}) > busca todos los usuarios MENOS 'Rosa'
+    $ db.nombreColeccion.find({age: {$gt: 20}}) > busca usuarios con  'age' MAYOR que 20
+    $ db.nombreColeccion.find({age: {$gte: 20}}) > busca usuarios con  'age' MAYOR O IGUAL que 20
+    $ db.nombreColeccion.find({age: {$lt: 20}}) > busca usuarios con  'age' MENOR que 20
+    $ db.nombreColeccion.find({age: {$lte: 20}}) > busca usuarios con  'age' MENOR O IGUAL que 20
+    $ db.nombreColeccion.find({name: {$in: ["Rosa", "Juan"]}}) > busca al usuario 'Rosa' y 'Juan'
+    $ db.nombreColeccion.find({name: {$nin: ["Rosa", "Juan"]}}) > busca TODOS los usuarios MENOS a 'Rosa' y 'Juan'
+    $ db.nombreColeccion.find().limit(2) > sólo muestra los 2 primeros
+
+    $ db.nombreColeccion.find({age: {$exists: true}}) > Usuario que tienen la propiedad 'age' (o false para que no la tengan)
+    $ db.nombreColeccion.find({$and: [{age: 20}, {name: "Carlos"}]}) > Usuario s que tengan 20 años Y se llamen Carlos
+    $ db.nombreColeccion.find({$or: [{age: {lte:18}}, {name: "Carlos"}]}) > Usuarios que tengan MENOS de 18 años O se llamen Carlos
+
+> Eliminar dato:
+    $ db.nombreColeccion.deleteOne({name: "Mary"})
+    $ db.nombreColeccion.deleteMany({age: {exists: false}}) > Borrar a todos que no tengan la propiedad 'age'
+
+> Eliminar colección:
+    $ db.nombreColeccion.drop()
+
+> Eliminar base de datos:
+    > desde la base de datos a eliminar
+    $ db.dropDatabase()
+
+> Cambiar de nombre una colección:
+    $db.coleccionOriginal.find().forEach(function(doc) {
+        db.coleccionNueva.insert(doc);
+})
+
+
+> Borrar consola:
+    $ cls

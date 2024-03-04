@@ -1,0 +1,56 @@
+NOTAS COMANDOS REDIS
+
+iniciar servidor:
+    $ redis-server
+
+iniciar/finalizar redis como servicio:
+    $ brew services start redis
+    $ $ brew services stop redis
+
+ver información redis:
+    $ brew services list
+    $ brew services info redis
+
+comprobar la conectividad con el servidor Redis:
+    $ ping
+    > pong
+
+iniciar/salir el cliente de línea de comandos de Redis:
+    $ redis-cli
+    $ quit / ctrl + c
+
+borrar consola:
+    $ clear
+
+información de la base de datos.
+$ info
+> El nº de base de datos está en el 1er apartado, en 'db':
+    # Keyspace
+    db0:keys=5,expires=0,avg_ttl=0
+
+Operaciones básicas:
+    SELECT numeroDB (nº de la base de datos): Seleccionar una base de datos.
+    SET key value: Establece el valor de una clave.
+    KEYS: obtener todas las claves disponibles. Puede usarse con *
+    GET key: Obtiene el valor asociado con una clave.
+    HSET hash_key field value: Establece el campo de un hash a un valor.
+    HGET hash_key field: Obtiene el valor de un campo en un hash.
+    HGETALL hash_key field: Obtiene todos los valores y los campos hash.
+    LRANGE list_key start stop: Obtiene los elementos de una lista entre las posiciones start y stop.
+    SADD: agregar miembros a un conjunto
+    SMEMBERS set_key: Obtiene todos los miembros de un conjunto.
+    FLUSHDB: eliminar todas las claves de la base de datos actualmente seleccionada (SELECT 2 / FLUSHDB)
+    FLUSHALL: eliminar todas las claves de todas las bases de datos
+
+    SET para datos simples:
+        SET usuario:1000 "John Doe"
+
+    HSET para estructuras de datos complejas:
+    # Establecer valores en un hash
+        HSET usuario:1000 nombre "John"
+        HSET usuario:1000 edad 30
+        HSET usuario:1000 ciudad "Ejemploville"
+
+    # Obtener el nombre del usuario con ID 1000
+        HGET usuario:1000 nombre
+

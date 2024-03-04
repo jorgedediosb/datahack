@@ -1,0 +1,144 @@
+EJERCICIOS - NOSQL
+
+EJERCICIO 1 - FAMILIA COLUMNAS.
+
+Se quiere modelar una tienda online. Esta deberá guardar:
+
+ ● Información personal del usuario
+ ● La dirección de entrega para el envío de los productos.
+ ● Se guardará información de los productos que el usuario tiene en su carrito de la compra
+ ● Todas las compras que haya realizado con anterioridad.
+ ● Los productos están organizados por categorías.
+ ● Siempre que se muestran productos, se debe mostrar la imagen del producto, el nombre, su
+   descripción y el precio.
+ 
+ Información que se quiere obtener:
+ 1. Los 10 productos más vendidos en cada categoría
+ 2. Los productos comprados por un usuario en su última compra
+ 3. Productos de cada categoría ordenados alfabéticamente por el nombre del producto
+ 
+
+MODELADO CON CASSANDRA:
+
+    1. Familia de Columnas para Usuarios:
+        CREATE TABLE usuarios (
+            usuario_id UUID PRIMARY KEY,
+            nombre TEXT,
+            email TEXT,
+            direccion_entrega TEXT
+        );
+
+        Ejemplo inserción de datos:
+            INSERT INTO usuarios (usuario_id, nombre, email, direccion_entrega)
+            VALUES (uuid(), 'Elena', 'elena@email.com', 'DirecciónUsuario2');
+
+
+    2. Familia de Columnas para Productos:
+        CREATE TABLE productos (
+            categoria TEXT,
+            producto_id UUID PRIMARY KEY,
+            nombre TEXT,
+            descripcion TEXT,
+            precio DECIMAL,
+            cantidad_vendida INT,
+            cantidad_total_vendida INT,
+            imagen TEXT
+        );
+
+            Ejemplo inserción de datos:
+                INSERT INTO productos (categoria, producto_id, nombre, descripcion, precio, cantidad_vendida, imagen)
+                VALUES ('Zapatillas', uuid(), 'Nike', 'Zapatillas Nike', 129.99, 5, 'nike.jpg');
+            
+            > cada vez que se vende un producto:
+                UPDATE productos SET cantidad_total_vendida = cantidad_total_vendida + 1
+                WHERE categoria = 'Zapatillas' AND producto_id = 7421cb2c-86ce-416f-8a03-74c6fb98a084;
+
+       - CREATE TABLE total_vendido_por_categoria (
+            categoria TEXT PRIMARY KEY,
+            cantidad_total_vendida INT
+        );
+
+    3. Familia de Columnas para Carrito de Compra:
+        CREATE TABLE carrito_compra (
+            usuario_id UUID PRIMARY KEY,
+            producto_id UUID,
+            cantidad INT
+        );
+
+    4. Familia de Columnas para Compras Realizadas:
+        CREATE TABLE compras_realizadas (
+            usuario_id UUID,
+            fecha_compra TIMESTAMP,
+            producto_id UUID,
+            cantidad INT,
+            PRIMARY KEY (usuario_id, fecha_compra)
+        );
+
+
+CONSULTAS CON CASSANDRA:
+
+    1. Los 10 productos más vendidos en cada categoría:
+        SELECT categoria, producto_id, nombre, cantidad_vendida
+            FROM productos
+            WHERE categoria = 'nombre_categoria'
+            ORDER BY cantidad_vendida DESC
+            LIMIT 10;
+
+    2. Los productos comprados por un usuario en su última compra:
+        SELECT producto_id, cantidad
+        FROM compras_realizadas
+        WHERE usuario_id = 'usuario_id'
+        ORDER BY fecha_compra DESC
+        LIMIT 10;
+
+    3. Productos de cada categoría ordenados alfabéticamente por el nombre del producto:
+        SELECT * FROM productos
+        WHERE categoria = 'nombre_categoria'
+        ORDER BY nombre ASC;
+        pk(producto_id, categoria, nombre)
+
+
+CORRECCIÓN RAFA:
+> Debemos empezar por las queries no por los datos que se necesitan.
+> cual es la clave particional?
+> solo debe haber una tabla por consulta
+
+1ª consulta;
+Tabla:
+total_vendido (categoria, id_producto, total_vendido, imagen, nombre, descripcion, precio)
+pk(categoria, total_vendido, id_producto)
+consulta;
+select * from total_vendido where categoria = 'nombre_vcategiria' LIMIT 10;
+> para actualiar total_vendido (ya que no puede cambiarse un primary key) se hacen procesos de borrar la tabla, actualizarla y volver a crearla.
+> listas materializadas
+
+2ª consulta;
+tabla:
+compras_realizadas (
+    usuario_id UUID,
+    fecha_compra TIMESTAMP,
+    id_compra,
+    producto_id UUID,
+    cantidad INT,
+    PRIMARY KEY (usuario_id, id_compra, fecha_compra)
+);
+Consulta:
+SELECT producto_id, cantidad 
+    FROM compras_realizadas
+    WHERE usuario_id = 'usuario_id'
+    GROUP BY id_compra; > en vez de GROUP BY podemos usar LIMIT 1 si agrupamos los productos de una compra como SET (lista)
+
+3ª Productos de cada categoría ordenados alfabéticamente por el nombre del producto:
+tabla:
+ CREATE TABLE productos (
+            categoria TEXT,
+            producto_id UUID PRIMARY KEY,
+            nombre TEXT,
+            descripcion TEXT,
+            precio DECIMAL,
+        );
+        pk(categoria, nombre, producto_id, ) > el orden es  así porque lo pide la querie
+
+
+SELECT * FROM productos
+        WHERE categoria = 'nombre_categoria';

@@ -1,0 +1,10 @@
+pag 58 - Mi primer POD
+
+- Desplegar una aplicación:
+$ kubectl run nginx --image=nginx
+
+- Esperar que el POD esté en estado “Ready”:
+$ kubectl get pod –watch
+
+- Eliminar un pod
+$ kubectl delete po nginx

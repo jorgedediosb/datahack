@@ -1,0 +1,16 @@
+COMANDOS:
+$ kubectl apply -f ./practica13_deployment.yaml
+$ kubectl get stateFulSet
+$ kubectl get pods
+$ kubectl get pvc
+$ kubectl delete pod web-0 => Cerramos/Borramos pero se vuelven a crear
+$ kubectl get pods
+$ kubectl describe pod web-0
+Si queremos añadir algo:
+$ kubectl exec -it web-0 -- bash
+$ cd /usr/share/nginx/html
+$ touch (lo que queramos añadir)
+> Aunque volvamos a borrar el pod, persistirá el contenido
+$ kubectl delete stateFulSet web => Borra el pod
+$ kubectl delete all --all   => borra todo
+

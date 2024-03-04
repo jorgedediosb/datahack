@@ -1,0 +1,17 @@
+Una vez que Minikube y Kubectl se instalan, se inicia el cluster y verifica el estado:
+$ minikube version
+$ minikube start
+$ minikube status
+$ minikube dashboard
+$ minikube delete
+    >Deleting local Kubernetes cluster...
+    >Machine deleted.
+$ kubectl cluster-info
+$ kubectl get componentstatuses
+$ kubectl get events
+$ kubectl get pods --all-namespaces
+$ kubectl get services --all-namespaces
+
+$ kubectl run hello-world
+$ kubectl cluster-inf
+$ kubectl get nodes
