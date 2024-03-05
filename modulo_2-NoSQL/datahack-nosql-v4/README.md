@@ -15,7 +15,7 @@ o
 $ docker-compose -f docker-compose.yaml up jupyter mongo 
 > si sólo queremos esos servicios
 ```
-Abrir jupiter:
+Abrir jupyter:
 en chrome:
 http://localhost:8889/
 en Safari:

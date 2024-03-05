@@ -36,25 +36,27 @@ Estudio de la Distribución de Palabras:
 > Técnicas de procesamiento de lenguaje natural (NLP) para extraer información de los textos:
 
 Tokenización:
-Divide los textos en palabras o tokens. Esto te permitirá analizar cada palabra de manera individual.
+Divide los textos en palabras o tokens.
+Permite analizar cada palabra de manera individual.
 
 Eliminación de Stopwords:
 Elimina palabras comunes que no aportan mucha información (stopwords) para centrarte en las palabras clave.
 
 Lematización o Stemming:
-Reducción de palabras a su forma base para simplificar el análisis. Por ejemplo, convertir "corriendo" a "correr".
+Reducción de palabras a su forma base para simplificar el análisis.
+Por ejemplo, convertir "corriendo" a "correr".
 
 Análisis de Sentimientos:
 Utiliza modelos de análisis de sentimientos para evaluar el tono emocional de los diálogos.
-Esto podría ayudarte a entender los estados de ánimo de los personajes a lo largo de la obra.
+Ayuda a entender los estados de ánimo de los personajes a lo largo de la obra.
 
 Extracción de Entidades Nominadas (NER):
 Identifica entidades como nombres de personajes, lugares, etc.
-Esto te ayudará a mapear los personajes mencionados en los diálogos.
+Ayuda a mapear los personajes mencionados en los diálogos.
 
 Extracción de Relaciones:
 Utiliza técnicas de extracción de información para identificar relaciones entre entidades.
-Puedes buscar menciones de relaciones familiares, amistades, etc.
+Ayuda a buscar menciones de relaciones familiares, amistades, etc.
 
 Análisis de Frecuencia de Palabras:
 Determina la frecuencia de palabras clave en los diálogos para identificar temas recurrentes o palabras distintivas asociadas a ciertos personajes.
@@ -64,8 +66,8 @@ Emplea técnicas como LDA (Latent Dirichlet Allocation) para modelar temas en lo
 
 Análisis de Cohesión del Texto:
 Examina la cohesión del texto para entender la relación entre oraciones y diálogos.
-Esto puede ayudarte a identificar cambios en la trama o en las relaciones entre personajes.
+Ayuda a identificar cambios en la trama o en las relaciones entre personajes.
 
 Análisis de Co-ocurrencia:
 Analiza la co-ocurrencia de palabras para identificar conexiones semánticas entre términos.
-Esto puede revelar asociaciones entre personajes o conceptos en las obras.
+Revela asociaciones entre personajes o conceptos en las obras.
