@@ -12,7 +12,8 @@ Access to root project folder and run:
 ```
 $ docker-compose up -d
 o
-$ docker-compose -f docker-compose.yaml up jupyter mongo 
+$ docker compose -f docker-compose.yaml up jupyter mongo
+$ docker compose -f docker-compose.yaml up jupyter neo4j
 > si sólo queremos esos servicios
 ```
 Abrir jupyter:
