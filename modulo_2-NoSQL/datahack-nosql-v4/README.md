@@ -23,10 +23,12 @@ en Safari:
 http://127.0.0.1:8889
 
 Abrir Browser Neo4j:
+http://browser.graphapp.io
 http://127.0.0.1:7474/browser/
+http:127.0.0.1:7687
 user: neo4j
 pass: 1234
-(en los notebook introsucimos el user y pass)
+(en los notebook introducimos el user y pass)
 ```
 To stop environment:
 $ docker compose stop
