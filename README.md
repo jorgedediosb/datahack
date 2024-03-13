@@ -1,2 +1,2 @@
 # datahack
-Ejercicios y proyectos del Master 'Big Data Architecture &amp; Engineering' de Datahack
+Ejercicios y proyectos del Master 'Big Data Architecture & Engineering' de Datahack
