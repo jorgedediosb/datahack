@@ -11,7 +11,8 @@ ARCHIVOS ENTREGADOS:
 
 - Jupyter Notebook: 'shakespeare_work_mongodb.ipynb'.
   Contiene:
-    · Pruebas con mongodb.
+    · Pruebas con mongodb consultas para casos de uso de recopilación de texto.
+    · Pruebas con mongodb para las consultas realizadas en Neo4j.
 
 - Carpeta 'images':
   Contiene las imágenes del Notebook: 'shakespeare_locations_neo4j.ipynb'
