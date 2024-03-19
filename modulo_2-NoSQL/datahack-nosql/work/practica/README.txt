@@ -19,4 +19,4 @@ ARCHIVOS ENTREGADOS:
 - dataset_shakespeare.json
   No es necesario usarlo ya que se descarga desde una url.
 
-- Readme.txt
+- README.txt
