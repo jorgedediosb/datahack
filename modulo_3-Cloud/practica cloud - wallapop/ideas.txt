@@ -12,12 +12,16 @@ Servicios Utilizados:
 - Amazon S3: Para almacenar las imágenes de los anuncios.
 - AWS Amplify: Para crear y hospedar la interfaz web estática.
 - Amazon Cognito: Para la autenticación de usuarios y el control de acceso.
+- Amazon Simple Notification Service (SNS): para notificaciones en tiempo real.
 
 Diagrama de Arquitectura:
 App Mobile
 Interfaz Web (AWS Amplify) --> API Gateway --> Lambda (Backend) --> DynamoDB (Anuncios y Comentarios)
-                                                            --> S3 (Imágenes)
-                                                            --> Cognito (Autenticación)
+                                                                --> S3 (Imágenes)
+                                                                --> Cognito (Autenticación)
+                                                                    --> Amazon Elasticsearch Service
+                                                                        --> Amazon RDS (PostgreSQL) 
+                                                                            --> SNS (mensajería)
 
 Este diagrama muestra cómo estos componentes se interconectan para crear una arquitectura serverless escalable y de alto rendimiento para tu aplicación de anuncios.
 
@@ -39,7 +43,13 @@ Cognito:
     Se utiliza para la autenticación de usuarios y el control de acceso.
     Gestiona las identidades de los usuarios y proporciona funciones de autenticación, como el inicio de sesión con nombre de usuario y contraseña,
     así como la autenticación a través de proveedores de identidad federados.
-
+Amazon Elasticsearch Service:
+    Se utiliza para indexar y buscar los datos de los anuncios de manera eficiente.
+    Puedes integrar esto con la API Gateway para proporcionar capacidades de búsqueda avanzadas a través de tu interfaz web.
+Amazon RDS (PostgreSQL):
+    Se utiliza como una base de datos relacional para almacenar datos complejos y realizar consultas más avanzadas que pueden no ser posibles con DynamoDB.
+Amazon Simple Notification Service (SNS):
+Se utiliza para enviar notificaciones en tiempo real a los usuarios sobre eventos importantes, como nuevos mensajes o interacciones en la plataforma.
 
 2. Implementación del Backend:
 
