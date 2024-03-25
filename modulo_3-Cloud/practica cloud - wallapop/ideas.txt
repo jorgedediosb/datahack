@@ -1,0 +1,79 @@
+Utilizar una arquitectura serverless en AWS.
+
+Propuesta de diseño y los servicios de AWS a utilizar:
+
+1. Arquitectura Propuesta:
+
+Servicios Utilizados:
+
+- AWS Lambda: Para ejecutar el código backend sin necesidad de administrar servidores.
+- Amazon API Gateway: Para crear y administrar las API REST.
+- Amazon DynamoDB: Para almacenar los anuncios y los comentarios.
+- Amazon S3: Para almacenar las imágenes de los anuncios.
+- AWS Amplify: Para crear y hospedar la interfaz web estática.
+- Amazon Cognito: Para la autenticación de usuarios y el control de acceso.
+
+Diagrama de Arquitectura:
+App Mobile
+Interfaz Web (AWS Amplify) --> API Gateway --> Lambda (Backend) --> DynamoDB (Anuncios y Comentarios)
+                                                            --> S3 (Imágenes)
+                                                            --> Cognito (Autenticación)
+
+Este diagrama muestra cómo estos componentes se interconectan para crear una arquitectura serverless escalable y de alto rendimiento para tu aplicación de anuncios.
+
+Interfaz Web:
+    Interfaz de usuario que los usuarios finales utilizarán para interactuar con la aplicación.
+    Se implementará utilizando AWS Amplify para la creación y el alojamiento de la interfaz web estática.
+API Gateway:
+    Aquí es donde se definen y administran las API REST que exponen las funcionalidades del backend.
+    Actúa como punto de entrada para las solicitudes de los clientes web y dirige esas solicitudes a las funciones Lambda correspondientes.
+AWS Lambda (Backend):
+    Estas son las funciones Lambda que implementan la lógica de negocio de la aplicación,
+    como listar anuncios, obtener detalles de un anuncio, publicar nuevos anuncios, gestionar comentarios y chats, etc.
+DynamoDB:
+    Esta es una base de datos NoSQL completamente administrada que se utiliza para almacenar los datos de los anuncios y los comentarios.
+S3:
+    Aquí es donde se almacenan las imágenes de los anuncios.
+    S3 es un servicio de almacenamiento de objetos altamente escalable y duradero.
+Cognito:
+    Se utiliza para la autenticación de usuarios y el control de acceso.
+    Gestiona las identidades de los usuarios y proporciona funciones de autenticación, como el inicio de sesión con nombre de usuario y contraseña,
+    así como la autenticación a través de proveedores de identidad federados.
+
+
+2. Implementación del Backend:
+
+Crear las funciones Lambda para:
+    Listar todos los anuncios registrados.
+    Obtener los detalles de un anuncio.
+    Publicar un nuevo anuncio.
+    Manejar los comentarios y el chat.
+
+Configurar el API Gateway para exponer estos endpoints.
+Utilizar DynamoDB para almacenar los datos de los anuncios y los comentarios.
+Utilizar S3 para almacenar las imágenes de los anuncios.
+
+3. Interfaz Web:
+Utilizar AWS Amplify para crear una interfaz web estática.
+Implementar las funcionalidades necesarias para interactuar con las API REST creadas.
+
+4. Control de Acceso:
+Utilizar Amazon Cognito para autenticar a los usuarios.
+Configurar los permisos de acceso adecuados en los endpoints de la API.
+
+5. Otros Requisitos Opcionales:
+Caducidad automática de anuncios: Utilizar un cron job en Lambda para eliminar los anuncios caducados.
+Chats privados: Implementar lógica adicional en Lambda para gestionar los chats privados.
+Subir imágenes: Permitir a los usuarios cargar imágenes al crear un anuncio y reescalarlas utilizando un servicio como AWS Lambda o un servicio de AWS Elemental MediaConvert.
+Refresco automático de interfaz: Utilizar WebSocket API en API Gateway para notificar a los clientes sobre actualizaciones en tiempo real.
+Buscador de anuncios: Implementar una funcionalidad de búsqueda utilizando DynamoDB Query o Scan.
+One-click deployment: Automatizar el proceso de despliegue utilizando AWS CodePipeline y AWS CodeBuild.
+Minimizar costos: Utilizar la capa gratuita de AWS siempre que sea posible y configurar adecuadamente la escala automática para minimizar los costos en reposo.
+
+6. Tests:
+Implementar pruebas unitarias, de integración y de aceptación utilizando frameworks como:
+AWS Lambda Test Events para Lambda, Jest y Mocha para las pruebas unitarias,
+y herramientas como Selenium o Cypress para pruebas de aceptación.
+
+7. Documentación
+documentar adecuadamente tu diseño y decisiones tomadas en el proceso.

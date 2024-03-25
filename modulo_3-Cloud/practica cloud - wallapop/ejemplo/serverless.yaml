@@ -1,0 +1,118 @@
+service: webAnuncios
+
+provider:
+  name: aws
+  stage: prod
+  region: eu-west-1
+  runtime: nodejs12.x
+  profile: default
+  environment:
+    DynamoTable: Anuncios
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchWriteItem
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DynamoTable}"
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    # A simple configuration for copying static assets
+    - bucketName: pruebawebappgrl123 # required
+      localDir: Web # required
+
+
+functions:
+  postAnuncio:
+    handler: handler.AddAnuncio
+  ## Define API GATEWAY
+    events:
+      - http:
+          path: /newAnuncio
+          method: POST
+          cors: true
+          private: false
+  GetAnuncios:
+    handler: handler.GetAnuncios
+  ## Define API GATEWAY
+    events:
+      - http:
+          path: /getAnuncios
+          method: GET
+          cors: true
+          private: false
+  GetAnuncioId:
+    handler: handler.GetAnuncioId
+  ## Define API GATEWAY
+    events:
+      - http:
+          path: /getAnuncioId/{id}
+          method: GET
+          cors: true
+          private: false
+  AddComentario:
+    handler: handler.AddComent
+  ## Define API GATEWAY
+    events:
+      - http:
+          path: /AddComent/{id}
+          method: POST
+          cors: true
+          private: false
+  DeleteOldComentarios:
+    handler: handler.DeleteOld
+    # Agregar la configuración de eventos para programar la función diariamente
+    events:
+       - schedule: cron(10 * * * ? *)
+
+
+resources:
+  Resources:
+    AssetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: pruebawebappgrl123
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+    AssetsBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      DependsOn:
+        - "AssetsBucket"
+      Properties:
+        Bucket:
+          Ref: AssetsBucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::pruebawebappgrl123/*
+    DynamoTable:
+          Type: AWS::DynamoDB::Table
+          Properties:
+            TableName: Anuncios
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: S
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
+
+## Configuración de despliegue
+#hooks:
+#  after:deploy:finalize:
+#    - serverless-s3-sync

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle de anuncio</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h1 class="card-title mb-4">Detalle de anuncio</h1>
+            <div class="form-group">
+              <label for="title">Título:</label>
+              <p id="title" class="form-control"></p>
+            </div>
+            <div class="form-group">
+              <label for="text">Texto:</label>
+              <p id="text" class="form-control"></p>
+            </div>
+            <div class="form-group">
+              <label for="user">Usuario:</label>
+              <p id="user" class="form-control"></p>
+            </div>
+            <label for="creation-date">Fecha de creación:</label>
+            <p id="creation-date"></p>
+            <a href="#" id="back-button" class="btn btn-primary">Volver a la lista de anuncios</a>
+          </div>
+        </div>
+          <hr>
+          <h4 class="card-title mb-4">Comentarios:</h4>
+          <div id="comentarios-section"></div>
+          <hr>
+            <h4 class="card-title mb-4">Agregar comentario</h4>
+            <form id="comment-form" action="">
+              <div class="form-group">
+                <label for="comment-user">Usuario:</label>
+                <input type="text" class="form-control" id="comment-user" name="user" required>
+              </div>
+              <div class="form-group">
+                <label for="comment-text">Comentario:</label>
+                <textarea class="form-control" id="comment-text" name="text" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar comentario</button>
+            </form>
+            <hr>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let idAnuncio;
+    const anuncio = fetch(`https://12bl9vk5y4.execute-api.eu-west-1.amazonaws.com/prod/getAnuncioId/${getParameterByName('id')}`)
+      .then(response => response.json())
+      .then(anuncio => mostrarAnuncio(anuncio))
+      .catch(error => console.error(error));
+
+    function mostrarAnuncio(anuncio) {
+      idAnuncio = getParameterByName('id')
+      document.getElementById('title').textContent = anuncio.title;
+      document.getElementById('text').textContent = anuncio.text;
+      document.getElementById('user').textContent = anuncio.user;
+      const utcDate = new Date(anuncio.createAt);
+      const timezoneOffset = new Date().getTimezoneOffset() / 60;
+      const localDate = new Date(utcDate.getTime() - timezoneOffset * 60 * 60 * 1000);
+      document.getElementById('creation-date').textContent = localDate.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' }).replace(/\//g, '-').split(',')[0].replace(/(\d{1,2})\-(\d{1,2})\-(\d{4})/, '$3-$2-$1') 
+      + ' ' + localDate.toISOString().split('T')[1].substr(0, 8);
+
+      document.getElementById('back-button').href = 'index.html';
+      mostrarComentarios(anuncio.comentarios);
+    }
+
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    function mostrarComentarios(comentarios) {
+      const comentariosSection = document.getElementById('comentarios-section');
+      comentariosSection.innerHTML = '';
+
+      if (comentarios !== undefined) {
+
+        comentarios.forEach(comentario => {
+          const comentarioDiv = document.createElement('div');
+          comentarioDiv.classList.add('card', 'mb-3');
+
+          const comentarioBody = document.createElement('div');
+          comentarioBody.classList.add('card-body');
+
+          const usuarioComentario = document.createElement('h5');
+          usuarioComentario.classList.add('card-title');
+          usuarioComentario.innerText = comentario.user;
+
+          const textoComentario = document.createElement('p');
+          textoComentario.classList.add('card-text');
+          textoComentario.innerText = comentario.comentario;
+
+          comentarioBody.appendChild(usuarioComentario);
+          comentarioBody.appendChild(textoComentario);
+          comentarioDiv.appendChild(comentarioBody);
+          comentariosSection.appendChild(comentarioDiv);
+        });
+      }
+    }
+
+    document.getElementById('comment-form').addEventListener('submit', (event) => {
+    event.preventDefault(); // prevenir el comportamiento predeterminado del formulario de enviar una solicitud
+    const usuario = document.getElementById('comment-user').value;
+    const comentario = document.getElementById('comment-text').value;
+
+    enviarComentario( usuario, comentario);
+
+  });
+
+  function enviarComentario( usuario, comentario) {
+    const url = `https://12bl9vk5y4.execute-api.eu-west-1.amazonaws.com/prod/AddComent/`+ idAnuncio;
+    console.log(idAnuncio);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user: usuario, comentario: comentario })
+        })
+        .then(response => response.json())
+        .then(data =>{
+                    console.log(data);
+                    location.reload();
+                    mostrarComentarios(comentarios);
+        })
+        .catch(error => console.error(error));
+}
+
+
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
