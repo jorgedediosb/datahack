@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuncio 1 - Wallapop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <!-- Logo y navegación -->
+        <div class="logo">
+            <a href="index.html">
+                <img src="images/wallapop-logo.png" alt="Wallapop">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="miperfil.html">Mi perfil</a></li>
+                <li><a href="cierresesion.html">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        <!-- Detalles del Anuncio 1 -->
+        <article class="anuncio-detalle">
+            <h2>Macbook Air</h2>
+            <img src="images/producto1.jpg" alt="Foto anuncio 1">
+            <p>Apple Macbook Air 7.2 A1466 13,3″ (2015)</p>
+            <p>Precio: $550</p>
+            <button class="boton-comprar">Comprar</button>
+            <!-- Formulario para enviar mensaje al anunciante -->
+            <section class="formulario-mensaje">
+                <form action="enviar_mensaje.php" method="POST">
+                    <label for="mensaje">Enviar mensaje al anunciante:</label><br>
+                    <textarea id="mensaje" name="mensaje" rows="4" cols="50"></textarea><br>
+                    <input type="submit" value="Enviar">
+                </form>
+                <!-- Aquí va el formulario -->
+            </section>
+            
+        </article>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <!-- Información del pie de página -->
+    </footer>
+</body>
+</html>
