@@ -99,10 +99,63 @@ h2 {
     padding: 30px;
 }
 
+.nuevo-anuncio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.nuevo-anuncio-container h2 {
+    margin-bottom: 15px;
+}
+
+#formularioAnuncio input[type="text"],
+#formularioAnuncio input[type="file"],
+#formularioAnuncio textarea,
+#formularioAnuncio select {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#formularioAnuncio input[type="file"] {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    background-color: white;
+}
+
+#formularioAnuncio button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 50%;
+}
+
+#formularioAnuncio button:hover {
+    background-color: #666; /* Cambia el color de fondo al pasar el cursor */
+}
+
+
+.usuario .nuevo-anuncio-container {
+    display: block;
+    margin-top: 20px;
+}
+
 /* Estilos para el Perfil del Usuario */
 .perfil {
-    text-align: left;
-    margin-bottom: 50px;
+    text-align: center;
+    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 30px;
@@ -137,21 +190,23 @@ h2 {
     text-decoration: none; 
     color: #333; 
     font-weight: bold;
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .vermas a:hover {
     color: #007bff;
 }
 
-
 button {
+    margin-top: 10px;
     width: 100px;
-    height: 30px;
     font-size: 1em;
-    margin-bottom: 20px;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    text-decoration: none; 
+    color: #666;
 }
 
 /* Estilos para los Mensajes */
@@ -186,7 +241,6 @@ footer {
 
 
 /* Estilos del chat */
-
 #chat-container {
     width: 100%;
     max-width: 600px;

@@ -87,3 +87,36 @@ y herramientas como Selenium o Cypress para pruebas de aceptación.
 
 7. Documentación
 documentar adecuadamente tu diseño y decisiones tomadas en el proceso.
+
+PASO A SEGUIR:
+Para cumplir con los requisitos mínimos y opcionales de tu proyecto utilizando servicios serverless en AWS, puedes seguir estos pasos generales:
+
+Diseño de la arquitectura:
+Diseña la arquitectura de tu aplicación, identificando los servicios de AWS que utilizarás para cada parte del sistema. Por ejemplo, podrías utilizar AWS Lambda para la lógica del backend, Amazon DynamoDB para la base de datos, Amazon S3 para almacenar imágenes, etc.
+Implementación del backend:
+Crea funciones Lambda para manejar los diferentes endpoints que listarán los anuncios, permitirán ver detalles de un anuncio y publicar nuevos anuncios.
+Utiliza API Gateway para exponer estos endpoints HTTP.
+Implementa la lógica necesaria en las funciones Lambda para interactuar con la base de datos DynamoDB y realizar las operaciones necesarias.
+Almacenamiento de datos:
+Utiliza Amazon DynamoDB para almacenar los datos de los anuncios y los chats/comentarios asociados.
+Configura las tablas de DynamoDB según tus necesidades de almacenamiento de datos.
+Autenticación y autorización:
+Implementa la autenticación de usuarios si deseas controlar el acceso a la funcionalidad de publicación de anuncios.
+Puedes utilizar servicios como Amazon Cognito para gestionar la autenticación de usuarios.
+Subida de imágenes:
+Implementa la funcionalidad para permitir a los usuarios subir imágenes junto con los textos de los anuncios.
+Utiliza Amazon S3 para almacenar las imágenes subidas por los usuarios.
+Refresco automático de la interfaz:
+Implementa una solución para refrescar automáticamente la interfaz cuando haya actualizaciones en el backend. Puedes utilizar WebSockets o Server-Sent Events para lograr esto.
+Buscador de anuncios:
+Implementa un mecanismo de búsqueda de anuncios. Puedes utilizar servicios como Amazon Elasticsearch Service para habilitar búsquedas avanzadas en tus datos.
+Despliegue y automatización:
+Utiliza AWS CloudFormation o AWS CDK para definir tu infraestructura como código y permitir un despliegue fácil y automatizado de tu aplicación.
+Implementa un flujo de CI/CD (Integración Continua / Despliegue Continuo) para automatizar el proceso de despliegue de tu aplicación en AWS.
+Monitoreo y escalabilidad:
+Configura alarmas y métricas en AWS CloudWatch para monitorear el rendimiento de tu aplicación.
+Utiliza servicios de AWS como AWS Auto Scaling para escalar automáticamente tus recursos según la demanda.
+Documentación:
+Documenta adecuadamente tu arquitectura, decisiones de diseño, y la implementación de requisitos opcionales.
+Asegúrate de incluir instrucciones claras para el despliegue y la operación de tu aplicación.
+Recuerda seguir las mejores prácticas de seguridad y optimización de costos mientras desarrollas tu aplicación en AWS.

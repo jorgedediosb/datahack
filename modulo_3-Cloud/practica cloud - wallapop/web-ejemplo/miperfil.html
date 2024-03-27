@@ -28,7 +28,7 @@
     <main>
         <!-- Zona de Anuncios -->
         <section class="anuncio">
-            <h2>Mis productos en venta</h2>
+            <h2>Mis anuncios</h2>
             <!-- Anuncio 1 -->
             <div class="anuncio">
                 <a href="anuncio1.html">
@@ -49,7 +49,7 @@
 
         <!-- Zona de Mensajes -->
         <section class="mensajes">
-            <h2>Mensajes Recibidos</h2>
+            <h2>Mis mensajes</h2>
             <!-- Aquí se cargarían los mensajes del chat mediante AJAX -->
             <div id="chat-container">
                 <!-- Aquí se cargaría la interfaz de usuario del chat -->
@@ -64,8 +64,31 @@
                 <img src="images/perfil.jpg" alt="Foto perfil">
                 <h3>Jorge de Dios</h3>
                 <p>Email: jorge@example.com</p>
-                <a href="#">Mis Anuncios</a>
-                <a href="#">Subir Anuncio</a>
+                <div class="vermas">
+                    <a href="#" id="btnNuevoAnuncio">Subir anuncio</a>
+                </div>
+            </div>
+            <!-- Formulario para crear un nuevo anuncio -->
+            <div class="nuevo-anuncio-container" style="display: none;">
+                <section id="formNuevoAnuncio">
+                    <h2 style="white-space: nowrap;">Nuevo Anuncio</h2>
+                    <form id="formularioAnuncio">
+                        <label for="titulo">Título:</label><br>
+                        <input type="text" id="titulo" name="titulo"><br>
+                        <label for="imagen">Imagen:</label><br>
+                        <input type="file" id="imagen" name="imagen"><br>
+                        <label for="texto">Texto:</label><br>
+                        <textarea id="texto" name="texto"></textarea><br>
+                        <label for="categoria">Categoría:</label><br>
+                        <select id="categoria" name="categoria">
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="gaming">Gaming</option>
+                        </select><br>
+                        <label for="precio">Precio:</label><br>
+                        <input type="text" id="precio" name="precio"><br>
+                        <button type="submit" id="btnPublicarAnuncio" class="vermas">Publicar</button>
+                    </form>
+                </section>
             </div>
         </section>
     </main>
@@ -73,8 +96,42 @@
     <!-- Pie de página -->
     <footer>
         <!-- Información del pie de página -->
-        <p>&copy; 2024 Wallapop Datahack. Todos los derechos reservados.</p>
+        <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#btnNuevoAnuncio").click(function() {
+                $(".nuevo-anuncio-container").toggle(); // Muestra u oculta el formulario al hacer clic en el botón
+
+                // Cuando se envía el formulario
+                $("#formularioAnuncio").submit(function(event) {
+                    event.preventDefault(); // Evita que se recargue la página al enviar el formulario
+
+                    // Obtiene los datos del formulario
+                    var formData = new FormData(this);
+
+                    // Envía los datos del formulario al servidor usando AJAX
+                    $.ajax({
+                        type: "POST",
+                        url: "guardar_anuncio.php", // Reemplaza esto con la ruta al archivo del servidor para procesar el formulario
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            // Aquí puedes realizar acciones adicionales después de publicar el anuncio
+                            alert("Anuncio publicado correctamente");
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert("Error al publicar el anuncio. Inténtalo de nuevo más tarde.");
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
     <!-- Script para cargar la interfaz de usuario del chat -->
     <script>
