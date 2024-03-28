@@ -1,0 +1,27 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chat-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.messages {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.input-container {
+    margin-top: 10px;
+}
+
+.input-container input {
+    margin-right: 5px;
+}
+
+.input-container button {
+    padding: 5px 10px;
+}

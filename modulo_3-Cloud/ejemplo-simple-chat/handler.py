@@ -4,7 +4,9 @@ import os
 from boto3.dynamodb.conditions import Key
 from datetime import datetime, timezone
 
-# Instantiate messages table
+# Configuración de la conexión a DynamoDB local
+# dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+
 messages_table = boto3.resource('dynamodb').Table(os.environ.get('DYNAMODB_MESSAGES_TABLE'))
 
 def get_messages(event, context):
