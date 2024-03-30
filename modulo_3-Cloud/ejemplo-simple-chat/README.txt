@@ -1,6 +1,24 @@
 Código original:
 https://github.com/sergiokhayyat/simple-chat
 
+instalar serverless en la carpeta que queramos:
+> npm install -g serverless@latest
+Crear cuenta en AWS
+Crear claves de acceso/credenciales (clave iD y clave secreta)
+> serverless config credentials --provider aws --key nºclave --secret nºclavesecreta -o (sobreescribir por si ya existiese)
+> nano ~/.aws/credentials --> ver credenciales en mac
+Crear archivos yaml y handler
+> serverless create --template aws-nodejs --name nombre --> Plantilla con archivos yaml y handler en nodejs
+Desplegar servicio:
+> sls deploy o serverless deploy
+Chequear en AWS que está todo subido (cloudformation, Lambda, s3, etc)
+Invocar función en AWS:
+> sls invoke -f nombreFuncion -s entornoDefinido (dev, prod, ...)
+Invocar función en local (para no tener que estar desplegando con cada cambio. Requiere instalar pluggin Offline):
+> sls invoke local -f nombreFuncion -s entornoDefinido (dev, prod, ...)
+Borrar proyecto (sóo en AWS)
+> sls remove
+
 Para ejecutar la aplicación de chat sin necesidad de ejecutar DynamoDB localmente, se debe seguir estos pasos:
 
 Configurar los servicios en la nube de AWS:
