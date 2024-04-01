@@ -4,7 +4,7 @@ https://github.com/sergiokhayyat/simple-chat
 instalar serverless en la carpeta que queramos:
 > npm install -g serverless@latest
 Crear cuenta en AWS
-Crear claves de acceso/credenciales (clave iD y clave secreta)
+Crear claves de acceso/credenciales (clave iD y clave secreta) --> $ aws configure + claves???
 > serverless config credentials --provider aws --key nºclave --secret nºclavesecreta -o (sobreescribir por si ya existiese)
 > nano ~/.aws/credentials --> ver credenciales en mac
 Crear archivos yaml y handler
