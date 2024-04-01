@@ -51,6 +51,12 @@
         <section class="mensajes">
             <h2>Mis mensajes</h2>
             <!-- Aquí se cargarían los mensajes del chat mediante AJAX -->
+            <div class="mensaje">
+                <h4>Pepito Grillo</h4>
+                <h5>Producto: Apple Macbook Air</h5>
+                <p>Quiero una rebajita buena que no me llega el sueldo compadre.</p>
+                <button>Responder</button>
+            </div>
             <div id="chat-container">
                 <!-- Aquí se cargaría la interfaz de usuario del chat -->
             </div>
@@ -122,6 +128,16 @@
                         success: function(response) {
                             // Aquí puedes realizar acciones adicionales después de publicar el anuncio
                             alert("Anuncio publicado correctamente");
+
+                            // Insertar el nuevo anuncio en la sección de Mis anuncios
+                            var nuevoAnuncioHTML = '<div class="anuncio">' +
+                                '<a href="anuncio1.html">' +
+                                '<img src="' + formData.get('imagen') + '" alt="imagen producto">' +
+                                '<h3>' + formData.get('titulo') + '</h3>' +
+                                '<p>' + formData.get('descripcion') + '</p>' +
+                                '</a>' +
+                                '</div>';
+                            $(".anuncio").first().before(nuevoAnuncioHTML); // Insertar antes del primer anuncio existente
                         },
                         error: function(xhr, status, error) {
                             console.error(error);
@@ -131,6 +147,7 @@
                 });
             });
         });
+
     </script>
 
     <!-- Script para cargar la interfaz de usuario del chat -->
