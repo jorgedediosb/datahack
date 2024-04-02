@@ -113,14 +113,26 @@ h2 {
     margin-bottom: 15px;
 }
 
+.nuevo-anuncio-container section {
+    width: 100%;
+    padding-right: 20px; 
+}
+
+.usuario .nuevo-anuncio-container {
+    display: none;
+    margin-top: 20px;
+}
+
 #formularioAnuncio input[type="text"],
-#formularioAnuncio input[type="file"],
 #formularioAnuncio textarea,
 #formularioAnuncio select {
-    padding: 10px;
+    width: 100%;
+    padding: 0px;
+    padding-bottom: 20px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 1em;
 }
 
 #formularioAnuncio input[type="file"] {
@@ -130,26 +142,6 @@ h2 {
     border-radius: 4px;
     box-sizing: border-box; 
     background-color: white;
-}
-
-#formularioAnuncio button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    line-height: 50%;
-}
-
-#formularioAnuncio button:hover {
-    background-color: #666; /* Cambia el color de fondo al pasar el cursor */
-}
-
-
-.usuario .nuevo-anuncio-container {
-    display: block;
-    margin-top: 20px;
 }
 
 /* Estilos para el Perfil del Usuario */
@@ -175,7 +167,7 @@ h2 {
     border-radius: 10px;
 }
 
-.vermas {
+.boton {
     width: 100%; 
     height: 50px;
     font-size: 1em;
@@ -183,21 +175,21 @@ h2 {
     background-color: #f2f2f2;
     font-family: Arial, sans-serif;
     text-align: center;
-    line-height: 50px
+    line-height: 50px;
 }
 
-.vermas a {
+.boton a {
     text-decoration: none; 
     color: #333; 
     font-weight: bold;
     font-size: 1em;
 }
 
-.vermas a:hover {
+.boton a:hover {
     color: #007bff;
 }
 
-button {
+.button {
     margin-top: 10px;
     width: 100px;
     font-size: 1em;

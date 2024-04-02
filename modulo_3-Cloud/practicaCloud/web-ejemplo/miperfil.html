@@ -26,28 +26,15 @@
 
     <!-- Contenido principal -->
     <main>
-        <!-- Zona de Anuncios -->
-        <section class="anuncio">
+        <!-- Sección Anuncios -->
+        <section class="anuncio" id="misAnuncios">
             <h2>Mis anuncios</h2>
-            <!-- Anuncio 1 -->
-            <div class="anuncio">
-                <a href="anuncio1.html">
-                    <img src="images/producto1.jpg" alt="imagen producto 1">
-                    <h3>Macbook Air</h3>
-                    <p>Apple Macbook Air 7.2 A1466 13,3″ (2015)</p>
-                </a>
-            </div>
-            <!-- Anuncio 2 -->
-            <div class="anuncio">
-                <a href="anuncio2.html">
-                    <img src="images/producto2.jpg" alt="imagen producto 2">
-                    <h3>Apple Mac Pro M2</h3>
-                    <p>Apple Mac Pro M2 Ultra/64GB/1TB SSD/60 Núcleos GPU</p>
-                </a>
-            </div>
+            <div class="anuncio" id="nohayanuncios">
+                <p>No hay ningún anuncio publicado</p>
+            </div>        
         </section>
 
-        <!-- Zona de Mensajes -->
+        <!-- Sección Mensajes -->
         <section class="mensajes">
             <h2>Mis mensajes</h2>
             <!-- Aquí se cargarían los mensajes del chat mediante AJAX -->
@@ -55,14 +42,14 @@
                 <h4>Pepito Grillo</h4>
                 <h5>Producto: Apple Macbook Air</h5>
                 <p>Quiero una rebajita buena que no me llega el sueldo compadre.</p>
-                <button>Responder</button>
+                <button class="boton">Responder</button>
             </div>
             <div id="chat-container">
                 <!-- Aquí se cargaría la interfaz de usuario del chat -->
             </div>
         </section>
 
-        <!-- Zona del Usuario -->
+        <!-- Sección Usuario -->
         <section class="usuario">
             <!-- Información del usuario -->
             <h2>Mi Perfil</h2>
@@ -70,29 +57,24 @@
                 <img src="images/perfil.jpg" alt="Foto perfil">
                 <h3>Jorge de Dios</h3>
                 <p>Email: jorge@example.com</p>
-                <div class="vermas">
-                    <a href="#" id="btnNuevoAnuncio">Crear anuncio</a>
+                <div class="boton">
+                    <button class="boton" type="submit" id="btnCrearAnuncio">Crear anuncio</button>
                 </div>
             </div>
-            <!-- Formulario para crear un nuevo anuncio -->
+            <!-- Formulario Nuevo Anuncio -->
             <div class="nuevo-anuncio-container" style="display: none;">
-                <section id="formNuevoAnuncio">
+                <section>
                     <h2 style="white-space: nowrap;">Nuevo Anuncio</h2>
                     <form id="formularioAnuncio">
                         <label for="titulo">Título:</label><br>
                         <input type="text" id="titulo" name="titulo"><br>
-                        <label for="imagen">Imagen:</label><br>
-                        <input type="file" id="imagen" name="imagen"><br>
                         <label for="descripcion">Descripción:</label><br>
-                        <textarea id="texto" name="texto"></textarea><br>
-                        <label for="categoria">Categoría:</label><br>
-                        <select id="categoria" name="categoria">
-                            <option value="tecnologia">Tecnología</option>
-                            <option value="gaming">Gaming</option>
-                        </select><br>
+                        <textarea id="descripcion" name="descripcion"></textarea><br>
                         <label for="precio">Precio:</label><br>
                         <input type="text" id="precio" name="precio"><br>
-                        <button type="submit" id="btnPublicarAnuncio" class="vermas">Publicar</button>
+                        <div class="boton">
+                            <button class="boton" type="submit" id="btnPublicarAnuncio">Publicar anuncio</button>
+                        </div>
                     </form>
                 </section>
             </div>
@@ -105,62 +87,61 @@
         <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Script para cargar anuncios en 'mi perfil' -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-            $("#btnNuevoAnuncio").click(function() {
-                $(".nuevo-anuncio-container").toggle(); // Muestra u oculta el formulario al hacer clic en el botón
+            // Botón "Crear anuncio" abre el formulario del nuevo anuncio
+            $("#btnCrearAnuncio").click(function() {
+                // Mostrar u ocultar el formulario para crear un nuevo anuncio
+                $(".nuevo-anuncio-container").toggle();
+            });
 
-                // Cuando se envía el formulario
-                $("#formularioAnuncio").submit(function(event) {
-                    event.preventDefault(); // Evita que se recargue la página al enviar el formulario
+            // Manejar el envío del formulario para crear un nuevo anuncio
+            $("#formularioAnuncio").submit(function(event) {
+                event.preventDefault(); // Evitar que se recargue la página
 
-                    // Obtiene los datos del formulario
-                    var formData = new FormData(this);
+                // Obtener los datos del formulario
+                var formData = new FormData(this);
 
-                    // Envía los datos del formulario al servidor usando AJAX
-                    $.ajax({
-                        type: "POST",
-                        url: "guardar_anuncio.php", // Reemplaza esto con la ruta al archivo del servidor para procesar el formulario
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            // Aquí puedes realizar acciones adicionales después de publicar el anuncio
-                            alert("Anuncio publicado correctamente");
+                // Crear un objeto con los datos del anuncio
+                var nuevoAnuncio = {
+                    title: formData.get('titulo'),
+                    body: formData.get('descripcion'),
+                    userId: 1 // ID de usuario ficticio
+                };
 
-                            // Insertar el nuevo anuncio en la sección de Mis anuncios
-                            var nuevoAnuncioHTML = '<div class="anuncio">' +
-                                '<a href="anuncio1.html">' +
-                                '<img src="' + formData.get('imagen') + '" alt="imagen producto">' +
-                                '<h3>' + formData.get('titulo') + '</h3>' +
-                                '<p>' + formData.get('descripcion') + '</p>' +
-                                '</a>' +
-                                '</div>';
-                            $(".anuncio").first().before(nuevoAnuncioHTML); // Insertar antes del primer anuncio existente
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            alert("Error al publicar el anuncio. Inténtalo de nuevo más tarde.");
-                        }
-                    });
-                });
+                // Obtener la lista de anuncios existentes del almacenamiento local
+                var anunciosGuardados = JSON.parse(localStorage.getItem('anuncios')) || [];
+
+                // Agregar el nuevo anuncio a la lista
+                anunciosGuardados.push(nuevoAnuncio);
+
+                // Guardar la lista actualizada en el almacenamiento local
+                localStorage.setItem('anuncios', JSON.stringify(anunciosGuardados));
+
+                // Publicación del anuncio y mostrarlo en la sección 'Mis Anuncios'
+                var nuevoAnuncioHTML = '<div class="anuncio">' +
+                    '<a href="#">' +
+                    '<h3>' + formData.get('titulo') + '</h3>' +
+                    '<p>' + formData.get('descripcion') + '</p>' +
+                    '<p>' + formData.get('precio') + '€' + '</p>' +
+                    '</a>' +
+                    '</div>';
+                $("#misAnuncios").append(nuevoAnuncioHTML);
+
+                // Limpiar el formulario
+                $(this)[0].reset();
+
+                // Ocultar el formulario después de enviarlo
+                $(".nuevo-anuncio-container").hide();
+
+                // Ocultar el mensaje 'No hay ningún anuncio publicado' cuando se publica un anuncio nuevo
+                $("#nohayanuncios").hide();
             });
         });
-
     </script>
 
-    <!-- Script para cargar la interfaz de usuario del chat -->
-    <script>
-        var chatContainer = document.getElementById("chat-container");
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                chatContainer.innerHTML = this.responseText;
-            }
-        };
-        xhttp.open("GET", "chat/interface-chat.html", true);
-        xhttp.send();
-    </script>
+
 </body>
 </html>

@@ -11,7 +11,9 @@
     <header>
         <!-- Logo y navegación -->
         <div class="logo">
-            <img src="images/wallapop-logo.png" alt="Wallapop Datahack" href="index.html">
+            <a href="index.html">
+                <img src="images/wallapop-logo.png" alt="Wallapop Datahack">
+            </a>
         </div>
         <nav>
             <ul>
@@ -24,28 +26,16 @@
 
     <!-- Contenido principal -->
     <main>
-        <!-- Zona de Anuncios -->
-        <section class="anuncio">
-            <h2>Productos Tecnología</h2>
-            <!-- Anuncio 1 -->
-            <div class="anuncio">
-                <a href="anuncio1.html">
-                    <img src="images/producto1.jpg" alt="imagen producto 1">
-                    <h3>Macbook Air</h3>
-                    <p>Apple Macbook Air 7.2 A1466 13,3″ (2015)</p>
-                </a>
-            </div>
-            <!-- Anuncio 2 -->
-            <div class="anuncio">
-                <a href="anuncio2.html">
-                    <img src="images/producto2.jpg" alt="imagen producto 2">
-                    <h3>Apple Mac Pro M2</h3>
-                    <p>Apple Mac Pro M2 Ultra/64GB/1TB SSD/60 Núcleos GPU</p>
-                </a>
+        <!-- Sección Anuncios Publicados -->
+        <section class="anuncio" id="anunciosPublicados">
+            <h2>Anuncios publicados</h2>
+            <!-- Anuncios publicados desde 'mi perfil' -->
+            <div class="anuncio" id="nohayanuncios">
+                <p>No hay ningún anuncio publicado</p>
             </div>
         </section>
 
-        <!-- Zona del Usuario -->
+        <!-- Zona anuncios 'antiguos' -->
         <section class="anuncio">
             <!-- Información del usuario -->
             <h2>Productos Gaming</h2>
@@ -67,7 +57,7 @@
             </div>
         </section>
         
-        <!-- Zona del Usuario -->
+        <!-- Sección Usuario -->
         <section class="usuario">
             <!-- Información del usuario -->
             <h2>Mi Perfil</h2>
@@ -75,7 +65,7 @@
                 <img src="images/perfil.jpg" alt="Foto perfil">
                 <h3>Jorge de Dios</h3>
                 <p>Email: jorge@example.com</p>
-                <div class="vermas" href="miperfil.html">
+                <div class="boton" href="miperfil.html">
                     <a href="miperfil.html">Acceder a mi perfil</a>
                 </div>
             </div>
@@ -90,7 +80,7 @@
                 <button>Responder</button>
             </div>
             <!-- Más mensajes... -->
-            <div class="vermas" href="miperfil.html">
+            <div class="boton" href="miperfil.html">
                 <a href="miperfil.html">Ver más mensajes</a>
             </div>
         </section>
@@ -102,5 +92,44 @@
         <!-- Información del pie de página -->
         <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- Script para cargar los anuncios publicados desde el almacenamiento local -->
+    <script>
+        async function cargarAnunciosPublicados() {
+            const anunciosContainer = document.getElementById("anunciosPublicados");
+            let html = "";
+
+            try {
+                // Obtener los anuncios del almacenamiento local
+                const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
+
+                if (anunciosLocalStorage && anunciosLocalStorage.length) {
+                    // Limpiar el contenedor de anuncios
+                    anunciosContainer.innerHTML = "";
+
+                    for (let i = 0; i < anunciosLocalStorage.length; i++) {
+                        html += `
+                            <div class="anuncio">
+                                <a href="#">
+                                    <h3>${anunciosLocalStorage[i].title}</h3>
+                                    <p>${anunciosLocalStorage[i].body}</p>
+                                </a>
+                            </div>
+                        `;
+                    }
+                    anunciosContainer.innerHTML = html;
+                } else {
+                    anunciosContainer.innerHTML = "<p>No hay anuncios para mostrar.</p>";
+                }
+            } catch (error) {
+                console.error(error);
+                anunciosContainer.innerHTML = "<p>Ha habido un error al cargar los anuncios.</p>";
+            }
+        }
+
+        // Llamar a la función para cargar los anuncios al cargar la página
+        cargarAnunciosPublicados();
+    </script>
+
 </body>
 </html>
