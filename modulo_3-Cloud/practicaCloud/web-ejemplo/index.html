@@ -26,34 +26,12 @@
 
     <!-- Contenido principal -->
     <main>
-        <!-- Sección Anuncios Publicados -->
+        <!-- Sección Anuncios Publicados -->            
         <section class="anuncio" id="anunciosPublicados">
             <h2>Anuncios publicados</h2>
             <!-- Anuncios publicados desde 'mi perfil' -->
             <div class="anuncio" id="nohayanuncios">
-                <p>No hay ningún anuncio publicado</p>
-            </div>
-        </section>
-
-        <!-- Zona anuncios 'antiguos' -->
-        <section class="anuncio">
-            <!-- Información del usuario -->
-            <h2>Productos Gaming</h2>
-            <!-- Anuncio 1 -->
-            <div class="anuncio">
-                <a href="#">
-                    <img src="images/producto3.jpg" alt="imagen producto 3">
-                    <h3>Newskill Drakain Ivory</h3>
-                    <p>Newskill Drakain Ivory Auriculares Gaming Estéreo RGB</p>
-                </a>
-            </div>
-            <!-- Anuncio 2 -->
-            <div class="anuncio">
-                <a href="#">
-                    <img src="images/producto4.jpg" alt="imagen producto 4">
-                    <h3>Logitech X56</h3>
-                    <p>Logitech X56 Hotas Joystick + Aceleradores independientes </p>
-                </a>
+                <p>Ningún anuncio publicado</p>
             </div>
         </section>
         
@@ -69,22 +47,7 @@
                     <a href="miperfil.html">Acceder a mi perfil</a>
                 </div>
             </div>
-
-            <!-- Zona de Mensajes -->
-            <h3>Últimos mensajes Recibidos</h3>
-            <!-- Aquí se mostrarán los mensajes recibidos -->
-            <div class="mensaje">
-                <h4>Pepito Grillo</h4>
-                <h5>Producto: Apple Macbook Air</h5>
-                <p>Quiero una rebajita buena que no me llega el sueldo compadre.</p>
-                <button>Responder</button>
-            </div>
-            <!-- Más mensajes... -->
-            <div class="boton" href="miperfil.html">
-                <a href="miperfil.html">Ver más mensajes</a>
-            </div>
         </section>
-
     </main>
 
     <!-- Pie de página -->
@@ -93,43 +56,76 @@
         <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Script para cargar los anuncios publicados desde el almacenamiento local -->
+    <!-- Cargar anuncios desde la página 'mi perfil'-->
     <script>
+        // Llamar a la función para cargar los anuncios al cargar la página
+        cargarAnunciosPublicados();
+    
         async function cargarAnunciosPublicados() {
             const anunciosContainer = document.getElementById("anunciosPublicados");
-            let html = "";
-
+    
             try {
+                // Limpiar el contenedor de anuncios
+                anunciosContainer.innerHTML = "";
+    
                 // Obtener los anuncios del almacenamiento local
                 const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
-
+    
                 if (anunciosLocalStorage && anunciosLocalStorage.length) {
-                    // Limpiar el contenedor de anuncios
-                    anunciosContainer.innerHTML = "";
-
-                    for (let i = 0; i < anunciosLocalStorage.length; i++) {
-                        html += `
+                    // Recorrer los anuncios y agregarlos al contenedor
+                    anunciosLocalStorage.forEach(anuncio => {
+                        const anuncioHTML =
+                        `
                             <div class="anuncio">
                                 <a href="#">
-                                    <h3>${anunciosLocalStorage[i].title}</h3>
-                                    <p>${anunciosLocalStorage[i].body}</p>
+                                    <h3>${anuncio.title}</h3>
+                                    <p>${anuncio.body}</p>
+                                    <p>Precio: ${anuncio.precio}€</p>
+                                    <button class="eliminar-anuncio">Eliminar anuncio</button>
+                                    <button class="enviar-mensaje">Enviar mensaje</button>
                                 </a>
                             </div>
                         `;
-                    }
-                    anunciosContainer.innerHTML = html;
+                        const anuncioElement = createElementFromHTML(anuncioHTML);
+                        anunciosContainer.append(anuncioElement);
+
+                        // Eliminar anuncio
+                        const eliminarButton = anuncioElement.querySelector('.eliminar-anuncio');
+                        eliminarButton.addEventListener('click', () => {
+                            eliminarAnuncio(anuncio);
+                            // Eliminar anuncio del DOM
+                            anunciosContainer.removeChild(anuncioElement);
+                        });
+                    });
                 } else {
-                    anunciosContainer.innerHTML = "<p>No hay anuncios para mostrar.</p>";
+                    anunciosContainer.innerHTML = "<h2>Anuncios publicados</h2><div class='anuncio' id='nohayanuncios'><p>Ningún anuncio publicado</p></div>";
                 }
             } catch (error) {
                 console.error(error);
                 anunciosContainer.innerHTML = "<p>Ha habido un error al cargar los anuncios.</p>";
             }
         }
-
-        // Llamar a la función para cargar los anuncios al cargar la página
-        cargarAnunciosPublicados();
-    </script>
-
+        // Agregar evento de clic para enviar mensaje
+        const enviarMensajeButton = anuncioElement.querySelector('.enviar-mensaje');
+        enviarMensajeButton.addEventListener('click', () => {
+            // Mostrar el cuadro de texto
+            const cuadroTexto = anuncioElement.querySelector('textarea');
+            cuadroTexto.style.display = 'block';
+        });
+    
+        // Función para eliminar un anuncio del almacenamiento local
+        function eliminarAnuncio(anuncio) {
+            const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
+            const nuevosAnuncios = anunciosLocalStorage.filter(item => item.title !== anuncio.title || item.body !== anuncio.body || item.precio !== anuncio.precio);
+            localStorage.setItem('anuncios', JSON.stringify(nuevosAnuncios));
+        }
+    
+        // Función para crear un elemento HTML a partir de una cadena de HTML
+        function createElementFromHTML(htmlString) {
+            var div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+            return div.firstChild;
+        }
+    </script>    
 </body>
 </html>

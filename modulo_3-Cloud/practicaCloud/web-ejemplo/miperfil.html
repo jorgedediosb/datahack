@@ -30,7 +30,7 @@
         <section class="anuncio" id="misAnuncios">
             <h2>Mis anuncios</h2>
             <div class="anuncio" id="nohayanuncios">
-                <p>No hay ningún anuncio publicado</p>
+                <p>Ningún anuncio publicado</p>
             </div>        
         </section>
 
@@ -68,12 +68,25 @@
                     <form id="formularioAnuncio">
                         <label for="titulo">Título:</label><br>
                         <input type="text" id="titulo" name="titulo"><br>
-                        <label for="descripcion">Descripción:</label><br>
+                        <label for="descripcion">Texto mensaje:</label><br>
                         <textarea id="descripcion" name="descripcion"></textarea><br>
                         <label for="precio">Precio:</label><br>
                         <input type="text" id="precio" name="precio"><br>
                         <div class="boton">
                             <button class="boton" type="submit" id="btnPublicarAnuncio">Publicar anuncio</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+            <!-- Formulario Nuevo Mensaje -->
+            <div class="formulario-mensaje" style="display: none;">
+                <section>
+                    <h2 style="white-space: nowrap;">Nuevo Mensaje</h2>
+                    <form id="formularioAnuncio">
+                        <label for="mensaje">Mensaje:</label><br>
+                        <textarea id="mensaje" name="mensaje"></textarea><br>
+                        <div class="boton">
+                            <button class="boton" type="submit" id="btnEnviarMensaje">Enviar</button>
                         </div>
                     </form>
                 </section>
@@ -121,12 +134,15 @@
                 localStorage.setItem('anuncios', JSON.stringify(anunciosGuardados));
 
                 // Publicación del anuncio y mostrarlo en la sección 'Mis Anuncios'
-                var nuevoAnuncioHTML = '<div class="anuncio">' +
+                var nuevoAnuncioHTML =
+                    '<div class="anuncio">' +
                     '<a href="#">' +
                     '<h3>' + formData.get('titulo') + '</h3>' +
                     '<p>' + formData.get('descripcion') + '</p>' +
                     '<p>' + formData.get('precio') + '€' + '</p>' +
+                    '<button class="eliminar-anuncio">Eliminar anuncio</button>' +
                     '</a>' +
+                    '<button class="boton" type="submit" id="btnEscribirrMensaje">Escribir mensaje</button>' +
                     '</div>';
                 $("#misAnuncios").append(nuevoAnuncioHTML);
 
@@ -139,9 +155,76 @@
                 // Ocultar el mensaje 'No hay ningún anuncio publicado' cuando se publica un anuncio nuevo
                 $("#nohayanuncios").hide();
             });
+
+            // Agregar evento de clic para eliminar el anuncio
+            $("#misAnuncios").on("click", ".eliminar-anuncio", function() {
+                var anuncio = $(this).closest(".anuncio");
+                var titulo = anuncio.find("h3").text();
+                var descripcion = anuncio.find("p").first().text();
+
+                eliminarAnuncio(titulo, descripcion);
+
+                // Eliminar el anuncio del DOM
+                anuncio.remove();
+            });
+
+            // Función para eliminar un anuncio del almacenamiento local
+            function eliminarAnuncio(titulo, descripcion) {
+                var anunciosGuardados = JSON.parse(localStorage.getItem('anuncios')) || [];
+                var nuevosAnuncios = anunciosGuardados.filter(function(anuncio) {
+                    return anuncio.title !== titulo || anuncio.body !== descripcion;
+                });
+                localStorage.setItem('anuncios', JSON.stringify(nuevosAnuncios));
+            }
+        });
+            
+    </script>
+    
+    <!-- Script para cargar mensajes en 'mi perfil' -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Botón "Escribir Mensaje" abre el formulario del nuevo mensaje
+            $("#btnEscribirMensaje").click(function() {
+                // Mostrar u ocultar el formulario para crear un nuevo anuncio
+                $(".formulario-mensaje").toggle();
+            });
+            // Manejar el envío del mensaje
+            $("#formularioMensaje").submit(function(event) {
+                event.preventDefault(); // Evitar que se recargue la página
+
+                // Obtener los datos del formulario
+                var formData = new FormData(this);
+
+                // Crear un objeto con los datos del anuncio
+                var nuevoMensaje = {
+                    body: formData.get('texto'),
+                    userId: 1 // ID de usuario ficticio
+                };
+
+                // Obtener la lista de anuncios existentes del almacenamiento local
+                var anunciosGuardados = JSON.parse(localStorage.getItem('mensajes')) || [];
+
+                // Agregar el nuevo anuncio a la lista
+                mensajesGuardados.push(nuevoMensaje);
+
+                // Guardar la lista actualizada en el almacenamiento local
+                localStorage.setItem('mensajes', JSON.stringify(mensajesGuardados));
+
+                // Publicación del mensaje y mostrarlo en la sección 'Mis Mensajes'
+                var nuevoAnuncioHTML =
+                    '<div class="anuncio">' +
+                    '<a href="#">' +
+                    '<h3>' + formData.get('titulo') + '</h3>' +
+                    '<p>' + formData.get('descripcion') + '</p>' +
+                    '<p>' + formData.get('precio') + '€' + '</p>' +
+                    '<button class="eliminar-anuncio">Eliminar anuncio</button>' +
+                    '</a>' +
+                    '<button class="boton" type="submit" id="btnEscribirrMensaje">Escribir mensaje</button>' +
+                    '</div>';
+                $("#misAnuncios").append(nuevoAnuncioHTML);
+            });
         });
     </script>
-
-
 </body>
 </html>

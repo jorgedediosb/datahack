@@ -96,7 +96,11 @@ h2 {
 .anuncio div {
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 30px;
+    padding: 20px;
+}
+
+.anuncio textarea {
+    display: none;
 }
 
 .nuevo-anuncio-container {
@@ -128,7 +132,7 @@ h2 {
 #formularioAnuncio select {
     width: 100%;
     padding: 0px;
-    padding-bottom: 20px;
+    padding-bottom: 5px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -202,10 +206,23 @@ h2 {
 }
 
 /* Estilos para los Mensajes */
-.formulario-mensaje {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    display: inline;
+.nuevo-mensaje-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.nuevo-mensaje-container h2 {
+    margin-bottom: 15px;
+}
+
+.nuevo-mensaje-container section {
+    width: 100%;
+    padding-right: 20px; 
 }
 
 .mensaje {
