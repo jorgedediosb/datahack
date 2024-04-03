@@ -115,7 +115,6 @@
                 var nuevoAnuncio = {
                     title: formData.get('titulo'),
                     body: formData.get('descripcion'),
-                    userId: 1 // ID de usuario ficticio
                 };
 
                 // Obtener la lista de anuncios existentes del almacenamiento local
@@ -127,16 +126,22 @@
                 // Guardar la lista actualizada en el almacenamiento local
                 localStorage.setItem('anuncios', JSON.stringify(anunciosGuardados));
 
+                // Función para generar un identificador único
+                function generateUniqueId() {
+                    return Math.random().toString(36).substr(2, 9);
+                }
+
                 // Publicación del anuncio y mostrarlo en la sección 'Mis Anuncios'
+                var anuncioId = generateUniqueId(); // Generar un identificador único para el nuevo anuncio
                 var nuevoAnuncioHTML =
-                    '<div class="anucio">' +
+                    '<div class="anuncio" data-anuncio-id="' + anuncioId + '">' +
                     '<a href="#">' +
                     '<h3>' + formData.get('titulo') + '</h3>' +
                     '<p>' + formData.get('descripcion') + '</p>' +
                     '<p>' + formData.get('precio') + '€' + '</p>' +
                     '</a>' +
-                    '<button class="boton" type="submit" id="btnEliminarAnuncio">Eliminar anuncio</button>' +
-                    '<button class="boton" type="submit" id="btnEscribirMensaje">Escribir mensaje</button>' +
+                    '<button class="boton btnEliminarAnuncio" type="button">Eliminar anuncio</button>' +
+                    '<button class="boton btnEscribirMensaje" type="button">Escribir mensaje</button>' +
                     '</div>';
                 $("#misAnuncios").append(nuevoAnuncioHTML);
 
@@ -150,33 +155,38 @@
                 $("#nohayanuncios").hide();
 
                 // Botón "Escribir mensaje" abre el formulario nuevo mensaje
-                $("#btnEscribirMensaje").click(function() {
+                $(".btnEscribirMensaje").click(function() {
                     // Mostrar u ocultar formulario nuevo mensaje
                     $(".nuevo-mensaje-container").toggle();
                 });
 
             });
-            
+
             // Eliminar anuncio
-            $("#misAnuncios").on("click", "#btnEliminarAnuncio", function() {
+            $("#misAnuncios").on("click", ".btnEliminarAnuncio", function() {
                 var anuncio = $(this).closest(".anuncio");
-                var titulo = anuncio.find("h3").text();
-                var contenidoAnuncio = anuncio.find("p").first().text();
-                eliminarAnuncio({ title: titulo, body: contenidoAnuncio });
-                
+                var anuncioId = anuncio.data("anuncio-id"); // Obtener el identificador único del anuncio
+                eliminarAnuncio(anuncioId);
+
                 // Eliminar anuncio del DOM
                 anuncio.remove();
+
+                // Verificar si la lista de anuncios está vacía y mostrar el mensaje correspondiente si es así
+                if ($("#misAnuncios .anuncio").length === 0) {
+                    $("#nohayanuncios").show();
+                }
 
             });
 
             // Función para eliminar un anuncio del almacenamiento local
-            function eliminarAnuncio(anuncio) {
+            function eliminarAnuncio(anuncioId) {
                 var anunciosGuardados = JSON.parse(localStorage.getItem('anuncios')) || [];
                 var nuevosAnuncios = anunciosGuardados.filter(function(a) {
-                    return a.title !== anuncio.title || a.body !== anuncio.body;
+                    return a.title !== anuncioId;
                 });
                 localStorage.setItem('anuncios', JSON.stringify(nuevosAnuncios));
             }
+
         });
 
     </script>
@@ -196,7 +206,6 @@
                 var nuevoMensaje = {
                     title: formData.get('usuario'),
                     body: formData.get('mensaje'),
-                    userId: 1 // ID de usuario ficticio
                 };
 
                 // Obtener la lista de mensajes existentes del almacenamiento local
@@ -208,13 +217,19 @@
                 // Guardar la lista actualizada en el almacenamiento local
                 localStorage.setItem('mensajes', JSON.stringify(mensajesGuardados));
 
+                // Función para generar un identificador único
+                function generateUniqueId() {
+                    return Math.random().toString(36).substr(2, 9);
+                }
+
                 // Publicación del mensaje y mostrarlo en la sección 'Mis mensajes'
+                var mensajeId = generateUniqueId(); // Generar un identificador único para el nuevo mensaje
                 var nuevoMensajeHTML =
-                    '<div class="mensaje">' +
+                    '<div class="mensaje" data-mensaje-id="' + mensajeId + '">' +
                     '<a href="#">' +
                     '<h3>' + formData.get('usuario') + '</h3>' +
                     '<p>' + formData.get('mensaje') + '</p>' +
-                    '<button class="eliminar" id="btnEliminarMensaje">Eliminar mensaje</button>' +
+                    '<button class="eliminar btnEliminarMensaje" type="button">Eliminar mensaje</button>' +
                     '</a>' +
                     '</div>';
                 $(".mensajes").append(nuevoMensajeHTML);
@@ -229,27 +244,42 @@
                 $("#nohaymensajes").hide();
 
             });
-            
+
             // Eliminar mensaje
-            $("#misMensajes").on("click", "#btnEliminarMensaje", function() {
+            $(".mensajes").on("click", ".btnEliminarMensaje", function() {
                 var mensaje = $(this).closest(".mensaje");
-                var usuario = mensaje.find("h3").text();
-                var contenidoMensaje = mensaje.find("p").first().text();
-                eliminarMensaje({ title: usuario, body: contenidoMensaje });
+                var mensajeId = mensaje.data("mensaje-id"); // Obtener el identificador único del mensaje
+                eliminarMensaje(mensajeId);
 
                 // Eliminar mensaje del DOM
                 mensaje.remove();
-            });
-            // Función para eliminar un mensaje del almacenamiento local
-                function eliminarMensaje(mensaje) {
-                    var mensajesGuardados = JSON.parse(localStorage.getItem('mensajes')) || [];
-                    var nuevosMensajes = mensajesGuardados.filter(function(m) {
-                        return m.title !== mensaje.title || m.body !== mensaje.body;
-                    });
-                    localStorage.setItem('mensajes', JSON.stringify(nuevosMensajes));
-                }
 
+                // Verificar si la lista de mensajes está vacía y mostrar el mensaje correspondiente si es así
+                if ($("#misMensajes .mensaje").length === 0) {
+                    $("#nohaymensajes").show();
+                }
             });
+
+            // Función para eliminar un mensaje del almacenamiento local
+            function eliminarMensaje(mensajeId) {
+                var mensajesGuardados = JSON.parse(localStorage.getItem('mensajes')) || [];
+                var nuevosMensajes = mensajesGuardados.filter(function(m) {
+                    return m.title !== mensajeId;
+                });
+                localStorage.setItem('mensajes', JSON.stringify(nuevosMensajes));
+
+                // Verificar si la lista de mensajes está vacía al cargar la página y mostrar el mensaje correspondiente si es así
+                if ($("#misMensajes .mensaje").length === 0) {
+                    $("#nohaymensajes").show();
+                }
+            }
+
+            // Verificar si la lista de anuncios está vacía al cargar la página y mostrar el mensaje correspondiente si es así
+            if ($("#misAnuncios .anuncio").length === 0) {
+                $("#nohayanuncios").show();
+            }
+
+        });
     </script>
 </body>
 </html>
