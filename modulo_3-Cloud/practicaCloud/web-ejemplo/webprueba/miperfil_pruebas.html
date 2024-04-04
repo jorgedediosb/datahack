@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallaserverless - Mi Perfil</title>
+    <title>Mi Perfil PRUEBAS</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,9 +17,9 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="miperfil.html">Mi perfil</a></li>
-                <li><a href="cierresesion.html">Cerrar Sesión</a></li>
+                <li><a href="index_prueba.html">Inicio</a></li>
+                <li><a href="miperfil_prueba.html">Mi perfil</a></li>
+                <li><a href="cierresesion_prueba.html">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -94,7 +94,7 @@
         <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Script para cargar anuncios -->
+    <!-- Script 'Cargar anuncios' -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -105,7 +105,7 @@
             });
 
             // Envío información formulario nuevo anuncio
-            $("#formularioAnuncio").submit(function(event) {
+            $("#formularioAnuncio").submit(async function(event) {
                 event.preventDefault(); // Evitar que se recargue la página
 
                 // Obtener los datos del formulario
@@ -115,83 +115,65 @@
                 var nuevoAnuncio = {
                     title: formData.get('titulo'),
                     body: formData.get('descripcion'),
+                    price: formData.get('precio')
                 };
-
-                // Obtener la lista de anuncios existentes del almacenamiento local
-                var anunciosGuardados = JSON.parse(localStorage.getItem('anuncios')) || [];
-
-                // Agregar el nuevo anuncio a la lista
-                anunciosGuardados.push(nuevoAnuncio);
-
-                // Guardar la lista actualizada en el almacenamiento local
-                localStorage.setItem('anuncios', JSON.stringify(anunciosGuardados));
-
-                // Función para generar un identificador único
-                function generateUniqueId() {
-                    return Math.random().toString(36).substr(2, 9);
+                
+                // Cabeceras CORS para permitir solicitudes desde cualquier origen
+                headers = {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST'
                 }
 
-                // Publicación del anuncio y mostrarlo en la sección 'Mis Anuncios'
-                var anuncioId = generateUniqueId(); // Generar un identificador único para el nuevo anuncio
-                var nuevoAnuncioHTML =
-                    '<div class="anuncio" data-anuncio-id="' + anuncioId + '">' +
-                    '<a href="#">' +
-                    '<h3>' + formData.get('titulo') + '</h3>' +
-                    '<p>' + formData.get('descripcion') + '</p>' +
-                    '<p>' + formData.get('precio') + '€' + '</p>' +
-                    '</a>' +
-                    '<button class="boton btnEliminarAnuncio" type="button">Eliminar anuncio</button>' +
-                    '<button class="boton btnEscribirMensaje" type="button">Escribir mensaje</button>' +
-                    '</div>';
-                $("#misAnuncios").append(nuevoAnuncioHTML);
+                try {
+                    // Realizar una solicitud POST a la API Gateway que apunta a la función Lambda
+                    var response = await fetch('https://f1kiu0vww7.execute-api.eu-west-1.amazonaws.com/test', {
+                        method: 'POST',
+                        body: JSON.stringify(nuevoAnuncio)
+                    });
 
-                // Limpiar el formulario
-                $(this)[0].reset();
+                    if (!response.ok) {
+                        throw new Error('Error al enviar anuncio a la API');
+                    }
 
-                // Ocultar el formulario después de enviarlo
-                $(".nuevo-anuncio-container").hide();
+                    // Publicación del anuncio en la sección 'Mis Anuncios'
+                    var anuncioId = generateUniqueId(); // Generar un identificador único para el nuevo anuncio
+                    var nuevoAnuncioHTML =
+                        '<div class="anuncio" data-anuncio-id="' + anuncioId + '">' +
+                        '<a href="#">' +
+                        '<h3>' + formData.get('titulo') + '</h3>' +
+                        '<p>' + formData.get('descripcion') + '</p>' +
+                        '<p>' + formData.get('precio') + '€' + '</p>' +
+                        '</a>' +
+                        '<button class="boton btnEliminarAnuncio" type="button">Eliminar anuncio</button>' +
+                        '<button class="boton btnEscribirMensaje" type="button">Escribir mensaje</button>' +
+                        '</div>';
+                    $("#misAnuncios").append(nuevoAnuncioHTML);
 
-                // Ocultar el mensaje 'No hay ningún anuncio publicado' cuando se publica un anuncio nuevo
-                $("#nohayanuncios").hide();
+                    // Limpia el formulario y realiza otras acciones necesarias
+                    $(this)[0].reset();
+                    $(".nuevo-anuncio-container").hide();
+                    $("#nohayanuncios").hide();
 
-                // Botón "Escribir mensaje" abre el formulario nuevo mensaje
-                $(".btnEscribirMensaje").click(function() {
-                    // Mostrar u ocultar formulario nuevo mensaje
-                    $(".nuevo-mensaje-container").toggle();
-                });
-
-            });
-
-            // Eliminar anuncio
-            $("#misAnuncios").on("click", ".btnEliminarAnuncio", function() {
-                var anuncio = $(this).closest(".anuncio");
-                var anuncioId = anuncio.data("anuncio-id"); // Obtener el identificador único del anuncio
-                eliminarAnuncio(anuncioId);
-
-                // Eliminar anuncio del DOM
-                anuncio.remove();
-
-                // Verificar si la lista de anuncios está vacía y mostrar el mensaje correspondiente si es así
-                if ($("#misAnuncios .anuncio").length === 0) {
-                    $("#nohayanuncios").show();
+                    // Actualiza la lista de anuncios mostrados en la página
+                    cargarAnuncios();
+                } catch (error) {
+                    console.error('Error al enviar anuncio a DynamoDB:', error);
+                    // Mostrar un mensaje de error al usuario
+                    alert('Error al enviar el anuncio. Inténtalo de nuevo más tarde.');
                 }
-
             });
 
-            // Función para eliminar un anuncio del almacenamiento local
-            function eliminarAnuncio(anuncioId) {
-                var anunciosGuardados = JSON.parse(localStorage.getItem('anuncios')) || [];
-                var nuevosAnuncios = anunciosGuardados.filter(function(a) {
-                    return a.title !== anuncioId;
-                });
-                localStorage.setItem('anuncios', JSON.stringify(nuevosAnuncios));
+            // Función para generar un identificador único
+            function generateUniqueId() {
+                return Math.random().toString(36).substr(2, 9);
             }
 
         });
-
     </script>
 
-    <!-- Script para cargar mensajes -->
+
+    <!-- Script 'Cargar mensajes' -->
     <script>
         $(document).ready(function() {
 

@@ -56,22 +56,21 @@
         <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Cargar anuncios desde la página 'mi perfil'-->
+    <!-- Script 'Cargar anuncios' -->
     <script>
-        // Llamar a la función para cargar los anuncios al cargar la página
-        cargarAnunciosPublicados();
-    
-        async function cargarAnunciosPublicados() {
-            const anunciosContainer = document.getElementById("anunciosPublicados");
-    
+        cargarAnuncios();
+
+        async function cargarAnuncios() {
+            const anunciosContainer = document.getElementById("misAnuncios");
+
             try {
-                // Limpiar el contenedor de anuncios
-                anunciosContainer.innerHTML = "";
-    
                 // Obtener los anuncios del almacenamiento local
                 const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
-    
+
                 if (anunciosLocalStorage && anunciosLocalStorage.length) {
+                    // Limpiar el contenedor de anuncios
+                    anunciosContainer.innerHTML = "";
+
                     // Recorrer los anuncios y agregarlos al contenedor
                     anunciosLocalStorage.forEach(anuncio => {
                         const anuncioHTML =
@@ -80,52 +79,20 @@
                                 <a href="#">
                                     <h3>${anuncio.title}</h3>
                                     <p>${anuncio.body}</p>
-                                    <p>Precio: ${anuncio.precio}€</p>
-                                    <button class="eliminar-anuncio">Eliminar anuncio</button>
-                                    <button class="enviar-mensaje">Enviar mensaje</button>
                                 </a>
                             </div>
                         `;
-                        const anuncioElement = createElementFromHTML(anuncioHTML);
-                        anunciosContainer.append(anuncioElement);
-
-                        // Eliminar anuncio
-                        const eliminarButton = anuncioElement.querySelector('.eliminar-anuncio');
-                        eliminarButton.addEventListener('click', () => {
-                            eliminarAnuncio(anuncio);
-                            // Eliminar anuncio del DOM
-                            anunciosContainer.removeChild(anuncioElement);
-                        });
+                        anunciosContainer.innerHTML += anuncioHTML;
                     });
                 } else {
-                    anunciosContainer.innerHTML = "<h2>Anuncios publicados</h2><div class='anuncio' id='nohayanuncios'><p>Ningún anuncio publicado</p></div>";
+                    // Mostrar mensaje si no hay anuncios guardados
+                    anunciosContainer.innerHTML = "<div class='anuncio' id='nohayanuncios'><p>Ningún anuncio publicado</p></div>";
                 }
             } catch (error) {
                 console.error(error);
                 anunciosContainer.innerHTML = "<p>Ha habido un error al cargar los anuncios.</p>";
             }
         }
-        // Agregar evento de clic para enviar mensaje
-        const enviarMensajeButton = anuncioElement.querySelector('.enviar-mensaje');
-        enviarMensajeButton.addEventListener('click', () => {
-            // Mostrar el cuadro de texto
-            const cuadroTexto = anuncioElement.querySelector('textarea');
-            cuadroTexto.style.display = 'block';
-        });
-    
-        // Función para eliminar un anuncio del almacenamiento local
-        function eliminarAnuncio(anuncio) {
-            const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
-            const nuevosAnuncios = anunciosLocalStorage.filter(item => item.title !== anuncio.title || item.body !== anuncio.body || item.precio !== anuncio.precio);
-            localStorage.setItem('anuncios', JSON.stringify(nuevosAnuncios));
-        }
-    
-        // Función para crear un elemento HTML a partir de una cadena de HTML
-        function createElementFromHTML(htmlString) {
-            var div = document.createElement('div');
-            div.innerHTML = htmlString.trim();
-            return div.firstChild;
-        }
-    </script>    
+    </script>
 </body>
 </html>
