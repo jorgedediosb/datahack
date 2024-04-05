@@ -1,0 +1,66 @@
+service: datahack-cloud
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: eu-west-1
+
+functions:
+  saveMessage:
+    handler: handler.insert_message
+    events:
+      - http:
+          path: insert-message
+          method: post
+          cors: true
+
+  getMessages:
+    handler: handler.get_message
+    events:
+      - http:
+          path: get-message
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    DynamoChatsMessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.datahack-msg}
+        AttributeDefinitions:
+          - AttributeName: chat_id
+            AttributeType: S
+          - AttributeName: ts
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chat_id
+            KeyType: HASH
+          - AttributeName: ts
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+    StaticSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+
+    WebsiteDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: !GetAtt StaticSiteBucket.DomainName
+              Id: myStaticSite
+              S3OriginConfig:
+                OriginAccessIdentity: ''
+          Enabled: true
+          DefaultRootObject: index.html          
+          DefaultCacheBehavior:
+            TargetOriginId: myStaticSite
+            ForwardedValues:
+              QueryString: 'false'
+            ViewerProtocolPolicy: redirect-to-https
