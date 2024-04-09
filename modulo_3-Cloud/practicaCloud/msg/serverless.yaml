@@ -4,9 +4,16 @@ provider:
   name: aws
   runtime: python3.8
   region: eu-west-1
+  stage: dev
+  iam:
+    role:
+      statements: 
+        - Effect: Allow
+          Action: '*'
+          Resource: '*'
 
 functions:
-  saveMessage:
+  insertMessage:
     handler: handler.insert_message
     events:
       - http:
@@ -15,38 +22,29 @@ functions:
           cors: true
 
   getMessages:
-    handler: handler.get_message
+    handler: handler.get_messages
     events:
       - http:
-          path: get-message
+          path: get-messages
           method: get
           cors: true
 
 resources:
   Resources:
-    DynamoChatsMessagesTable:
-      Type: AWS::DynamoDB::Table
+    MyApiGateway:
+      Type: AWS::ApiGateway::RestApi
       Properties:
-        TableName: ${self:provider.environment.datahack-msg}
-        AttributeDefinitions:
-          - AttributeName: chat_id
-            AttributeType: S
-          - AttributeName: ts
-            AttributeType: S
-        KeySchema:
-          - AttributeName: chat_id
-            KeyType: HASH
-          - AttributeName: ts
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
+        Name: my-api-gateway
+        Description: MSG API Gateway
 
     StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        AccessControl: PublicRead
+        BucketName: msg-bucket12345
         WebsiteConfiguration:
           IndexDocument: index.html
-          ErrorDocument: error.html
+        VersioningConfiguration:
+          Status: Enabled
 
     WebsiteDistribution:
       Type: AWS::CloudFront::Distribution
@@ -58,9 +56,25 @@ resources:
               S3OriginConfig:
                 OriginAccessIdentity: ''
           Enabled: true
-          DefaultRootObject: index.html          
+          DefaultRootObject: index.html
           DefaultCacheBehavior:
             TargetOriginId: myStaticSite
             ForwardedValues:
               QueryString: 'false'
             ViewerProtocolPolicy: redirect-to-https
+
+    MessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: datahack-msg-deploy
+        AttributeDefinitions:
+          - AttributeName: user
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user
+            KeyType: HASH
+          - AttributeName: date
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST

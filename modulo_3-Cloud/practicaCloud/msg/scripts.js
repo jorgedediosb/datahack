@@ -1,4 +1,12 @@
-var API_ENDPOINT = "https://z6pgz8tnag.execute-api.eu-west-1.amazonaws.com/Prod"
+// var API_ENDPOINT = "https://z6pgz8tnag.execute-api.eu-west-1.amazonaws.com/Prod"
+
+// Obtener la URL de la API de las variables de entorno
+var API_ENDPOINT = process.env.API_ENDPOINT;
+
+// Si la variable de entorno no está definida, usa una URL por defecto
+if (!API_ENDPOINT) {
+    API_ENDPOINT = "https://my-api-gateway.execute-api.amazonaws.com/dev";
+}
 
 //AJAX POST REQUEST
 document.getElementById("savemessage").onclick = function(){
@@ -10,7 +18,7 @@ document.getElementById("savemessage").onclick = function(){
     "date": formattedDate
   };
   $.ajax({
-    url: API_ENDPOINT,
+    url: API_ENDPOINT + '/insert-message',
     type: 'POST',
     data: JSON.stringify(inputData),
     contentType: 'application/json; charset=utf-8',
@@ -28,7 +36,7 @@ document.getElementById("savemessage").onclick = function(){
 //AJAX GET REQUEST 
 document.getElementById("getmessages").onclick = function(){  
   $.ajax({
-    url: API_ENDPOINT,
+    url: API_ENDPOINT + '/get-messages',
     type: 'GET',
     contentType: 'application/json; charset=utf-8',
     success: function (response) {
