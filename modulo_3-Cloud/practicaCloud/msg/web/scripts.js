@@ -1,4 +1,5 @@
-// var API_ENDPOINT = "https://z6pgz8tnag.execute-api.eu-west-1.amazonaws.com/Prod"
+// var API_ENDPOINT = "https://z6pgz8tnag.execute-api.eu-west-1.amazonaws.com/Prod" -> Despliegue manual
+
 
 // Obtener la URL de la API de las variables de entorno
 var API_ENDPOINT = process.env.API_ENDPOINT;

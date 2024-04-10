@@ -3,7 +3,7 @@ import boto3
 from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
-table = dynamodb.Table('datahack-msg')
+table = dynamodb.Table('datahack-msg-deploy')
 
 def insert_message(event, context):
     try:

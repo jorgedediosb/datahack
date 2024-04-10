@@ -7,7 +7,12 @@ provider:
   stage: dev
   iam:
     role:
-      statements: 
+      statements:
+        - Effect: Allow
+          Action:
+            - 's3:PutBucketPolicy'
+            - 's3:PutObjectAcl'
+          Resource: '*'
         - Effect: Allow
           Action: '*'
           Resource: '*'
@@ -40,12 +45,7 @@ resources:
     StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: datahack-msg-deploy
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: false
-          BlockPublicPolicy: false
-          IgnorePublicAcls: false
-          RestrictPublicBuckets: false
+        BucketName: datahack-msg-bucket
         CorsConfiguration:
           CorsRules:
             -
@@ -69,7 +69,6 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          HttpVersion: 'http2'
           Origins:
             - DomainName: !GetAtt StaticSiteBucket.DomainName
               Id: myStaticSite
@@ -82,24 +81,6 @@ resources:
             ForwardedValues:
               QueryString: 'false'
             ViewerProtocolPolicy: redirect-to-https
-
-    StaticSiteBucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: datahack-msg-deploy
-        PolicyDocument:
-          Version: "2008-10-17"
-          Id: "PolicyForCloudFrontPrivateContent"
-          Statement:
-            - Sid: "AllowCloudFrontServicePrincipal"
-              Effect: "Allow"
-              Principal:
-                Service: "cloudfront.amazonaws.com"
-              Action: "s3:GetObject"
-              Resource: "arn:aws:s3:::datahack-msg-deploy/*"
-              Condition:
-                StringEquals:
-                  "AWS:SourceArn": "arn:aws:cloudfront::339712721616:distribution/E1XX4EGDLPV873"
 
     MessagesTable:
       Type: AWS::DynamoDB::Table
@@ -116,4 +97,8 @@ resources:
           - AttributeName: date
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-      UpdateReplacePolicy: Retain
+
+  Outputs:
+    WebsiteURL:
+      Description: URL del sitio web estático
+      Value: !GetAtt StaticSiteBucket.WebsiteURL

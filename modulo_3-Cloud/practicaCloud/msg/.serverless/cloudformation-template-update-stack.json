@@ -175,7 +175,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/datahack-cloud/dev/1712699605000-2024-04-09T21:53:25.000Z/datahack-cloud.zip"
+          "S3Key": "serverless/datahack-cloud/dev/1712770757299-2024-04-10T17:39:17.299Z/datahack-cloud.zip"
         },
         "Handler": "handler.insert_message",
         "Runtime": "python3.8",
@@ -200,7 +200,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/datahack-cloud/dev/1712699605000-2024-04-09T21:53:25.000Z/datahack-cloud.zip"
+          "S3Key": "serverless/datahack-cloud/dev/1712770757299-2024-04-10T17:39:17.299Z/datahack-cloud.zip"
         },
         "Handler": "handler.get_messages",
         "Runtime": "python3.8",
@@ -218,24 +218,24 @@
         "GetMessagesLogGroup"
       ]
     },
-    "InsertMessageLambdaVersiontktJ0TKv1Y52eSsB0KHIjO64GalwEE7rEYKTEOoQg": {
+    "InsertMessageLambdaVersionFqKvQ2cHvzEVmD73JVHPQUow4NFt7Nq2RMnMqYIwTY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "InsertMessageLambdaFunction"
         },
-        "CodeSha256": "TdBg0JIdG/KamEmIfpYxijN3aLLxsQe9AYfnfCmlmiY="
+        "CodeSha256": "9akNEjc/Dd7rlb7v28KiBqtxlXT7GNf8iEMly/zfgLE="
       }
     },
-    "GetMessagesLambdaVersionTWQ64a9NpHVUrMgPPCayzanY5VSZzugPoRTJRcGfZ0": {
+    "GetMessagesLambdaVersionntqjBhWX8v10cw9BCZTvxsft6OQPBOt67zBey0suU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetMessagesLambdaFunction"
         },
-        "CodeSha256": "TdBg0JIdG/KamEmIfpYxijN3aLLxsQe9AYfnfCmlmiY="
+        "CodeSha256": "9akNEjc/Dd7rlb7v28KiBqtxlXT7GNf8iEMly/zfgLE="
       }
     },
     "ApiGatewayRestApi": {
@@ -462,7 +462,7 @@
         "GetMessagesLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1712699604103": {
+    "ApiGatewayDeployment1712770755457": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -561,7 +561,33 @@
     "StaticSiteBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "msg-bucket12345",
+        "BucketName": "datahack-msg-deploy",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": false
+        },
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedOrigins": [
+                "*"
+              ],
+              "AllowedHeaders": [
+                "*"
+              ],
+              "AllowedMethods": [
+                "GET",
+                "PUT",
+                "POST",
+                "DELETE",
+                "HEAD"
+              ],
+              "MaxAge": 3000
+            }
+          ]
+        },
         "WebsiteConfiguration": {
           "IndexDocument": "index.html"
         },
@@ -574,6 +600,7 @@
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
         "DistributionConfig": {
+          "HttpVersion": "http2",
           "Origins": [
             {
               "DomainName": {
@@ -597,6 +624,32 @@
             },
             "ViewerProtocolPolicy": "redirect-to-https"
           }
+        }
+      }
+    },
+    "StaticSiteBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": "datahack-msg-deploy",
+        "PolicyDocument": {
+          "Version": "2008-10-17",
+          "Id": "PolicyForCloudFrontPrivateContent",
+          "Statement": [
+            {
+              "Sid": "AllowCloudFrontServicePrincipal",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+              },
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::datahack-msg-deploy/*",
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": "arn:aws:cloudfront::339712721616:distribution/E1XX4EGDLPV873"
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -625,7 +678,8 @@
           }
         ],
         "BillingMode": "PAY_PER_REQUEST"
-      }
+      },
+      "UpdateReplacePolicy": "Retain"
     }
   },
   "Outputs": {
@@ -640,7 +694,7 @@
     "InsertMessageLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "InsertMessageLambdaVersiontktJ0TKv1Y52eSsB0KHIjO64GalwEE7rEYKTEOoQg"
+        "Ref": "InsertMessageLambdaVersionFqKvQ2cHvzEVmD73JVHPQUow4NFt7Nq2RMnMqYIwTY"
       },
       "Export": {
         "Name": "sls-datahack-cloud-dev-InsertMessageLambdaFunctionQualifiedArn"
@@ -649,7 +703,7 @@
     "GetMessagesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetMessagesLambdaVersionTWQ64a9NpHVUrMgPPCayzanY5VSZzugPoRTJRcGfZ0"
+        "Ref": "GetMessagesLambdaVersionntqjBhWX8v10cw9BCZTvxsft6OQPBOt67zBey0suU"
       },
       "Export": {
         "Name": "sls-datahack-cloud-dev-GetMessagesLambdaFunctionQualifiedArn"
