@@ -1,0 +1,126 @@
+service: datahack-cloud
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: eu-west-1
+  stage: dev
+  environment:
+    API_ENDPOINT: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+  iam:
+    role:
+      statements: 
+        - Effect: Allow
+          Action: '*'
+          Resource: '*'
+
+functions:
+  insertMessage:
+    handler: handler.insert_message
+    events:
+      - http:
+          path: insert-message
+          method: post
+          cors: true
+
+  getMessages:
+    handler: handler.get_messages
+    events:
+      - http:
+          path: get-messages
+          method: get
+          cors: true
+
+package:
+  individually: true
+  include:
+    - web/**
+
+resources:
+  Outputs:
+    ApiEndpoint:
+      Description: URL dinámica de la API
+      Value:
+        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+
+  Resources:
+    MyApiGateway:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: my-api-gateway
+        Description: MSG API Gateway
+
+    StaticSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: datahack-msg-deploy
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
+        CorsConfiguration:
+          CorsRules:
+            -
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+        WebsiteConfiguration:
+          IndexDocument: index.html
+        VersioningConfiguration:
+          Status: Enabled
+
+    WebsiteDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          HttpVersion: 'http2'
+          Origins:
+            - DomainName: !GetAtt StaticSiteBucket.DomainName
+              Id: myStaticSite
+              S3OriginConfig:
+                OriginAccessIdentity: ''
+          Enabled: true
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            TargetOriginId: myStaticSite
+            ForwardedValues:
+              QueryString: 'false'
+            ViewerProtocolPolicy: redirect-to-https
+
+    StaticSiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: datahack-msg-deploy
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal: "*"
+              Action: "s3:GetObject"
+              Resource: "arn:aws:s3:::datahack-msg-deploy/*"
+
+    MessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: datahack-msg-deploy
+        AttributeDefinitions:
+          - AttributeName: user
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: S
+        KeySchema:
+          - AttributeName: user
+            KeyType: HASH
+          - AttributeName: date
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+      UpdateReplacePolicy: Retain

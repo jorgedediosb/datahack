@@ -1,13 +1,8 @@
-// var API_ENDPOINT = "https://z6pgz8tnag.execute-api.eu-west-1.amazonaws.com/Prod" -> Despliegue manual
+// Despliegue manual:
+var API_ENDPOINT = "https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/";
+https://datahack-cloud.s3.eu-west-1.amazonaws.com/index.html
 
-
-// Obtener la URL de la API de las variables de entorno
-var API_ENDPOINT = process.env.API_ENDPOINT;
-
-// Si la variable de entorno no está definida, usa una URL por defecto
-if (!API_ENDPOINT) {
-    API_ENDPOINT = "https://my-api-gateway.execute-api.amazonaws.com/dev";
-}
+// var API_ENDPOINT = "${ApiEndpoint}";
 
 //AJAX POST REQUEST
 document.getElementById("savemessage").onclick = function(){
@@ -19,7 +14,7 @@ document.getElementById("savemessage").onclick = function(){
     "date": formattedDate
   };
   $.ajax({
-    url: API_ENDPOINT + '/insert-message',
+    url: API_ENDPOINT,
     type: 'POST',
     data: JSON.stringify(inputData),
     contentType: 'application/json; charset=utf-8',
@@ -37,7 +32,7 @@ document.getElementById("savemessage").onclick = function(){
 //AJAX GET REQUEST 
 document.getElementById("getmessages").onclick = function(){  
   $.ajax({
-    url: API_ENDPOINT + '/get-messages',
+    url: API_ENDPOINT,
     type: 'GET',
     contentType: 'application/json; charset=utf-8',
     success: function (response) {

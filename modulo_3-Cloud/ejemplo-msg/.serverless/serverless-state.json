@@ -9,6 +9,9 @@
       "runtime": "python3.8",
       "region": "eu-west-1",
       "stage": "dev",
+      "environment": {
+        "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+      },
       "iam": {
         "role": {
           "statements": [
@@ -196,13 +199,18 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1712770757299-2024-04-10T17:39:17.299Z/datahack-cloud.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1712840270111-2024-04-11T12:57:50.111Z/datahack-cloud.zip"
               },
               "Handler": "handler.insert_message",
               "Runtime": "python3.8",
               "FunctionName": "datahack-cloud-dev-insertMessage",
               "MemorySize": 1024,
               "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                }
+              },
               "Role": {
                 "Fn::GetAtt": [
                   "IamRoleLambdaExecution",
@@ -221,13 +229,18 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1712770757299-2024-04-10T17:39:17.299Z/datahack-cloud.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1712840270111-2024-04-11T12:57:50.111Z/datahack-cloud.zip"
               },
               "Handler": "handler.get_messages",
               "Runtime": "python3.8",
               "FunctionName": "datahack-cloud-dev-getMessages",
               "MemorySize": 1024,
               "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                }
+              },
               "Role": {
                 "Fn::GetAtt": [
                   "IamRoleLambdaExecution",
@@ -239,24 +252,24 @@
               "GetMessagesLogGroup"
             ]
           },
-          "InsertMessageLambdaVersionFqKvQ2cHvzEVmD73JVHPQUow4NFt7Nq2RMnMqYIwTY": {
+          "InsertMessageLambdaVersionBqfNC32lJM1ApCl1ZFLRAroHPK0KF2NfXVTsMSWJWkc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "InsertMessageLambdaFunction"
               },
-              "CodeSha256": "9akNEjc/Dd7rlb7v28KiBqtxlXT7GNf8iEMly/zfgLE="
+              "CodeSha256": "ZNhmDwsdS1vYDNTKjLC7n7TVS0+uU1T+up0UXKgawuk="
             }
           },
-          "GetMessagesLambdaVersionntqjBhWX8v10cw9BCZTvxsft6OQPBOt67zBey0suU": {
+          "GetMessagesLambdaVersion8te4f1fve9li69Tfs17VUhbt1eLt6n6P8qsLFujgkYw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetMessagesLambdaFunction"
               },
-              "CodeSha256": "9akNEjc/Dd7rlb7v28KiBqtxlXT7GNf8iEMly/zfgLE="
+              "CodeSha256": "ZNhmDwsdS1vYDNTKjLC7n7TVS0+uU1T+up0UXKgawuk="
             }
           },
           "ApiGatewayRestApi": {
@@ -483,7 +496,7 @@
               "GetMessagesLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1712770755457": {
+          "ApiGatewayDeployment1712840268619": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -653,22 +666,13 @@
             "Properties": {
               "Bucket": "datahack-msg-deploy",
               "PolicyDocument": {
-                "Version": "2008-10-17",
-                "Id": "PolicyForCloudFrontPrivateContent",
+                "Version": "2012-10-17",
                 "Statement": [
                   {
-                    "Sid": "AllowCloudFrontServicePrincipal",
                     "Effect": "Allow",
-                    "Principal": {
-                      "Service": "cloudfront.amazonaws.com"
-                    },
+                    "Principal": "*",
                     "Action": "s3:GetObject",
-                    "Resource": "arn:aws:s3:::datahack-msg-deploy/*",
-                    "Condition": {
-                      "StringEquals": {
-                        "AWS:SourceArn": "arn:aws:cloudfront::339712721616:distribution/E1XX4EGDLPV873"
-                      }
-                    }
+                    "Resource": "arn:aws:s3:::datahack-msg-deploy/*"
                   }
                 ]
               }
@@ -715,7 +719,7 @@
           "InsertMessageLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "InsertMessageLambdaVersionFqKvQ2cHvzEVmD73JVHPQUow4NFt7Nq2RMnMqYIwTY"
+              "Ref": "InsertMessageLambdaVersionBqfNC32lJM1ApCl1ZFLRAroHPK0KF2NfXVTsMSWJWkc"
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-InsertMessageLambdaFunctionQualifiedArn"
@@ -724,7 +728,7 @@
           "GetMessagesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetMessagesLambdaVersionntqjBhWX8v10cw9BCZTvxsft6OQPBOt67zBey0suU"
+              "Ref": "GetMessagesLambdaVersion8te4f1fve9li69Tfs17VUhbt1eLt6n6P8qsLFujgkYw"
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-GetMessagesLambdaFunctionQualifiedArn"
@@ -754,6 +758,12 @@
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-ServiceEndpoint"
+            }
+          },
+          "ApiEndpoint": {
+            "Description": "URL dinámica de la API",
+            "Value": {
+              "Fn::Sub": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
             }
           }
         }
@@ -878,7 +888,7 @@
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "InsertMessageLambdaVersionFqKvQ2cHvzEVmD73JVHPQUow4NFt7Nq2RMnMqYIwTY"
+        "versionLogicalId": "InsertMessageLambdaVersionBqfNC32lJM1ApCl1ZFLRAroHPK0KF2NfXVTsMSWJWkc"
       },
       "getMessages": {
         "handler": "handler.get_messages",
@@ -914,10 +924,18 @@
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetMessagesLambdaVersionntqjBhWX8v10cw9BCZTvxsft6OQPBOt67zBey0suU"
+        "versionLogicalId": "GetMessagesLambdaVersion8te4f1fve9li69Tfs17VUhbt1eLt6n6P8qsLFujgkYw"
       }
     },
     "resources": {
+      "Outputs": {
+        "ApiEndpoint": {
+          "Description": "URL dinámica de la API",
+          "Value": {
+            "Fn::Sub": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+          }
+        }
+      },
       "Resources": {
         "MyApiGateway": {
           "Type": "AWS::ApiGateway::RestApi",
@@ -1000,22 +1018,13 @@
           "Properties": {
             "Bucket": "datahack-msg-deploy",
             "PolicyDocument": {
-              "Version": "2008-10-17",
-              "Id": "PolicyForCloudFrontPrivateContent",
+              "Version": "2012-10-17",
               "Statement": [
                 {
-                  "Sid": "AllowCloudFrontServicePrincipal",
                   "Effect": "Allow",
-                  "Principal": {
-                    "Service": "cloudfront.amazonaws.com"
-                  },
+                  "Principal": "*",
                   "Action": "s3:GetObject",
-                  "Resource": "arn:aws:s3:::datahack-msg-deploy/*",
-                  "Condition": {
-                    "StringEquals": {
-                      "AWS:SourceArn": "arn:aws:cloudfront::339712721616:distribution/E1XX4EGDLPV873"
-                    }
-                  }
+                  "Resource": "arn:aws:s3:::datahack-msg-deploy/*"
                 }
               ]
             }
@@ -1049,8 +1058,7 @@
           },
           "UpdateReplacePolicy": "Retain"
         }
-      },
-      "Outputs": {}
+      }
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yaml",
@@ -1071,7 +1079,7 @@
     "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud/msg/.serverless/datahack-cloud.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/datahack-cloud/dev/1712770757299-2024-04-10T17:39:17.299Z",
+    "artifactDirectoryName": "serverless/datahack-cloud/dev/1712840270111-2024-04-11T12:57:50.111Z",
     "artifact": "datahack-cloud.zip"
   }
 }
