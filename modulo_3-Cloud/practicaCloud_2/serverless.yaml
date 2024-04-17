@@ -6,7 +6,8 @@ provider:
   region: eu-west-1
   stage: dev
   environment:
-    API_ENDPOINT: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+    API_ENDPOINT: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+
   iam:
     role:
       statements: 
@@ -21,11 +22,6 @@ custom:
   s3Sync:
     - bucketName: datahack-cloud
       localDir: web
-
-package:
-  individually: true
-  include:
-    - web/**
 
 functions:
   insertMessage:
@@ -61,19 +57,7 @@ functions:
           cors: true
 
 resources:
-  Outputs:
-    ApiEndpoint:
-      Description: URL dinámica de la API
-      Value:
-        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
-
   Resources:
-    DatahackApi:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: datahack-api
-        Description: API proyecto Cloud Datahack
-
     StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -106,7 +90,6 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Description: Datahack Cloud
           HttpVersion: 'http2'
           Origins:
             - DomainName: !GetAtt StaticSiteBucket.DomainName

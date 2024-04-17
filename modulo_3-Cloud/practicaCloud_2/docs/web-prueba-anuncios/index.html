@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallaserverless</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <!-- Logo y navegación -->
+        <div class="logo">
+            <a href="index.html">
+                <img src="images/wallapop-logo.png" alt="Wallapop Datahack">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="miperfil.html">Mi perfil</a></li>
+                <li><a href="cierresesion.html">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        <!-- Sección Anuncios Publicados -->            
+        <section class="anuncio" id="anunciosPublicados">
+            <h2>Anuncios publicados</h2>
+            <!-- Anuncios publicados desde 'mi perfil' -->
+            <div class="anuncio" id="nohayanuncios">
+                <p>Ningún anuncio publicado</p>
+            </div>
+        </section>
+        
+        <!-- Sección Usuario -->
+        <section class="usuario">
+            <!-- Información del usuario -->
+            <h2>Mi Perfil</h2>
+            <div class="perfil">
+                <img src="images/perfil.jpg" alt="Foto perfil">
+                <h3>Jorge de Dios</h3>
+                <p>Email: jorge@example.com</p>
+                <div class="boton" href="miperfil.html">
+                    <a href="miperfil.html">Acceder a mi perfil</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <!-- Información del pie de página -->
+        <p>&copy; 2024 Wallaserverless. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Script 'Cargar anuncios' -->
+    <script>
+        cargarAnuncios();
+
+        async function cargarAnuncios() {
+            const anunciosContainer = document.getElementById("misAnuncios");
+
+            try {
+                // Obtener los anuncios del almacenamiento local
+                const anunciosLocalStorage = JSON.parse(localStorage.getItem('anuncios')) || [];
+
+                if (anunciosLocalStorage && anunciosLocalStorage.length) {
+                    // Limpiar el contenedor de anuncios
+                    anunciosContainer.innerHTML = "";
+
+                    // Recorrer los anuncios y agregarlos al contenedor
+                    anunciosLocalStorage.forEach(anuncio => {
+                        const anuncioHTML =
+                        `
+                            <div class="anuncio">
+                                <a href="#">
+                                    <h3>${anuncio.title}</h3>
+                                    <p>${anuncio.body}</p>
+                                </a>
+                            </div>
+                        `;
+                        anunciosContainer.innerHTML += anuncioHTML;
+                    });
+                } else {
+                    // Mostrar mensaje si no hay anuncios guardados
+                    anunciosContainer.innerHTML = "<div class='anuncio' id='nohayanuncios'><p>Ningún anuncio publicado</p></div>";
+                }
+            } catch (error) {
+                console.error(error);
+                anunciosContainer.innerHTML = "<p>Ha habido un error al cargar los anuncios.</p>";
+            }
+        }
+    </script>
+</body>
+</html>

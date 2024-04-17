@@ -8,28 +8,29 @@ INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
 
   Configurar AWS CLI con credenciales de AWS:
     aws configure
-    > introducir Access Key y Secret Key del usuario AWS
+    > introducir: Access Key y Secret Key del usuario AWS
 
   Desplegar la app:
     sls deploy o sls deploy --verbose (para más info)
+  
+  Información sobre el despliegue:
+      sls info
 
   Eliminar despliegue:
     sls remove
 
-  Finalizado el despliegue indicará los endpoints y las funciones:
-    endpoints (el ID varía según el usuario):
-      POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-message
-      GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-messages
-      POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-product
-      GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-products
-    functions:
-      insertMessage: datahack-cloud-dev-insertMessage
-      getMessages: datahack-cloud-dev-getMessages
-      insertProduct: datahack-cloud-dev-insertProduct
-      getProduct: datahack-cloud-dev-getProduct
-    
-    Información sobre el despliegue:
-      sls info
+Finalizado el despliegue indicará los endpoints y las funciones:
+  endpoints (el ID varía según el usuario):
+    POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-message
+    GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-messages
+    POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-product
+    GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-products
+  functions:
+    insertMessage: datahack-cloud-dev-insertMessage
+    getMessages: datahack-cloud-dev-getMessages
+    insertProduct: datahack-cloud-dev-insertProduct
+    getProduct: datahack-cloud-dev-getProduct
+  
 
 FUNCIONES
   Enviar mensajes:
