@@ -6,29 +6,39 @@ provider:
   region: eu-west-1
   stage: dev
   environment:
-    API_ENDPOINT: !Sub "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+    MessagesTable: datahack-mensajes
+    ProductsTable: datahack-productos
+    API_ENDPOINT: ${custom.apiEndpoint}
 
-  iam:
-    role:
-      statements: 
-        - Effect: Allow
-          Action: '*'
-          Resource: '*'
-
-plugins:
-  - serverless-s3-sync
+  iamRoleStatements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
 
 custom:
+  apiEndpoint: ${cf:datahack-cloud-dev.ServiceEndpoint}
   s3Sync:
     - bucketName: datahack-cloud
       localDir: web
+
+plugins:
+  - serverless-s3-sync
 
 functions:
   insertMessage:
     handler: handler.insert_message
     events:
       - http:
-          path: insert-message
+          path: /insert-message
           method: post
           cors: true
 
@@ -36,7 +46,7 @@ functions:
     handler: handler.get_messages
     events:
       - http:
-          path: get-messages
+          path: /get-messages
           method: get
           cors: true
 
@@ -44,7 +54,7 @@ functions:
     handler: handler.insert_product
     events:
       - http:
-          path: insert-product
+          path: /insert-product
           method: post
           cors: true
 
@@ -52,12 +62,18 @@ functions:
     handler: handler.get_products
     events:
       - http:
-          path: get-products
+          path: /get-products
           method: get
           cors: true
 
 resources:
   Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:provider.stage}-api
+        Description: API ${self:service}
+
     StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:

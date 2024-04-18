@@ -1,4 +1,7 @@
 INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
+  Instalar AWS CLI:
+    pip install awscli --upgrade --user
+    aws --version (confirmar versión)
 
   Instalar serverless en la carpeta donde se aloje el proyecto:
     npm install serverless

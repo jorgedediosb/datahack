@@ -1,11 +1,13 @@
-// var API_ENDPOINT = "https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/";
-// var API_ENDPOINT = "https://datahack-cloud.s3.eu-west-1.amazonaws.com/index.html";
+//var API_ENDPOINT = "https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev";
+//var API_ENDPOINT = "https://datahack-cloud.s3.eu-west-1.amazonaws.com/index.html";
 //var API_ENDPOINT = document.currentScript.getAttribute('data-api-endpoint');
 //var API_ENDPOINT = "https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${sls:stage}/";
 //var API_ENDPOINT = "https://${ApiEndpoint}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
 //var API_ENDPOINT = "${ApiGatewayRestApi}";
+//var API_ENDPOINT = process.env.API_ENDPOINT;
 
-var API_ENDPOINT = process.env.API_ENDPOINT;
+var insertMessageEndpoint = API_ENDPOINT + "/insert-message";
+var getMessagesEndpoint = API_ENDPOINT + "/get-messages";
 
 //AJAX POST REQUEST
 document.getElementById("savemessage").onclick = function(){
@@ -17,7 +19,7 @@ document.getElementById("savemessage").onclick = function(){
     "date": formattedDate
   };
   $.ajax({
-    url: API_ENDPOINT,
+    url: insertMessageEndpoint,
     type: 'POST',
     data: JSON.stringify(inputData),
     contentType: 'application/json; charset=utf-8',
@@ -35,7 +37,7 @@ document.getElementById("savemessage").onclick = function(){
 //AJAX GET REQUEST 
 document.getElementById("getmessages").onclick = function(){  
   $.ajax({
-    url: API_ENDPOINT,
+    url: getMessagesEndpoint,
     type: 'GET',
     contentType: 'application/json; charset=utf-8',
     success: function (response) {
