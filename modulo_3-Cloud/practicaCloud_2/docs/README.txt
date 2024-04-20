@@ -9,12 +9,17 @@ INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
   Instalar plugin Serverless S3 Sync:
     npm install --save serverless-s3-sync
 
+  Instalar plugin Serverless Finch:
+    npm install --save serverless-finch
+
   Configurar AWS CLI con credenciales de AWS:
     aws configure
     > introducir: Access Key y Secret Key del usuario AWS
 
   Desplegar la app:
-    sls deploy o sls deploy --verbose (para más info)
+    sls deploy
+    sls client deploy (plugin finch para frontend)
+    > confirmar cambios con 'y' si los hay.
   
   Información sobre el despliegue:
       sls info
@@ -24,10 +29,10 @@ INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
 
 Finalizado el despliegue indicará los endpoints y las funciones:
   endpoints (el ID varía según el usuario):
-    POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-message
-    GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-messages
-    POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-product
-    GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-products
+    POST - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-message
+    GET - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-messages
+    POST - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-product
+    GET - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-products
   functions:
     insertMessage: datahack-cloud-dev-insertMessage
     getMessages: datahack-cloud-dev-getMessages
@@ -37,14 +42,14 @@ Finalizado el despliegue indicará los endpoints y las funciones:
 
 FUNCIONES
   Enviar mensajes:
-    curl -X POST -H "Content-Type: application/json" -d '{"user":"Profesor", "message":"Yo soy tu profe!"}' https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/insert-message
+    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "message":"hola mundo!"}' https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-message
   Leer mensajes:
-    curl https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/get-messages
+    curl https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-messages
 
   Enviar productos:
-    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "product":"Iphone", "description": "Iphone muy guapo"}' https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/insert-product
+    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "product":"Iphone", "description": "Iphone muy guapo"}' https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-product
   Leer productos:
-    curl https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/get-products
+    curl https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-products
 
 ACCESO INTERFAZ WEB:
   Acceder a las ditribuciones activas:

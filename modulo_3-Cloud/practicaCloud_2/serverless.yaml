@@ -6,32 +6,45 @@ provider:
   region: eu-west-1
   stage: dev
   environment:
+    API_ENDPOINT: !Sub "https://${resources.Resources.ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
     MessagesTable: datahack-mensajes
     ProductsTable: datahack-productos
-    API_ENDPOINT: ${custom.apiEndpoint}
 
   iamRoleStatements:
-        - Effect: "Allow"
-          Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-            - dynamodb:BatchWriteItem
-          Resource:
-            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
-            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
-
-custom:
-  apiEndpoint: ${cf:datahack-cloud-dev.ServiceEndpoint}
-  s3Sync:
-    - bucketName: datahack-cloud
-      localDir: web
+    - Effect: "Allow"
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchWriteItem
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
 
 plugins:
   - serverless-s3-sync
+  - serverless-finch
+  
+custom:
+  finch:
+    stage: ${opt:stage, self:provider.stage}
+    variables:
+      API_ENDPOINT: ${self:provider.environment.API_ENDPOINT}
+
+  client:
+    bucketName: datahack-cloud
+    distributionFolder: web
+    errorDocument: index.html
+    include:
+      - '*.html'
+      - '*.css'
+      - '*.js'
+  s3Sync:
+    - bucketName: datahack-cloud
+      localDir: web
 
 functions:
   insertMessage:
@@ -71,7 +84,7 @@ resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: ${self:provider.stage}-api
+        Name: ${self:provider.stage}-api-datahack
         Description: API ${self:service}
 
     StaticSiteBucket:
