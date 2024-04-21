@@ -1,14 +1,22 @@
-var API_ENDPOINT = process.env.API_ENDPOINT;
+//var API_ENDPOINT;
+var API_ENDPOINT = "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
 
-//AJAX POST REQUEST
-document.getElementById("savemessage").onclick = function(){
-  var currentDate = new Date();
-  var formattedDate = currentDate.toLocaleString('es-ES', { month: 'long', day: 'numeric', year: 'numeric' });
+fetch('/api-url')
+  .then(response => response.json())
+  .then(data => {
+    API_ENDPOINT = data.apiUrl;
+
+  })
+  .catch(error => {
+    console.error('Error al obtener la URL de la API:', error);
+  });
+
+function saveMessage() {
   var inputData = {
     "user": $('#user').val(),
-    "message": $('#msg').val(),
-    "date": formattedDate
+    "message": $('#msg').val()
   };
+
   $.ajax({
     url: API_ENDPOINT + "/insert-message",
     type: 'POST',
@@ -25,24 +33,18 @@ document.getElementById("savemessage").onclick = function(){
   });
 }
 
-//AJAX GET REQUEST 
-document.getElementById("getmessages").onclick = function(){  
-  $.ajax({
-    url: API_ENDPOINT + "/get-messages",
-    type: 'GET',
-    contentType: 'application/json; charset=utf-8',
-    success: function (response) {
-      $("#showMessages").empty();
-      jQuery.each(response, function (i, data) {
-        var messageCardHtml = '<div class="messageCard">' +
-          '<div class="messageContent">' + data["msg"] + '</div>' +
-          '<div class="messageDetail">From: ' + data["user"] + ' ' + ' el ' + data["date"] + '</div>' +
-          '</div>';
-        $("#showMessages").append(messageCardHtml);
+function getMessages() {
+  fetch(API_ENDPOINT + "/get-messages")
+    .then(response => response.json())
+    .then(data => {
+      var messagesHTML = "<h2>Mensajes:</h2><ul>";
+      data.forEach(message => {
+        messagesHTML += "<li><strong>Usuario:</strong> " + message.user + "<br><strong>Mensaje:</strong> " + message.message + "</li>";
       });
-    },
-    error: function () {
-      alert("Error. No pueden visualizarse los mensajes.");
-    }
-  });
+      messagesHTML += "</ul>";
+      document.getElementById("showMessages").innerHTML = messagesHTML;
+    })
+    .catch(error => {
+      console.error('Error al obtener los mensajes:', error);
+    });
 }

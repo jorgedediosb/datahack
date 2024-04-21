@@ -39,7 +39,6 @@ Finalizado el despliegue indicará los endpoints y las funciones:
     insertProduct: datahack-cloud-dev-insertProduct
     getProduct: datahack-cloud-dev-getProduct
   
-
 FUNCIONES
   Enviar mensajes:
     curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "message":"hola mundo!"}' https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-message
@@ -53,16 +52,17 @@ FUNCIONES
 
 ACCESO INTERFAZ WEB:
   Acceder a las ditribuciones activas:
+    al ejecurar 'sls client deploy' devuelve:
+    Success! Your site should be available at http://datahack-cloud.s3-website-eu-west-1.amazonaws.com/
+
     aws cloudfront list-distributions
     > abrir en navegador el DomainName (similar a d1parznpwmoz4t.cloudfront.net) del Item con descripción: 'Datahack Cloud'
 
   Cargar archivos directorio 'web' en el bucket:
     aws s3 cp web/ s3://datahack-cloud/ --recursive
     curl https://datahack-cloud.s3-eu-west-1.amazonaws.com/index.html o visitar enlace en navegador
-    > no he logrado que funcione la opción "package/include: - web/**" en el yaml para cargarlos automáticamente
 
-  > La interfaz web sólo  tiene las funciones de enviar mensajes y leer mensajes (fue la prueba inicial).
-  > NO HE LOGRADO QUE FUNCIONEN LAS FUNCIONES EN LA INTERFAZ WEB (en consola SI funcionan)
+  > La interfaz web sólo  tiene las funciones de enviar mensajes y leer mensajes ya que no he logrado que se capture la url de la API (en consola SI funcionan)
   > Pude 'cargar' manualmente en proyecto en AWS con los mismos servicios y  el funcionamiento es perfecto.
   > Enlace interfaz cargada en AWS manualmente: https://d1671x27qva124.cloudfront.net
 

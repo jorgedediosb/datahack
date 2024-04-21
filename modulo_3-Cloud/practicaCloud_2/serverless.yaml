@@ -6,23 +6,25 @@ provider:
   region: eu-west-1
   stage: dev
   environment:
-    API_ENDPOINT: !Sub "https://${resources.Resources.ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+    API_ENDPOINT: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
     MessagesTable: datahack-mensajes
     ProductsTable: datahack-productos
 
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        - dynamodb:BatchWriteItem
-      Resource:
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
 
 plugins:
   - serverless-s3-sync
@@ -47,13 +49,31 @@ custom:
       localDir: web
 
 functions:
+  getApiEndpoint:
+    handler: handler.get_api_endpoint
+    events:
+      - http:
+          path: /get-api-endpoint
+          method: get
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
+
   insertMessage:
     handler: handler.insert_message
     events:
       - http:
           path: /insert-message
           method: post
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   getMessages:
     handler: handler.get_messages
@@ -61,7 +81,12 @@ functions:
       - http:
           path: /get-messages
           method: get
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   insertProduct:
     handler: handler.insert_product
@@ -69,7 +94,12 @@ functions:
       - http:
           path: /insert-product
           method: post
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   getProduct:
     handler: handler.get_products
