@@ -81,24 +81,6 @@ PRÁCTICA HADOOP
  ![msql](images/7.png)
 
 
-5. Otros insight valioso que pudiéramos extraer de los datos procesados:
-
-    -Tendencias de género:
-    analizar las preferencias de género de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones para películas de distintos géneros y comparar cómo difieren las preferencias entre hombres y mujeres.
-
-    - Análisis temporal:
-    investigar cómo ha evolucionado el comportamiento de los usuarios con el tiempo analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
-
-    - Análisis de la participación del usuario:
-    examinar la frecuencia con la que los usuarios califican películas y si hay algún patrón en la participación de los usuarios según su edad, género u ocupación.
-
-    - Identificación de películas subvaloradas o sobrevaloradas:
-    identificar películas que han recibido calificaciones significativamente más altas o más bajas de lo esperado en función de las calificaciones promedio de otras películas similares.
-
-    - Recomendaciones de películas:
-    Utilizando algoritmos de recomendación, desarrollar un sistema de recomendación que sugiera películas a los usuarios en función de sus calificaciones anteriores y de las calificaciones de usuarios similares.
-
-
 **SQOOP**
 
 - IMPORTACIÓN DE MYSQL A HDFS:
@@ -133,3 +115,40 @@ PRÁCTICA HADOOP
     GROUP BY m.movie_id, m.title
     ORDER BY num_opiniones DESC
     LIMIT 1;
+
+2. Los 10 usuarios más activos a la hora de puntuar películas:
+    SELECT user_id, COUNT(*) AS num_calificaciones FROM ratings
+    GROUP BY user_id
+    ORDER BY num_calificaciones DESC
+    LIMIT 10;
+
+3. Las tres mejores películas según los scores:
+    SELECT m.movie_id, m.title, AVG(r.rating) AS avg_rating FROM movies m
+    JOIN ratings r ON m.movie_id = r.movie_id
+    GROUP BY m.movie_id, m.title
+    ORDER BY avg_rating DESC
+    LIMIT 3;
+    
+4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
+    SELECT u.occupation, COUNT(*) AS num_calificaciones FROM users u
+    JOIN ratings r ON u.user_id = r.user_id
+    GROUP BY u.occupation
+    ORDER BY num_calificaciones DESC
+    LIMIT 1;
+
+5. Otros insight valioso que pudiéramos extraer de los datos procesados:
+
+    - Tendencias de género:
+    analizar las preferencias de género de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones para películas de distintos géneros y comparar cómo difieren las preferencias entre hombres y mujeres.
+
+    - Análisis temporal:
+    investigar cómo ha evolucionado el comportamiento de los usuarios con el tiempo analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
+
+    - Análisis de la participación del usuario:
+    examinar la frecuencia con la que los usuarios califican películas y si hay algún patrón en la participación de los usuarios según su edad, género u ocupación.
+
+    - Identificación de películas subvaloradas o sobrevaloradas:
+    identificar películas que han recibido calificaciones significativamente más altas o más bajas de lo esperado en función de las calificaciones promedio de otras películas similares.
+
+    - Recomendaciones de películas:
+    Utilizando algoritmos de recomendación, desarrollar un sistema de recomendación que sugiera películas a los usuarios en función de sus calificaciones anteriores y de las calificaciones de usuarios similares.
