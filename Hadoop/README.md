@@ -1,8 +1,8 @@
 PRÁCTICA HADOOP
 
-## Ejercicio 1
+# Ejercicio 1
 
-# IMPORTACIÓN DATASETS
+**IMPORTACIÓN DATASETS**
 - DESCARGA DATASETS
     > Repositorio: https://github.com/dgarciaesc/sample_dataset
 
@@ -17,7 +17,7 @@ PRÁCTICA HADOOP
     > cambiar en todos los datasets
 
 
-# MSQL
+**MSQL**
 - CREAR DATABASE + TABLAS + CARGAR DATOS
     $ mysql -uroot -pcloudera
     $ CREATE DATABASE practica_hadoop;
