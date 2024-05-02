@@ -44,13 +44,13 @@ PRÁCTICA HADOOP
 **CONSULTAS CON MYSQL**
 
     1. Película con más opiniones:
-    - $ SELECT m.MovieID, m.Title,
+    SELECT m.MovieID, m.Title,
     COUNT(r.MovieID) AS num_opiniones FROM movies m
     JOIN ratings r ON m.MovieID = r.MovieID
     GROUP BY m.MovieID, m.Title
     ORDER BY num_opiniones DESC LIMIT 1;
 
-    ![msql](images/4.png)
+![Consulta 1](images/4.png)
 
     2. Los 10 usuarios más activos a la hora de puntuar películas:
     - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
@@ -58,7 +58,7 @@ PRÁCTICA HADOOP
     ORDER BY num_calificaciones DESC
     LIMIT 10;
 
-    ![msql](images/5.png)
+![msql](images/5.png)
 
 
     3. Las tres mejores películas según los scores:
@@ -68,7 +68,7 @@ PRÁCTICA HADOOP
     ORDER BY avg_rating DESC
     LIMIT 3;
     
-    ![msql](images/6.png)
+![msql](images/6.png)
 
     4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
     - $ SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
@@ -78,7 +78,7 @@ PRÁCTICA HADOOP
     LIMIT 1;
     **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’???**
 
-    ![msql](images/7.png)
+![msql](images/7.png)
 
 
     5. Otros insight valioso que pudiéramos extraer de los datos procesados:
@@ -112,13 +112,24 @@ PRÁCTICA HADOOP
 **HIVE**
 
 - CREAR 'BASE DE DATOS' Y TABLAS:
- $ hive
- $ CREATE DATABASE practica_hadoop;
- $ show databases; —> Comprobar que se ha creado
- $ use practica_hadoop; —> Entrar en la base de datos
+    - $ hive
+    - $ CREATE DATABASE practica_hadoop;
+    - $ show databases; —> Comprobar que se ha creado
+    - $ use practica_hadoop; —> Entrar en la base de datos
 
-$ CREATE EXTERNAL TABLE movies (movie_id INT, title STRING, genres STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' LOCATION '/hdfs-practica-hadoop/movies';
+    - $ CREATE EXTERNAL TABLE movies (movie_id INT, title STRING, genres STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' LOCATION '/hdfs-practica-hadoop/movies';
 
-$ CREATE EXTERNAL TABLE users (user_id INT, gender STRING, age INT, occupation INT, zip_code STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' LOCATION ‘/hdfs-practica-hadoop/users';
+    - $ CREATE EXTERNAL TABLE users (user_id INT, gender STRING, age INT, occupation INT, zip_code STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' LOCATION ‘/hdfs-practica-hadoop/users';
 
-$ CREATE EXTERNAL TABLE ratings (user_id INT, movie_id INT, rating INT, timestamp INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/hdfs-practica-hadoop/ratings';
+    - $ CREATE EXTERNAL TABLE ratings (user_id INT, movie_id INT, rating INT, timestamp INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/hdfs-practica-hadoop/ratings';
+
+
+**CONSULTAS HIVE**
+
+1. Película con más opiniones:
+    - $ SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
+    FROM movies m
+    JOIN ratings r ON m.movie_id = r.movie_id
+    GROUP BY m.movie_id, m.title
+    ORDER BY num_opiniones DESC
+    LIMIT 1;
