@@ -12,9 +12,9 @@ PRÁCTICA HADOOP
 ![importación](images/1.png)
 
 - COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
-    > $ ls /home/cloudera/dh-course/dataset_practica/
-    > $ chmod 777 movies.dat
-    - cambiar en todos los datasets
+    $ ls /home/cloudera/dh-course/dataset_practica/
+    $ chmod 777 movies.dat
+    > cambiar en todos los datasets
 
 
 **MSQL**
