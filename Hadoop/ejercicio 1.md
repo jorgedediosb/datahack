@@ -24,18 +24,35 @@ PRÁCTICA HADOOP
     - $ mysql -uroot -pcloudera
     - $ CREATE DATABASE practica_hadoop;
     - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat' INTO TABLE movies FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n';
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat'
+        INTO TABLE movies
+        FIELDS TERMINATED BY '::'
+        LINES TERMINATED BY '\n';
     - $ select * from movies limit 5; -> Comprobar importación
 
     ![msql](images/2.png)
 
 2. CREAR TABLAS 'users', 'ratings' + IMPORTAR DATOS:
     - $ CREATE TABLE users (UserID INT PRIMARY KEY, Gender CHAR(1), Age INT, Occupation INT, ZipCode VARCHAR(10));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/users.dat' INTO TABLE users FIELDS TERMINATED BY '::' LINES TERMINATED BY ‘\n’ (UserID, Gender, Age, Occupation, ZipCode);
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/users.dat'
+        INTO TABLE users
+        FIELDS TERMINATED BY '::'
+        LINES TERMINATED BY ‘\n’ (UserID, Gender, Age, Occupation, ZipCode);
 
-    - $ CREATE TABLE ratings (UserID INT PRIMARY KEY, MovieID INT, Rating INT, Timestamp INT, FOREIGN KEY (UserID) REFERENCES users(UserID), FOREIGN KEY (MovieID) REFERENCES movies(MovieID));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/ratings.dat' INTO TABLE ratings FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n' (UserID, MovieID, Rating, Timestamp);
+    - $ CREATE TABLE ratings (RatingID INT PRIMARY KEY, MovieID INT, Rating INT, Timestamp INT,
+        FOREIGN KEY (RatingID) REFERENCES users(UserID),
+        FOREIGN KEY (MovieID) REFERENCES movies(MovieID));
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/ratings.dat'
+        INTO TABLE ratings FIELDS
+        FIELDS TERMINATED BY '::'
+        LINES TERMINATED BY '\n' (RatingID, MovieID, Rating, Timestamp);
 
+    **CREACIÓN TABLA OCUPACIONES**
+    - $ CREATE TABLE occupations (OcupationID INT PRIMARY KEY, Choise VARCHAR(255));
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/occupations.dat'
+        INTO TABLE occupations
+        FIELDS TERMINATED BY ': '
+        LINES TERMINATED BY '\n';
     > Se crearán archivos .java en la carpeta desde importamos los datos a MySql **(¡¿O LO HACE CUANDO IMPORTAMOS CON SQOOP?!)**
 
     ![msql](images/3.png)
@@ -44,60 +61,52 @@ PRÁCTICA HADOOP
 **CONSULTAS MYSQL**
 
 1. Película con más opiniones:
-    '''
-    SELECT m.MovieID, m.Title,
-    COUNT(r.MovieID) AS num_opiniones FROM movies m
-    JOIN ratings r ON m.MovieID = r.MovieID
-    GROUP BY m.MovieID, m.Title
-    ORDER BY num_opiniones DESC LIMIT 1;
-    '''
+    - $ SELECT m.MovieID, m.Title,
+        COUNT(r.MovieID) AS num_opiniones FROM movies m
+        JOIN ratings r ON m.MovieID = r.MovieID
+        GROUP BY m.MovieID, m.Title
+        ORDER BY num_opiniones DESC LIMIT 1;
 
- ![Consulta 1](images/4.png)
+    ![Consulta 1](images/4.png)
 
 2. Los 10 usuarios más activos a la hora de puntuar películas:
-    '''
-    SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
-    GROUP BY UserID
-    ORDER BY num_calificaciones DESC
-    LIMIT 10;
-    '''
+    - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
+        GROUP BY UserID
+        ORDER BY num_calificaciones DESC
+        LIMIT 10;
 
- ![msql](images/5.png)
+    ![msql](images/5.png)
 
 
 3. Las tres mejores películas según los scores:
-    '''
-    SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
-    JOIN ratings r ON m.MovieID = r.MovieID
-    GROUP BY m.MovieID, m.Title
-    ORDER BY avg_rating DESC
-    LIMIT 3;
-    '''
+    - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
+        JOIN ratings r ON m.MovieID = r.MovieID
+        GROUP BY m.MovieID, m.Title
+        ORDER BY avg_rating DESC
+        LIMIT 3;
     
- ![msql](images/6.png)
+    ![msql](images/6.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    '''
-    SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
-    JOIN ratings r ON u.UserID = r.UserID
-    GROUP BY u.Occupation
-    ORDER BY num_calificaciones DESC
-    LIMIT 1;
-    '''
+    - $ SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
+        JOIN ratings r ON u.UserID = r.UserID
+        GROUP BY u.Occupation
+        ORDER BY num_calificaciones DESC
+        LIMIT 1;
+
     **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’???**
 
- ![msql](images/7.png)
+    ![msql](images/7.png)
 
 
 **SQOOP**
 
 - IMPORTACIÓN DE MYSQL A HDFS:
-    '''
-    $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop
-    --username root --password cloudera
-    --table movies
-    --warehouse-dir /hdfs-practica-hadoop
-    '''
+    - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop
+        --username root --password cloudera
+        --table movies
+        --warehouse-dir /hdfs-practica-hadoop
+
     > cambiar el nombre de cada tabla a importar si al usar 'import-all-tables' da problemas.
     > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
     > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
@@ -107,70 +116,65 @@ PRÁCTICA HADOOP
 **HIVE**
 
 - CREAR 'BASE DE DATOS' Y TABLAS:
-    '''
-    $ hive
-    $ CREATE DATABASE practica_hadoop;
-    $ show databases; —> Comprobar que se ha creado
-    $ use practica_hadoop; —> Entrar en la base de datos
+    - $ hive
+    - $ CREATE DATABASE practica_hadoop;
+    - $ show databases; —> Comprobar que se ha creado
+    - $ use practica_hadoop; —> Entrar en la base de datos
 
-    $ CREATE EXTERNAL TABLE movies (movie_id INT, title STRING, genres STRING)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\n'
-    LOCATION '/hdfs-practica-hadoop/movies';
+    - $ CREATE EXTERNAL TABLE movies (movie_id INT, title STRING, genres STRING)
+        ROW FORMAT DELIMITED
+        FIELDS TERMINATED BY ','
+        LINES TERMINATED BY '\n'
+        LOCATION '/hdfs-practica-hadoop/movies';
 
-    $ CREATE EXTERNAL TABLE users (user_id INT, gender STRING, age INT, occupation INT, zip_code STRING)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\n'
-    LOCATION ‘/hdfs-practica-hadoop/users';
+    - $ CREATE EXTERNAL TABLE users (user_id INT, gender STRING, age INT, occupation INT, zip_code STRING)
+        ROW FORMAT DELIMITED
+        FIELDS TERMINATED BY ','
+        LINES TERMINATED BY '\n'
+        LOCATION ‘/hdfs-practica-hadoop/users';
 
-    $ CREATE EXTERNAL TABLE ratings (user_id INT, movie_id INT, rating INT, timestamp INT)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    LINES TERMINATED BY '\n'
-    LOCATION '/hdfs-practica-hadoop/ratings';
-    '''
+    - $ CREATE EXTERNAL TABLE ratings (RatingID INT, MovieID INT, rating INT, timestamp INT)
+        FOREIGN KEY (RatingID) REFERENCES users(UserID)
+        FOREIGN KEY (MovieID) REFERENCES movies(MovieID)
+        ROW FORMAT DELIMITED
+        FIELDS TERMINATED BY ','
+        LINES TERMINATED BY '\n'
+        LOCATION '/hdfs-practica-hadoop/ratings';
+
 
 **CONSULTAS HIVE**
 
 1. Película con más opiniones:
-    '''
-    SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
-    FROM movies m
-    JOIN ratings r ON m.movie_id = r.movie_id
-    GROUP BY m.movie_id, m.title
-    ORDER BY num_opiniones DESC
-    LIMIT 1;
-    '''
+    - $ SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
+        FROM movies m
+        JOIN ratings r ON m.movie_id = r.movie_id
+        GROUP BY m.movie_id, m.title
+        ORDER BY num_opiniones DESC
+        LIMIT 1;
 
 2. Los 10 usuarios más activos a la hora de puntuar películas:
-    '''
-    SELECT user_id, COUNT(*) AS num_calificaciones FROM ratings
-    GROUP BY user_id
-    ORDER BY num_calificaciones DESC
-    LIMIT 10;
-    '''
+    - $ SELECT user_id, COUNT(*) AS num_calificaciones FROM ratings
+        GROUP BY user_id
+        ORDER BY num_calificaciones DESC
+        LIMIT 10;
 
 3. Las tres mejores películas según los scores:
-    '''
-    SELECT m.movie_id, m.title, AVG(r.rating) AS avg_rating FROM movies m
-    JOIN ratings r ON m.movie_id = r.movie_id
-    GROUP BY m.movie_id, m.title
-    ORDER BY avg_rating DESC
-    LIMIT 3;
-    '''
-    ![consulta hive 3](images/consulta hive 3.png)
+    - $ SELECT m.movie_id, m.title, AVG(r.rating) AS avg_rating FROM movies m
+        JOIN ratings r ON m.movie_id = r.movie_id
+        GROUP BY m.movie_id, m.title
+        ORDER BY avg_rating DESC
+        LIMIT 3;
+
+    ![consulta hive 3](images/consulta_hive-3.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    '''
-    SELECT u.occupation, COUNT(*) AS num_calificaciones FROM users u
-    JOIN ratings r ON u.user_id = r.user_id
-    GROUP BY u.occupation
-    ORDER BY num_calificaciones DESC
-    LIMIT 1;
-    '''
-    ![consulta hive 4](images/consulta hive 4.png)
+    - $ SELECT u.occupation, COUNT(*) AS num_calificaciones FROM users u
+        JOIN ratings r ON u.user_id = r.user_id
+        GROUP BY u.occupation
+        ORDER BY num_calificaciones DESC
+        LIMIT 1;
+    
+    ![consulta hive 4](images/consulta_hive-4.png)
 
     > 4 corresponde a: "college/grad student"
     **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’**
