@@ -18,7 +18,7 @@ PRÁCTICA HADOOP
 
 
 **MSQL**
-CREAR DATABASE + TABLAS + CARGAR DATOS:
+- CREAR DATABASE + TABLAS + CARGAR DATOS:
     - $ mysql -uroot -pcloudera
     - $ CREATE DATABASE practica_hadoop;
     - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
