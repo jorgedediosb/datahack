@@ -4,15 +4,15 @@ PRÁCTICA HADOOP
 
 **IMPORTACIÓN DATASETS**
 
-- DESCARGA DATASETS
+1. DESCARGA DATASETS
     - Repositorio: https://github.com/dgarciaesc/sample_dataset
 
-- IMPORTACIÓN DATASETS A VIRTUALBOX/CLOUDERA
+2. IMPORTACIÓN DATASETS A VIRTUALBOX/CLOUDERA
     - Con la herramienta 'File Manager' (menú 'Machine' -> Usuario=cloudera, Password=cloudera)
 
 ![importación](images/1.png)
 
-- COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
+3. COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
     $ ls /home/cloudera/dh-course/dataset_practica/
     $ chmod 777 movies.dat
     > cambiar en todos los datasets
@@ -53,7 +53,7 @@ PRÁCTICA HADOOP
 ![Consulta 1](images/4.png)
 
     2. Los 10 usuarios más activos a la hora de puntuar películas:
-    - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
+    SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
     GROUP BY UserID
     ORDER BY num_calificaciones DESC
     LIMIT 10;
@@ -62,7 +62,7 @@ PRÁCTICA HADOOP
 
 
     3. Las tres mejores películas según los scores:
-    - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
+    SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
     JOIN ratings r ON m.MovieID = r.MovieID
     GROUP BY m.MovieID, m.Title
     ORDER BY avg_rating DESC
@@ -71,7 +71,7 @@ PRÁCTICA HADOOP
 ![msql](images/6.png)
 
     4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    - $ SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
+    SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
     JOIN ratings r ON u.UserID = r.UserID
     GROUP BY u.Occupation
     ORDER BY num_calificaciones DESC
