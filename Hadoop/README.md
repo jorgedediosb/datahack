@@ -18,12 +18,12 @@ PRÁCTICA HADOOP
 
 
 **MSQL**
-- CREAR DATABASE + TABLAS + CARGAR DATOS:
-    > $ mysql -uroot -pcloudera
-    > $ CREATE DATABASE practica_hadoop;
-    > $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
-    > $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat' INTO TABLE movies FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n';
-    > $ select * from movies limit 5; -> Comprobar importación
+CREAR DATABASE + TABLAS + CARGAR DATOS:
+    - $ mysql -uroot -pcloudera
+    - $ CREATE DATABASE practica_hadoop;
+    - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat' INTO TABLE movies FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n';
+    - $ select * from movies limit 5; -> Comprobar importación
 
 ![msql](images/2.png)
 
