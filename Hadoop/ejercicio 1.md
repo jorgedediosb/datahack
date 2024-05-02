@@ -44,11 +44,13 @@ PRÁCTICA HADOOP
 **CONSULTAS MYSQL**
 
 1. Película con más opiniones:
+    ```
     SELECT m.MovieID, m.Title,
     COUNT(r.MovieID) AS num_opiniones FROM movies m
     JOIN ratings r ON m.MovieID = r.MovieID
     GROUP BY m.MovieID, m.Title
     ORDER BY num_opiniones DESC LIMIT 1;
+    ```
 
  ![Consulta 1](images/4.png)
 
@@ -85,6 +87,7 @@ PRÁCTICA HADOOP
 
 - IMPORTACIÓN DE MYSQL A HDFS:
     - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
+
     > cambiar el nombre de cada tabla a importar si al usar 'import-all-tables' da problemas.
     > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
     > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
