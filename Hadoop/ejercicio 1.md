@@ -10,67 +10,67 @@ PRÁCTICA HADOOP
 2. IMPORTACIÓN DATASETS A VIRTUALBOX/CLOUDERA
     - Con la herramienta 'File Manager' (menú 'Machine' -> Usuario=cloudera, Password=cloudera)
 
-![importación](images/1.png)
+    ![importación](images/1.png)
 
 3. COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
-    $ ls /home/cloudera/dh-course/dataset_practica/
-    $ chmod 777 movies.dat
+    - $ ls /home/cloudera/dh-course/dataset_practica/
+    - $ chmod 777 movies.dat
     > cambiar en todos los datasets
 
 
 **MSQL**
 
-- CREAR DATABASE + TABLAS + CARGAR DATOS:
+1. CREAR DATABASE + TABLAS + CARGAR DATOS:
     - $ mysql -uroot -pcloudera
     - $ CREATE DATABASE practica_hadoop;
     - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat' INTO TABLE movies FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n';
     - $ select * from movies limit 5; -> Comprobar importación
 
-![msql](images/2.png)
+    ![msql](images/2.png)
 
-- CREAR TABLAS 'users', 'ratings' + IMPORTAR DATOS:
+2. CREAR TABLAS 'users', 'ratings' + IMPORTAR DATOS:
     - $ CREATE TABLE users (UserID INT PRIMARY KEY, Gender CHAR(1), Age INT, Occupation INT, ZipCode VARCHAR(10));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/users.dat' INTO TABLE users FIELDS TERMINATED BY '::' LINES TERMINATED BY ‘\n’ (UserID, Gender, Age, Occupation, ZipCode);
 
     - $ CREATE TABLE ratings (UserID INT PRIMARY KEY, MovieID INT, Rating INT, Timestamp INT, FOREIGN KEY (UserID) REFERENCES users(UserID), FOREIGN KEY (MovieID) REFERENCES movies(MovieID));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/ratings.dat' INTO TABLE ratings FIELDS TERMINATED BY '::' LINES TERMINATED BY '\n' (UserID, MovieID, Rating, Timestamp);
 
-    - Se crearán archivos .java en la carpeta desde importamos los datos a MySql **(¡¿O LO HACE CUANDO IMPORTAMOS CON SQOOP?!)**
+    > Se crearán archivos .java en la carpeta desde importamos los datos a MySql **(¡¿O LO HACE CUANDO IMPORTAMOS CON SQOOP?!)**
 
     ![msql](images/3.png)
 
 
-**CONSULTAS CON MYSQL**
+**CONSULTAS MYSQL**
 
-    1. Película con más opiniones:
+1. Película con más opiniones:
     SELECT m.MovieID, m.Title,
     COUNT(r.MovieID) AS num_opiniones FROM movies m
     JOIN ratings r ON m.MovieID = r.MovieID
     GROUP BY m.MovieID, m.Title
     ORDER BY num_opiniones DESC LIMIT 1;
 
-![Consulta 1](images/4.png)
+ ![Consulta 1](images/4.png)
 
-    2. Los 10 usuarios más activos a la hora de puntuar películas:
+2. Los 10 usuarios más activos a la hora de puntuar películas:
     SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
     GROUP BY UserID
     ORDER BY num_calificaciones DESC
     LIMIT 10;
 
-![msql](images/5.png)
+ ![msql](images/5.png)
 
 
-    3. Las tres mejores películas según los scores:
+3. Las tres mejores películas según los scores:
     SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
     JOIN ratings r ON m.MovieID = r.MovieID
     GROUP BY m.MovieID, m.Title
     ORDER BY avg_rating DESC
     LIMIT 3;
     
-![msql](images/6.png)
+ ![msql](images/6.png)
 
-    4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
+4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
     SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
     JOIN ratings r ON u.UserID = r.UserID
     GROUP BY u.Occupation
@@ -78,10 +78,10 @@ PRÁCTICA HADOOP
     LIMIT 1;
     **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’???**
 
-![msql](images/7.png)
+ ![msql](images/7.png)
 
 
-    5. Otros insight valioso que pudiéramos extraer de los datos procesados:
+5. Otros insight valioso que pudiéramos extraer de los datos procesados:
 
     -Tendencias de género:
     analizar las preferencias de género de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones para películas de distintos géneros y comparar cómo difieren las preferencias entre hombres y mujeres.
@@ -127,7 +127,7 @@ PRÁCTICA HADOOP
 **CONSULTAS HIVE**
 
 1. Película con más opiniones:
-    - $ SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
+    SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
     FROM movies m
     JOIN ratings r ON m.movie_id = r.movie_id
     GROUP BY m.movie_id, m.title
