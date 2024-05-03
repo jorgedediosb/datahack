@@ -12,7 +12,7 @@ PRÁCTICA HADOOP
     - Con la herramienta 'File Manager' de VirtualBox desde menú 'Machine'
     > Usuario = cloudera, Password = cloudera
 
-    ![importación](images/1.png)
+    ![importación](images/import-dataset.png)
 
 3. COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
     - $ ls /home/cloudera/dh-course/sample_dataset-main/
@@ -25,15 +25,17 @@ PRÁCTICA HADOOP
 
 1. CREAR DATABASE + TABLAS + CARGAR DATOS:
     - $ mysql -uroot -pcloudera
+    - $ show databases;
     - $ CREATE DATABASE practica_hadoop;
+    - $ use practica_hadoop;
     - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/movies.dat'
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/sample_dataset-main/movies.dat'
         INTO TABLE movies
         FIELDS TERMINATED BY '::'
         LINES TERMINATED BY '\n';
     - $ select * from movies limit 5; -> Comprobar importación
 
-    ![msql](images/2.png)
+    ![msql](images/mysql-load-data.png.png)
 
 2. CREAR TABLAS 'users', 'ratings' + IMPORTAR DATOS:
     - $ CREATE TABLE users (UserID INT PRIMARY KEY, Gender CHAR(1), Age INT, Occupation INT, ZipCode VARCHAR(10));
