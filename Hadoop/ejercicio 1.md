@@ -38,7 +38,6 @@ PRÁCTICA HADOOP
 
     ![msql](images/mysql-load-data.png)
 
-2. CREAR RESTO DE TABLAS ('users', 'ratings' y 'occupations') + IMPORTAR DATOS:
     - $ CREATE TABLE users (UserID INT PRIMARY KEY, Gender CHAR(1), Age INT, Occupation INT, ZipCode VARCHAR(10));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/sample_dataset-main/users.dat'
         INTO TABLE users
@@ -173,7 +172,7 @@ PRÁCTICA HADOOP
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION '/hdfs-practica-hadoop2/ratings';
+        LOCATION '/hdfs-practica-hadoop2/occupations';
 
     > Hive no usa 'primary keys' ni 'foreing key' y los 'varchar' pueden ser 'string'
 
@@ -196,7 +195,6 @@ PRÁCTICA HADOOP
 
     ![consulta sqoop](images/hive-consulta2.png)
 
-
 3. Las tres mejores películas según los scores:
     - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
         JOIN ratings r ON m.MovieID = r.MovieID
@@ -207,30 +205,43 @@ PRÁCTICA HADOOP
     ![consulta sqoop](images/hive-consulta3.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    - $ SELECT u.occupation, COUNT(*) AS num_calificaciones FROM users u
+    - Profesión que más calificaciones hace:
+    - $ SELECT o.OccupationName, COUNT(*) AS num_calificaciones
+        FROM users u
         JOIN ratings r ON u.UserID = r.UserID
-        GROUP BY u.occupation
+        JOIN occupations o ON u.Occupation = o.OccupationID
+        GROUP BY o.OccupationName
         ORDER BY num_calificaciones DESC
         LIMIT 1;
     
     ![consulta sqoop](images/hive-consulta4.png)
 
-    > 4 corresponde a: "college/grad student"
-    **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’**
-
 5. Otros insight valiosos que pudiéramos extraer de los datos procesados:
 
-    - Tendencias de género:
-    analizar las preferencias de género de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones para películas de distintos géneros y comparar cómo difieren las preferencias entre hombres y mujeres.
+    - Analisis de las preferencias de género cinematográfico de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones de distintos géneros y cómo difieren las preferencias entre hombres y mujeres.
 
-    - Análisis temporal:
-    investigar cómo ha evolucionado el comportamiento de los usuarios con el tiempo analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
+    - $ SELECT m.Genres,
+        AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
+        AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
+        FROM ratings r JOIN movies m ON r.MovieID = m.MovieID
+        JOIN users u ON r.UserID = u.UserID
+        GROUP BY m.Genres;
 
-    - Análisis de la participación del usuario:
-    examinar la frecuencia con la que los usuarios califican películas y si hay algún patrón en la participación de los usuarios según su edad, género u ocupación.
+    - Análisis de la evolución del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
 
-    - Identificación de películas subvaloradas o sobrevaloradas:
-    identificar películas que han recibido calificaciones significativamente más altas o más bajas de lo esperado en función de las calificaciones promedio de otras películas similares.
+    - $ SELECT
+        MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
+        YEAR(FROM_UNIXTIME(r.Timestamp)) AS Year,
+        COUNT(*) AS Total_Ratings,
+        AVG(r.Rating) AS Average_Rating FROM ratings r
+        GROUP BY MONTH(FROM_UNIXTIME(r.Timestamp)), YEAR(FROM_UNIXTIME(r.Timestamp))
+        ORDER BY Year, Month;
 
-    - Recomendaciones de películas:
-    Utilizando algoritmos de recomendación, desarrollar un sistema de recomendación que sugiera películas a los usuarios en función de sus calificaciones anteriores y de las calificaciones de usuarios similares.
+    - Análisis de la participación del usuario mediante el número total de calificaciones y el promedio de calificaciones para cada grupo de edad, género y ocupación.
+
+    - $ SELECT u.Age AS Age_Group, u.Gender AS Gender, o.OccupationName AS Occupation,
+        COUNT(*) AS Total_Ratings,
+        AVG(r.Rating) AS Average_Rating
+        FROM ratings r JOIN users u ON r.UserID = u.UserID JOIN occupations o ON u.Occupation = o.OccupationID
+        GROUP BY u.Age, u.Gender, o.OccupationName
+        ORDER BY Total_Ratings DESC;
