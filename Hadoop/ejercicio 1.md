@@ -126,19 +126,22 @@ PRÁCTICA HADOOP
 **SQOOP**
 
 - IMPORTACIÓN DE MYSQL A HDFS:
-    - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop
-        --username root --password cloudera
-        --table movies
-        --warehouse-dir /hdfs-practica-hadoop
+    - $ sqoop import-all-tables --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
 
-    > cambiar el nombre de cada tabla a importar si al usar 'import-all-tables' da problemas.
+    > Si no importa todas las tablas, cambiar a 'import' y añadir --table nombre_tabla al importar.
+
+    - Importación de tabla ratings (al no tener Primary Key debe importarse con 'split-by'):
+        - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table ratings --target-dir /hdfs-practica-hadoop/ratings --split-by UserID
+
+    ![importación sqoop](images/sqoop-import.png)
+
     > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
     > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
     > --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
 
     - Se crearán archivos .java en la carpeta de los datasets
 
-    ![msql](images/3.png)
+    ![importación sqoop](images/sqoop-import2.png)
 
 **HIVE**
 
@@ -148,65 +151,74 @@ PRÁCTICA HADOOP
     - $ show databases; —> Comprobar que se ha creado
     - $ use practica_hadoop; —> Entrar en la base de datos
 
-    - $ CREATE EXTERNAL TABLE movies (movie_id INT, title STRING, genres STRING)
+    - $ CREATE EXTERNAL TABLE movies (MovieID INT, Title STRING, Genres STRING)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
         LOCATION '/hdfs-practica-hadoop/movies';
 
-    - $ CREATE EXTERNAL TABLE users (user_id INT, gender STRING, age INT, occupation INT, zip_code STRING)
+    - $ CREATE EXTERNAL TABLE users (UserID INT, Gender STRING, Age INT, Occupation INT, zip_code STRING)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION ‘/hdfs-practica-hadoop/users';
+        LOCATION '/hdfs-practica-hadoop2/users';
 
-    - $ CREATE EXTERNAL TABLE ratings (RatingID INT, MovieID INT, rating INT, timestamp INT)
-        FOREIGN KEY (RatingID) REFERENCES users(UserID)
-        FOREIGN KEY (MovieID) REFERENCES movies(MovieID)
+    - $ CREATE EXTERNAL TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp INT)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION '/hdfs-practica-hadoop/ratings';
+        LOCATION '/hdfs-practica-hadoop2/ratings';
 
+    - $ CREATE EXTERNAL TABLE occupations (OccupationID INT, OccupationName STRING)
+        ROW FORMAT DELIMITED
+        FIELDS TERMINATED BY ','
+        LINES TERMINATED BY '\n'
+        LOCATION '/hdfs-practica-hadoop2/ratings';
+
+    > Hive no usa 'primary keys' ni 'foreing key' y los 'varchar' pueden ser 'string'
 
 **CONSULTAS HIVE**
 
 1. Película con más opiniones:
-    - $ SELECT m.movie_id, m.Title, COUNT(r.movie_id) AS num_opiniones
-        FROM movies m
-        JOIN ratings r ON m.movie_id = r.movie_id
-        GROUP BY m.movie_id, m.title
-        ORDER BY num_opiniones DESC
-        LIMIT 1;
+    - $ SELECT m.MovieID, m.Title,
+        COUNT(r.MovieID) AS num_opiniones FROM movies m
+        JOIN ratings r ON m.MovieID = r.MovieID
+        GROUP BY m.MovieID, m.Title
+        ORDER BY num_opiniones DESC LIMIT 1;
+
+    ![consulta sqoop](images/hive-consulta1.png)
 
 2. Los 10 usuarios más activos a la hora de puntuar películas:
-    - $ SELECT user_id, COUNT(*) AS num_calificaciones FROM ratings
-        GROUP BY user_id
+    - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
+        GROUP BY UserID
         ORDER BY num_calificaciones DESC
         LIMIT 10;
 
+    ![consulta sqoop](images/hive-consulta2.png)
+
+
 3. Las tres mejores películas según los scores:
-    - $ SELECT m.movie_id, m.title, AVG(r.rating) AS avg_rating FROM movies m
-        JOIN ratings r ON m.movie_id = r.movie_id
-        GROUP BY m.movie_id, m.title
+    - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
+        JOIN ratings r ON m.MovieID = r.MovieID
+        GROUP BY m.MovieID, m.Title
         ORDER BY avg_rating DESC
         LIMIT 3;
 
-    ![consulta hive 3](images/consulta_hive-3.png)
+    ![consulta sqoop](images/hive-consulta3.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
     - $ SELECT u.occupation, COUNT(*) AS num_calificaciones FROM users u
-        JOIN ratings r ON u.user_id = r.user_id
+        JOIN ratings r ON u.UserID = r.UserID
         GROUP BY u.occupation
         ORDER BY num_calificaciones DESC
         LIMIT 1;
     
-    ![consulta hive 4](images/consulta_hive-4.png)
+    ![consulta sqoop](images/hive-consulta4.png)
 
     > 4 corresponde a: "college/grad student"
     **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’**
 
-5. Otros insight valioso que pudiéramos extraer de los datos procesados:
+5. Otros insight valiosos que pudiéramos extraer de los datos procesados:
 
     - Tendencias de género:
     analizar las preferencias de género de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones para películas de distintos géneros y comparar cómo difieren las preferencias entre hombres y mujeres.
