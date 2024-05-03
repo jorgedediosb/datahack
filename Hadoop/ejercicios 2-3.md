@@ -44,8 +44,6 @@ Indicar que el ecosistema Hadoop incluye herramientas como Hive o Sqoop que faci
 **EJERICIO 3**
 Herramientas del ecosistema Hadoop según los requisitos de cada caso de uso:
 
-
-
 1. Herramienta de BI - Microstrategy:
     - Posibles herramientas de Hadoop: Hive, Impala, Drill
     - Ventajas e inconvenientes:

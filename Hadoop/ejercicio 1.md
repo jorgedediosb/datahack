@@ -53,10 +53,6 @@ PRÁCTICA HADOOP
         LINES TERMINATED BY '\n';
 
     - $ CREATE TABLE occupations (OccupationID INT PRIMARY KEY, OccupationName VARCHAR(255));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/occupations.dat'
-        INTO TABLE occupations
-        FIELDS TERMINATED BY ': '
-        LINES TERMINATED BY '\n';
     - $ INSERT INTO occupations (OccupationID, OccupationName) VALUES
         (0, 'other or not specified'),
         (1, 'academic/educator'),
@@ -100,8 +96,7 @@ PRÁCTICA HADOOP
 
     ![msql](images/mysql-consulta2.png)
 
-
-3. Las tres mejores películas según los scores:
+3. Las tres mejores películas según las calificaciones:
     - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
         JOIN ratings r ON m.MovieID = r.MovieID
         GROUP BY m.MovieID, m.Title
@@ -111,6 +106,7 @@ PRÁCTICA HADOOP
     ![msql](images/mysql-consulta3.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
+    - Profesión que más calificaciones hace:
     - $ SELECT o.OccupationName, COUNT(*) AS num_calificaciones
         FROM users u
         JOIN ratings r ON u.UserID = r.UserID
@@ -128,15 +124,15 @@ PRÁCTICA HADOOP
     - $ sqoop import-all-tables --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
 
     > Si no importa todas las tablas, cambiar a 'import' y añadir --table nombre_tabla al importar.
+     - --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
+     - -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
+     - --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
 
     - Importación de tabla ratings (al no tener Primary Key debe importarse con 'split-by'):
         - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table ratings --target-dir /hdfs-practica-hadoop/ratings --split-by UserID
 
-    ![importación sqoop](images/sqoop-import.png)
-
-    > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
-    > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
-    > --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
+        ![importación sqoop](images/sqoop-import.png)
+        ![importación sqoop](images/sqoop-import3.png)
 
     - Se crearán archivos .java en la carpeta de los datasets
 
@@ -144,11 +140,11 @@ PRÁCTICA HADOOP
 
 **HIVE**
 
-- CREAR 'BASE DE DATOS' Y TABLAS:
+- CREAR BASE DE DATOS Y TABLAS:
     - $ hive
     - $ CREATE DATABASE practica_hadoop;
-    - $ show databases; —> Comprobar que se ha creado
-    - $ use practica_hadoop; —> Entrar en la base de datos
+    - $ show databases;
+    - $ use practica_hadoop;
 
     - $ CREATE EXTERNAL TABLE movies (MovieID INT, Title STRING, Genres STRING)
         ROW FORMAT DELIMITED
@@ -175,6 +171,9 @@ PRÁCTICA HADOOP
         LOCATION '/hdfs-practica-hadoop2/occupations';
 
     > Hive no usa 'primary keys' ni 'foreing key' y los 'varchar' pueden ser 'string'
+
+    ![tablas hive](images/hive-tablas.png)
+
 
 **CONSULTAS HIVE**
 
@@ -227,7 +226,7 @@ PRÁCTICA HADOOP
         JOIN users u ON r.UserID = u.UserID
         GROUP BY m.Genres;
 
-    - Análisis de la evolución del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
+    - Análisis evolución dcomportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
 
     - $ SELECT
         MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
@@ -245,3 +244,10 @@ PRÁCTICA HADOOP
         FROM ratings r JOIN users u ON r.UserID = u.UserID JOIN occupations o ON u.Occupation = o.OccupationID
         GROUP BY u.Age, u.Gender, o.OccupationName
         ORDER BY Total_Ratings DESC;
+
+
+**HUE**
+
+- Las consultas también pueden realizarse con la interfaz gráfica de Haddop 'HUE'
+
+![consulta hue](images/hue-consulta1.png)
