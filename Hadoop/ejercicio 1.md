@@ -28,6 +28,7 @@ PRÁCTICA HADOOP
     - $ show databases;
     - $ CREATE DATABASE practica_hadoop;
     - $ use practica_hadoop;
+
     - $ CREATE TABLE movies (MovieID INT PRIMARY KEY, Title VARCHAR(255), Genres VARCHAR(255));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/sample_dataset-main/movies.dat'
         INTO TABLE movies
@@ -35,29 +36,50 @@ PRÁCTICA HADOOP
         LINES TERMINATED BY '\n';
     - $ select * from movies limit 5; -> Comprobar importación
 
-    ![msql](images/mysql-load-data.png.png)
+    ![msql](images/mysql-load-data.png)
 
-2. CREAR TABLAS 'users', 'ratings' + IMPORTAR DATOS:
+2. CREAR RESTO DE TABLAS ('users', 'ratings' y 'occupations') + IMPORTAR DATOS:
     - $ CREATE TABLE users (UserID INT PRIMARY KEY, Gender CHAR(1), Age INT, Occupation INT, ZipCode VARCHAR(10));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/users.dat'
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/sample_dataset-main/users.dat'
         INTO TABLE users
         FIELDS TERMINATED BY '::'
-        LINES TERMINATED BY ‘\n’ (UserID, Gender, Age, Occupation, ZipCode);
+        LINES TERMINATED BY '\n';
 
-    - $ CREATE TABLE ratings (RatingID INT PRIMARY KEY, MovieID INT, Rating INT, Timestamp INT,
-        FOREIGN KEY (RatingID) REFERENCES users(UserID),
+    - $ CREATE TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp INT,
+        FOREIGN KEY (UserID) REFERENCES users(UserID),
         FOREIGN KEY (MovieID) REFERENCES movies(MovieID));
-    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/ratings.dat'
-        INTO TABLE ratings FIELDS
+    - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/sample_dataset-main/ratings.dat'
+        INTO TABLE ratings
         FIELDS TERMINATED BY '::'
-        LINES TERMINATED BY '\n' (RatingID, MovieID, Rating, Timestamp);
+        LINES TERMINATED BY '\n';
 
-    **CREACIÓN TABLA OCUPACIONES**
-    - $ CREATE TABLE occupations (OcupationID INT PRIMARY KEY, Choise VARCHAR(255));
+    - $ CREATE TABLE occupations (OccupationID INT PRIMARY KEY, OccupationName VARCHAR(255));
     - $ LOAD DATA LOCAL INFILE '/home/cloudera/dh-course/dataset_practica/occupations.dat'
         INTO TABLE occupations
         FIELDS TERMINATED BY ': '
         LINES TERMINATED BY '\n';
+    - $ INSERT INTO occupations (OccupationID, OccupationName) VALUES
+        (0, 'other or not specified'),
+        (1, 'academic/educator'),
+        (2, 'artist'),
+        (3, 'clerical/admin'),
+        (4, 'college/grad student'),
+        (5, 'customer service'),
+        (6, 'doctor/health care'),
+        (7, 'executive/managerial'),
+        (8, 'farmer'),
+        (9, 'homemaker'),
+        (10, 'K-12 student'),
+        (11, 'lawyer'),
+        (12, 'programmer'),
+        (13, 'retired'),
+        (14, 'sales/marketing'),
+        (15, 'scientist'),
+        (16, 'self-employed'),
+        (17, 'technician/engineer'),
+        (18, 'tradesman/craftsman'),
+        (19, 'unemployed'),
+        (20, 'writer');
 
 
 **CONSULTAS MYSQL**
@@ -90,15 +112,15 @@ PRÁCTICA HADOOP
     ![msql](images/6.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    - $ SELECT u.Occupation, COUNT(*) AS num_calificaciones FROM users u
+    - $ SELECT o.OccupationName, COUNT(*) AS num_calificaciones
+        FROM users u
         JOIN ratings r ON u.UserID = r.UserID
-        GROUP BY u.Occupation
+        JOIN occupations o ON u.Occupation = o.OccupationID
+        GROUP BY o.OccupationName
         ORDER BY num_calificaciones DESC
         LIMIT 1;
 
-    **Se debería crear una 4ª tabla de ‘Occupation’ con ID y descripción relacionada con la tabla ‘users’???**
-
-    ![msql](images/7.png)
+    ![msql](consulta-mysql-4.png)
 
 
 **SQOOP**
