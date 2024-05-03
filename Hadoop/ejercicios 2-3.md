@@ -1,6 +1,6 @@
 PRÁCTICA HADOOP
 
-**EJERICIO 2**
+## EJERCICIO 2
 
 Para dimensionar el clúster Hadoop y determinar el número de máquinas necesarias, primero necesitamos calcular el almacenamiento total requerido para todos los eventos de películas provenientes de distintas fuentes durante un año.
 
@@ -41,8 +41,9 @@ Es importante tener un almacenamiento adecuado para manejar grandes volúmenes d
 Indicar que el ecosistema Hadoop incluye herramientas como Hive o Sqoop que facilitan el procesamiento de grandes cantidades de datos, algo necesario si se trabaja con Terabytes de datos.
 
 
-**EJERICIO 3**
-Herramientas del ecosistema Hadoop según los requisitos de cada caso de uso:
+## EJERCICIO 3
+
+- Herramientas del ecosistema Hadoop según los requisitos de cada caso de uso:
 
 1. Herramienta de BI - Microstrategy:
     - Posibles herramientas de Hadoop: Hive, Impala, Drill

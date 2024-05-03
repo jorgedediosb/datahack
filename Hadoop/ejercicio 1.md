@@ -1,6 +1,6 @@
 PRÁCTICA HADOOP
 
-# EJERCICIO 1
+## EJERCICIO 1
 
 **IMPORTACIÓN DATASETS**
 
@@ -136,7 +136,7 @@ PRÁCTICA HADOOP
 
     - Se crearán archivos .java en la carpeta de los datasets
 
-    ![importación sqoop](images/sqoop-import2.png)
+        ![importación sqoop](images/sqoop-import2.png)
 
 **HIVE**
 
@@ -219,31 +219,31 @@ PRÁCTICA HADOOP
 
     - Analisis de las preferencias de género cinematográfico de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones de distintos géneros y cómo difieren las preferencias entre hombres y mujeres.
 
-    - $ SELECT m.Genres,
-        AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
-        AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
-        FROM ratings r JOIN movies m ON r.MovieID = m.MovieID
-        JOIN users u ON r.UserID = u.UserID
-        GROUP BY m.Genres;
+        - $ SELECT m.Genres,
+            AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
+            AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
+            FROM ratings r JOIN movies m ON r.MovieID = m.MovieID
+            JOIN users u ON r.UserID = u.UserID
+            GROUP BY m.Genres;
 
     - Análisis evolución dcomportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
 
-    - $ SELECT
-        MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
-        YEAR(FROM_UNIXTIME(r.Timestamp)) AS Year,
-        COUNT(*) AS Total_Ratings,
-        AVG(r.Rating) AS Average_Rating FROM ratings r
-        GROUP BY MONTH(FROM_UNIXTIME(r.Timestamp)), YEAR(FROM_UNIXTIME(r.Timestamp))
-        ORDER BY Year, Month;
+        - $ SELECT
+            MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
+            YEAR(FROM_UNIXTIME(r.Timestamp)) AS Year,
+            COUNT(*) AS Total_Ratings,
+            AVG(r.Rating) AS Average_Rating FROM ratings r
+            GROUP BY MONTH(FROM_UNIXTIME(r.Timestamp)), YEAR(FROM_UNIXTIME(r.Timestamp))
+            ORDER BY Year, Month;
 
     - Análisis de la participación del usuario mediante el número total de calificaciones y el promedio de calificaciones para cada grupo de edad, género y ocupación.
 
-    - $ SELECT u.Age AS Age_Group, u.Gender AS Gender, o.OccupationName AS Occupation,
-        COUNT(*) AS Total_Ratings,
-        AVG(r.Rating) AS Average_Rating
-        FROM ratings r JOIN users u ON r.UserID = u.UserID JOIN occupations o ON u.Occupation = o.OccupationID
-        GROUP BY u.Age, u.Gender, o.OccupationName
-        ORDER BY Total_Ratings DESC;
+        - $ SELECT u.Age AS Age_Group, u.Gender AS Gender, o.OccupationName AS Occupation,
+            COUNT(*) AS Total_Ratings,
+            AVG(r.Rating) AS Average_Rating
+            FROM ratings r JOIN users u ON r.UserID = u.UserID JOIN occupations o ON u.Occupation = o.OccupationID
+            GROUP BY u.Age, u.Gender, o.OccupationName
+            ORDER BY Total_Ratings DESC;
 
 
 **HUE**
