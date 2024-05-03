@@ -91,7 +91,7 @@ PRÁCTICA HADOOP
         GROUP BY m.MovieID, m.Title
         ORDER BY num_opiniones DESC LIMIT 1;
 
-    ![Consulta 1](images/consulta-mysql-1.png)
+    ![Consulta 1](images/mysql-consulta1.png)
 
 2. Los 10 usuarios más activos a la hora de puntuar películas:
     - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
@@ -99,7 +99,7 @@ PRÁCTICA HADOOP
         ORDER BY num_calificaciones DESC
         LIMIT 10;
 
-    ![msql](images/consulta-mysql-2.png)
+    ![msql](images/mysql-consulta2.png)
 
 
 3. Las tres mejores películas según los scores:
@@ -109,7 +109,7 @@ PRÁCTICA HADOOP
         ORDER BY avg_rating DESC
         LIMIT 3;
     
-    ![msql](images/consulta-mysql-3.png)
+    ![msql](images/mysql-consulta3.png)
 
 4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
     - $ SELECT o.OccupationName, COUNT(*) AS num_calificaciones
@@ -120,7 +120,7 @@ PRÁCTICA HADOOP
         ORDER BY num_calificaciones DESC
         LIMIT 1;
 
-    ![msql](images/consulta-mysql-4.png)
+    ![msql](images/mysql-consulta4.png)
 
 
 **SQOOP**
