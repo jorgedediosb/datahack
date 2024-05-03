@@ -1,22 +1,25 @@
 PRÁCTICA HADOOP
 
-# Ejercicio 1
+# EJERCICIO 1
 
 **IMPORTACIÓN DATASETS**
 
 1. DESCARGA DATASETS
     - Repositorio: https://github.com/dgarciaesc/sample_dataset
+    - Code/Download ZIP + descomprimir
 
 2. IMPORTACIÓN DATASETS A VIRTUALBOX/CLOUDERA
-    - Con la herramienta 'File Manager' (menú 'Machine' -> Usuario=cloudera, Password=cloudera)
+    - Con la herramienta 'File Manager' de VirtualBox desde menú 'Machine'
+    > Usuario = cloudera, Password = cloudera
 
     ![importación](images/1.png)
 
 3. COMPROBAR DESCARGA Y CAMBIAR PERMISOS:
-    - $ ls /home/cloudera/dh-course/dataset_practica/
+    - $ ls /home/cloudera/dh-course/sample_dataset-main/
     - $ chmod 777 movies.dat
     > cambiar en todos los datasets
 
+    ![permisos dataset](images/permisos-dataset.png)
 
 **MSQL**
 
@@ -53,9 +56,6 @@ PRÁCTICA HADOOP
         INTO TABLE occupations
         FIELDS TERMINATED BY ': '
         LINES TERMINATED BY '\n';
-    > Se crearán archivos .java en la carpeta desde importamos los datos a MySql **(¡¿O LO HACE CUANDO IMPORTAMOS CON SQOOP?!)**
-
-    ![msql](images/3.png)
 
 
 **CONSULTAS MYSQL**
@@ -112,6 +112,9 @@ PRÁCTICA HADOOP
     > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
     > --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
 
+    - Se crearán archivos .java en la carpeta de los datasets
+
+    ![msql](images/3.png)
 
 **HIVE**
 
