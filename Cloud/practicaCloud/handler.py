@@ -4,6 +4,25 @@ from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-1')
 
+def get_api_endpoint(event, context):
+    try:
+        api_endpoint = event['stageVariables']['API_ENDPOINT']
+
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+            },
+            'body': json.dumps({'apiUrl': api_endpoint})
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }
+
 def insert_message(event, context):
     try:
         table_msg = dynamodb.Table('datahack-mensajes')

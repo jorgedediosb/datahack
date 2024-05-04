@@ -10,7 +10,9 @@
       "region": "eu-west-1",
       "stage": "dev",
       "environment": {
-        "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+        "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+        "MessagesTable": "datahack-mensajes",
+        "ProductsTable": "datahack-productos"
       },
       "iam": {
         "role": {
@@ -18,9 +20,18 @@
             {
               "Effect": "Allow",
               "Action": [
-                "*"
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:BatchWriteItem"
               ],
-              "Resource": "*"
+              "Resource": [
+                "arn:aws:dynamodb:eu-west-1:*:table/datahack-mensajes",
+                "arn:aws:dynamodb:eu-west-1:*:table/datahack-productos"
+              ]
             }
           ]
         }
@@ -97,6 +108,12 @@
                   }
                 ]
               }
+            }
+          },
+          "GetApiEndpointLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/datahack-cloud-dev-getApiEndpoint"
             }
           },
           "InsertMessageLogGroup": {
@@ -204,6 +221,38 @@
               }
             }
           },
+          "GetApiEndpointLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z/datahack-cloud.zip"
+              },
+              "Handler": "handler.get_api_endpoint",
+              "Runtime": "python3.8",
+              "FunctionName": "datahack-cloud-dev-getApiEndpoint",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+                  "MessagesTable": "datahack-mensajes",
+                  "ProductsTable": "datahack-productos"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetApiEndpointLogGroup"
+            ]
+          },
           "InsertMessageLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -211,7 +260,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z/insertMessage.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z/datahack-cloud.zip"
               },
               "Handler": "handler.insert_message",
               "Runtime": "python3.8",
@@ -220,7 +269,9 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+                  "MessagesTable": "datahack-mensajes",
+                  "ProductsTable": "datahack-productos"
                 }
               },
               "Role": {
@@ -241,7 +292,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z/getMessages.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z/datahack-cloud.zip"
               },
               "Handler": "handler.get_messages",
               "Runtime": "python3.8",
@@ -250,7 +301,9 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+                  "MessagesTable": "datahack-mensajes",
+                  "ProductsTable": "datahack-productos"
                 }
               },
               "Role": {
@@ -271,7 +324,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z/insertProduct.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z/datahack-cloud.zip"
               },
               "Handler": "handler.insert_product",
               "Runtime": "python3.8",
@@ -280,7 +333,9 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+                  "MessagesTable": "datahack-mensajes",
+                  "ProductsTable": "datahack-productos"
                 }
               },
               "Role": {
@@ -301,7 +356,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z/getProduct.zip"
+                "S3Key": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z/datahack-cloud.zip"
               },
               "Handler": "handler.get_products",
               "Runtime": "python3.8",
@@ -310,7 +365,9 @@
               "Timeout": 6,
               "Environment": {
                 "Variables": {
-                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+                  "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev",
+                  "MessagesTable": "datahack-mensajes",
+                  "ProductsTable": "datahack-productos"
                 }
               },
               "Role": {
@@ -324,56 +381,82 @@
               "GetProductLogGroup"
             ]
           },
-          "GetMessagesLambdaVersionN6onva7oa71LhR1ql1Vp9KFuur2IJ6KC7xkUVb6aw": {
+          "GetApiEndpointLambdaVersion17sMBfH2AaEKT4oQf7HmQAEuhffzeGAGm2BtRYDffg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "GetMessagesLambdaFunction"
+                "Ref": "GetApiEndpointLambdaFunction"
               },
-              "CodeSha256": "afDdDn0jgxULmz2a5XCXbbQn5P+1KAiXcQmiWnrMQbM="
+              "CodeSha256": "8nJc0DAI3ssgDM5jWJwFPFDEFZ8IEr3D/1mlbcZnO6M="
             }
           },
-          "InsertProductLambdaVersionVDa3quJbxGeaasNhzF2tn5j9gCF5DZSvaxltwqoLzow": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "InsertProductLambdaFunction"
-              },
-              "CodeSha256": "afDdDn0jgxULmz2a5XCXbbQn5P+1KAiXcQmiWnrMQbM="
-            }
-          },
-          "InsertMessageLambdaVersion5YfRZfplbsBpIuOfqyBICn5kiGdw7Bd6FYSDjn3Bs": {
+          "InsertMessageLambdaVersionkBEBLXHHo0VVmSylvNfSUNry98k3umhOqFy3kGnxw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "InsertMessageLambdaFunction"
               },
-              "CodeSha256": "afDdDn0jgxULmz2a5XCXbbQn5P+1KAiXcQmiWnrMQbM="
+              "CodeSha256": "8nJc0DAI3ssgDM5jWJwFPFDEFZ8IEr3D/1mlbcZnO6M="
             }
           },
-          "GetProductLambdaVersionyi21J15KI4aWQJBhMs18UmRMFfllVB6mv8j0nXHk5s": {
+          "GetMessagesLambdaVersionU3q1Hq8oz88jKGufy0oOlxwek36dczuT66QPbqDdA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetMessagesLambdaFunction"
+              },
+              "CodeSha256": "8nJc0DAI3ssgDM5jWJwFPFDEFZ8IEr3D/1mlbcZnO6M="
+            }
+          },
+          "InsertProductLambdaVersionyRyIvjeiQSO1jV9f689QOq6TFNsvzlhljRfOCUdwz4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "InsertProductLambdaFunction"
+              },
+              "CodeSha256": "8nJc0DAI3ssgDM5jWJwFPFDEFZ8IEr3D/1mlbcZnO6M="
+            }
+          },
+          "GetProductLambdaVersionsIJqfTaEo0TDqTzgvp6DBqS6ICGGqsd70hULJheUnw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetProductLambdaFunction"
               },
-              "CodeSha256": "afDdDn0jgxULmz2a5XCXbbQn5P+1KAiXcQmiWnrMQbM="
+              "CodeSha256": "8nJc0DAI3ssgDM5jWJwFPFDEFZ8IEr3D/1mlbcZnO6M="
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
-              "Name": "dev-datahack-cloud",
+              "Name": "dev-api-datahack",
               "EndpointConfiguration": {
                 "Types": [
                   "EDGE"
                 ]
               },
-              "Policy": ""
+              "Policy": "",
+              "Description": "API datahack-cloud"
+            }
+          },
+          "ApiGatewayResourceGetDashapiDashendpoint": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "get-api-endpoint",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
             }
           },
           "ApiGatewayResourceInsertDashmessage": {
@@ -436,6 +519,51 @@
               }
             }
           },
+          "ApiGatewayMethodGetDashapiDashendpointOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGetDashapiDashendpoint"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodInsertDashmessageOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -464,11 +592,11 @@
                     "StatusCode": "200",
                     "ResponseParameters": {
                       "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
                       "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
                     },
                     "ResponseTemplates": {
-                      "application/json": ""
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
                     }
                   }
                 ]
@@ -509,11 +637,11 @@
                     "StatusCode": "200",
                     "ResponseParameters": {
                       "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
                       "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
                     },
                     "ResponseTemplates": {
-                      "application/json": ""
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
                     }
                   }
                 ]
@@ -554,11 +682,11 @@
                     "StatusCode": "200",
                     "ResponseParameters": {
                       "method.response.header.Access-Control-Allow-Origin": "'*'",
-                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
                       "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
                     },
                     "ResponseTemplates": {
-                      "application/json": ""
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
                     }
                   }
                 ]
@@ -615,6 +743,52 @@
                 "Ref": "ApiGatewayRestApi"
               }
             }
+          },
+          "ApiGatewayMethodGetDashapiDashendpointGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGetDashapiDashendpoint"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetApiEndpointLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "GetApiEndpointLambdaPermissionApiGateway"
+            ]
           },
           "ApiGatewayMethodInsertDashmessagePost": {
             "Type": "AWS::ApiGateway::Method",
@@ -800,7 +974,7 @@
               "GetProductLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1713361584832": {
+          "ApiGatewayDeployment1713731160352": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -809,15 +983,54 @@
               "StageName": "dev"
             },
             "DependsOn": [
+              "ApiGatewayMethodGetDashapiDashendpointOptions",
               "ApiGatewayMethodInsertDashmessageOptions",
               "ApiGatewayMethodGetDashmessagesOptions",
               "ApiGatewayMethodInsertDashproductOptions",
               "ApiGatewayMethodGetDashproductsOptions",
+              "ApiGatewayMethodGetDashapiDashendpointGet",
               "ApiGatewayMethodInsertDashmessagePost",
               "ApiGatewayMethodGetDashmessagesGet",
               "ApiGatewayMethodInsertDashproductPost",
               "ApiGatewayMethodGetDashproductsGet"
             ]
+          },
+          "GetApiEndpointLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetApiEndpointLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
           },
           "InsertMessageLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
@@ -967,13 +1180,6 @@
               }
             }
           },
-          "DatahackApi": {
-            "Type": "AWS::ApiGateway::RestApi",
-            "Properties": {
-              "Name": "datahack-api",
-              "Description": "API proyecto Cloud Datahack"
-            }
-          },
           "StaticSiteBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
@@ -1016,7 +1222,6 @@
             "Type": "AWS::CloudFront::Distribution",
             "Properties": {
               "DistributionConfig": {
-                "Description": "Datahack Cloud",
                 "HttpVersion": "http2",
                 "Origins": [
                   {
@@ -1127,10 +1332,28 @@
               "Name": "sls-datahack-cloud-dev-ServerlessDeploymentBucketName"
             }
           },
+          "GetApiEndpointLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetApiEndpointLambdaVersion17sMBfH2AaEKT4oQf7HmQAEuhffzeGAGm2BtRYDffg"
+            },
+            "Export": {
+              "Name": "sls-datahack-cloud-dev-GetApiEndpointLambdaFunctionQualifiedArn"
+            }
+          },
+          "InsertMessageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "InsertMessageLambdaVersionkBEBLXHHo0VVmSylvNfSUNry98k3umhOqFy3kGnxw"
+            },
+            "Export": {
+              "Name": "sls-datahack-cloud-dev-InsertMessageLambdaFunctionQualifiedArn"
+            }
+          },
           "GetMessagesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetMessagesLambdaVersionN6onva7oa71LhR1ql1Vp9KFuur2IJ6KC7xkUVb6aw"
+              "Ref": "GetMessagesLambdaVersionU3q1Hq8oz88jKGufy0oOlxwek36dczuT66QPbqDdA"
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-GetMessagesLambdaFunctionQualifiedArn"
@@ -1139,25 +1362,16 @@
           "InsertProductLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "InsertProductLambdaVersionVDa3quJbxGeaasNhzF2tn5j9gCF5DZSvaxltwqoLzow"
+              "Ref": "InsertProductLambdaVersionyRyIvjeiQSO1jV9f689QOq6TFNsvzlhljRfOCUdwz4"
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-InsertProductLambdaFunctionQualifiedArn"
             }
           },
-          "InsertMessageLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "InsertMessageLambdaVersion5YfRZfplbsBpIuOfqyBICn5kiGdw7Bd6FYSDjn3Bs"
-            },
-            "Export": {
-              "Name": "sls-datahack-cloud-dev-InsertMessageLambdaFunctionQualifiedArn"
-            }
-          },
           "GetProductLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetProductLambdaVersionyi21J15KI4aWQJBhMs18UmRMFfllVB6mv8j0nXHk5s"
+              "Ref": "GetProductLambdaVersionsIJqfTaEo0TDqTzgvp6DBqS6ICGGqsd70hULJheUnw"
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-GetProductLambdaFunctionQualifiedArn"
@@ -1187,12 +1401,6 @@
             },
             "Export": {
               "Name": "sls-datahack-cloud-dev-ServiceEndpoint"
-            }
-          },
-          "ApiEndpoint": {
-            "Description": "URL dinámica de la API",
-            "Value": {
-              "Fn::Sub": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
             }
           }
         }
@@ -1282,6 +1490,22 @@
       "vpc": {}
     },
     "custom": {
+      "finch": {
+        "stage": "dev",
+        "variables": {
+          "API_ENDPOINT": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+        }
+      },
+      "client": {
+        "bucketName": "datahack-cloud",
+        "distributionFolder": "web",
+        "errorDocument": "index.html",
+        "include": [
+          "*.html",
+          "*.css",
+          "*.js"
+        ]
+      },
       "s3Sync": [
         {
           "bucketName": "datahack-cloud",
@@ -1290,10 +1514,43 @@
       ]
     },
     "plugins": [
-      "serverless-s3-sync"
+      "serverless-s3-sync",
+      "serverless-finch"
     ],
     "pluginsData": {},
     "functions": {
+      "getApiEndpoint": {
+        "handler": "handler.get_api_endpoint",
+        "events": [
+          {
+            "http": {
+              "path": "get-api-endpoint",
+              "method": "get",
+              "cors": {
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type"
+                ],
+                "allowCredentials": false,
+                "origins": [
+                  "*"
+                ]
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "datahack-cloud-dev-getApiEndpoint",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "python3.8",
+        "vpc": {},
+        "versionLogicalId": "GetApiEndpointLambdaVersion17sMBfH2AaEKT4oQf7HmQAEuhffzeGAGm2BtRYDffg"
+      },
       "insertMessage": {
         "handler": "handler.insert_message",
         "events": [
@@ -1302,35 +1559,29 @@
               "path": "insert-message",
               "method": "post",
               "cors": {
-                "origin": "*",
                 "methods": [
                   "OPTIONS",
                   "POST"
                 ],
                 "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent",
-                  "X-Amzn-Trace-Id"
+                  "Content-Type"
                 ],
-                "allowCredentials": false
+                "allowCredentials": false,
+                "origins": [
+                  "*"
+                ]
               },
               "integration": "AWS_PROXY"
             }
           }
         ],
         "name": "datahack-cloud-dev-insertMessage",
-        "package": {
-          "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud/.serverless/insertMessage.zip"
-        },
+        "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "InsertMessageLambdaVersion5YfRZfplbsBpIuOfqyBICn5kiGdw7Bd6FYSDjn3Bs"
+        "versionLogicalId": "InsertMessageLambdaVersionkBEBLXHHo0VVmSylvNfSUNry98k3umhOqFy3kGnxw"
       },
       "getMessages": {
         "handler": "handler.get_messages",
@@ -1340,35 +1591,29 @@
               "path": "get-messages",
               "method": "get",
               "cors": {
-                "origin": "*",
                 "methods": [
                   "OPTIONS",
                   "GET"
                 ],
                 "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent",
-                  "X-Amzn-Trace-Id"
+                  "Content-Type"
                 ],
-                "allowCredentials": false
+                "allowCredentials": false,
+                "origins": [
+                  "*"
+                ]
               },
               "integration": "AWS_PROXY"
             }
           }
         ],
         "name": "datahack-cloud-dev-getMessages",
-        "package": {
-          "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud/.serverless/getMessages.zip"
-        },
+        "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetMessagesLambdaVersionN6onva7oa71LhR1ql1Vp9KFuur2IJ6KC7xkUVb6aw"
+        "versionLogicalId": "GetMessagesLambdaVersionU3q1Hq8oz88jKGufy0oOlxwek36dczuT66QPbqDdA"
       },
       "insertProduct": {
         "handler": "handler.insert_product",
@@ -1378,35 +1623,29 @@
               "path": "insert-product",
               "method": "post",
               "cors": {
-                "origin": "*",
                 "methods": [
                   "OPTIONS",
                   "POST"
                 ],
                 "headers": [
-                  "Content-Type",
-                  "X-Amz-Date",
-                  "Authorization",
-                  "X-Api-Key",
-                  "X-Amz-Security-Token",
-                  "X-Amz-User-Agent",
-                  "X-Amzn-Trace-Id"
+                  "Content-Type"
                 ],
-                "allowCredentials": false
+                "allowCredentials": false,
+                "origins": [
+                  "*"
+                ]
               },
               "integration": "AWS_PROXY"
             }
           }
         ],
         "name": "datahack-cloud-dev-insertProduct",
-        "package": {
-          "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud/.serverless/insertProduct.zip"
-        },
+        "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "InsertProductLambdaVersionVDa3quJbxGeaasNhzF2tn5j9gCF5DZSvaxltwqoLzow"
+        "versionLogicalId": "InsertProductLambdaVersionyRyIvjeiQSO1jV9f689QOq6TFNsvzlhljRfOCUdwz4"
       },
       "getProduct": {
         "handler": "handler.get_products",
@@ -1437,31 +1676,21 @@
           }
         ],
         "name": "datahack-cloud-dev-getProduct",
-        "package": {
-          "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud/.serverless/getProduct.zip"
-        },
+        "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "GetProductLambdaVersionyi21J15KI4aWQJBhMs18UmRMFfllVB6mv8j0nXHk5s"
+        "versionLogicalId": "GetProductLambdaVersionsIJqfTaEo0TDqTzgvp6DBqS6ICGGqsd70hULJheUnw"
       }
     },
     "resources": {
-      "Outputs": {
-        "ApiEndpoint": {
-          "Description": "URL dinámica de la API",
-          "Value": {
-            "Fn::Sub": "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
-          }
-        }
-      },
       "Resources": {
-        "DatahackApi": {
+        "ApiGatewayRestApi": {
           "Type": "AWS::ApiGateway::RestApi",
           "Properties": {
-            "Name": "datahack-api",
-            "Description": "API proyecto Cloud Datahack"
+            "Name": "dev-api-datahack",
+            "Description": "API datahack-cloud"
           }
         },
         "StaticSiteBucket": {
@@ -1506,7 +1735,6 @@
           "Type": "AWS::CloudFront::Distribution",
           "Properties": {
             "DistributionConfig": {
-              "Description": "Datahack Cloud",
               "HttpVersion": "http2",
               "Origins": [
                 {
@@ -1607,7 +1835,8 @@
           },
           "UpdateReplacePolicy": "Retain"
         }
-      }
+      },
+      "Outputs": {}
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yaml",
@@ -1622,14 +1851,6 @@
       "custom": {
         "$ref": "$[\"service\"][\"custom\"]"
       },
-      "package": {
-        "individually": true,
-        "include": [
-          "web/**"
-        ],
-        "artifactsS3KeyDirname": "serverless/datahack-cloud/dev/code-artifacts",
-        "artifactDirectoryName": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z"
-      },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
       },
@@ -1638,11 +1859,11 @@
       }
     },
     "layers": {},
-    "isDashboardMonitoringPreconfigured": false
+    "isDashboardMonitoringPreconfigured": false,
+    "artifact": "/Users/jorge/PERSONAL/iCode/DataHack/datahack/modulo_3-Cloud/practicaCloud_2/.serverless/datahack-cloud.zip"
   },
   "package": {
-    "individually": true,
-    "artifactDirectoryName": "serverless/datahack-cloud/dev/1713361585823-2024-04-17T13:46:25.823Z",
-    "artifact": ""
+    "artifactDirectoryName": "serverless/datahack-cloud/dev/1713731161289-2024-04-21T20:26:01.289Z",
+    "artifact": "datahack-cloud.zip"
   }
 }

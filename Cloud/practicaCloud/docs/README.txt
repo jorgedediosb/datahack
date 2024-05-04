@@ -1,4 +1,7 @@
 INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
+  Instalar AWS CLI:
+    pip install awscli --upgrade --user
+    aws --version (confirmar versión)
 
   Instalar serverless en la carpeta donde se aloje el proyecto:
     npm install serverless
@@ -6,54 +9,60 @@ INSTRUCCIONES PARA DESPLEGAR APP ANUNCIOS Y MENSAJERÍA EN AWS
   Instalar plugin Serverless S3 Sync:
     npm install --save serverless-s3-sync
 
+  Instalar plugin Serverless Finch:
+    npm install --save serverless-finch
+
   Configurar AWS CLI con credenciales de AWS:
     aws configure
-    > introducir Access Key y Secret Key del usuario AWS
+    > introducir: Access Key y Secret Key del usuario AWS
 
   Desplegar la app:
-    sls deploy o sls deploy --verbose (para más info)
+    sls deploy
+    sls client deploy (plugin finch para frontend)
+    > confirmar cambios con 'y' si los hay.
+  
+  Información sobre el despliegue:
+      sls info
 
   Eliminar despliegue:
     sls remove
 
-  Finalizado el despliegue indicará los endpoints y las funciones:
-    endpoints (el ID varía según el usuario):
-      POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-message
-      GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-messages
-      POST - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/insert-product
-      GET - https://3qceox1tef.execute-api.eu-west-1.amazonaws.com/dev/get-products
-    functions:
-      insertMessage: datahack-cloud-dev-insertMessage
-      getMessages: datahack-cloud-dev-getMessages
-      insertProduct: datahack-cloud-dev-insertProduct
-      getProduct: datahack-cloud-dev-getProduct
-    
-    Información sobre el despliegue:
-      sls info
-
+Finalizado el despliegue indicará los endpoints y las funciones:
+  endpoints (el ID varía según el usuario):
+    POST - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-message
+    GET - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-messages
+    POST - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-product
+    GET - https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-products
+  functions:
+    insertMessage: datahack-cloud-dev-insertMessage
+    getMessages: datahack-cloud-dev-getMessages
+    insertProduct: datahack-cloud-dev-insertProduct
+    getProduct: datahack-cloud-dev-getProduct
+  
 FUNCIONES
   Enviar mensajes:
-    curl -X POST -H "Content-Type: application/json" -d '{"user":"Profesor", "message":"Yo soy tu profe!"}' https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/insert-message
+    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "message":"hola mundo!"}' https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-message
   Leer mensajes:
-    curl https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/get-messages
+    curl https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-messages
 
   Enviar productos:
-    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "product":"Iphone", "description": "Iphone muy guapo"}' https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/insert-product
+    curl -X POST -H "Content-Type: application/json" -d '{"user":"Jorge", "product":"Iphone", "description": "Iphone muy guapo"}' https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/insert-product
   Leer productos:
-    curl https://15a6pfpykk.execute-api.eu-west-1.amazonaws.com/dev/get-products
+    curl https://gg897qwhoe.execute-api.eu-west-1.amazonaws.com/dev/get-products
 
 ACCESO INTERFAZ WEB:
   Acceder a las ditribuciones activas:
+    al ejecurar 'sls client deploy' devuelve:
+    Success! Your site should be available at http://datahack-cloud.s3-website-eu-west-1.amazonaws.com/
+
     aws cloudfront list-distributions
     > abrir en navegador el DomainName (similar a d1parznpwmoz4t.cloudfront.net) del Item con descripción: 'Datahack Cloud'
 
   Cargar archivos directorio 'web' en el bucket:
     aws s3 cp web/ s3://datahack-cloud/ --recursive
     curl https://datahack-cloud.s3-eu-west-1.amazonaws.com/index.html o visitar enlace en navegador
-    > no he logrado que funcione la opción "package/include: - web/**" en el yaml para cargarlos automáticamente
 
-  > La interfaz web sólo  tiene las funciones de enviar mensajes y leer mensajes (fue la prueba inicial).
-  > NO HE LOGRADO QUE FUNCIONEN LAS FUNCIONES EN LA INTERFAZ WEB (en consola SI funcionan)
+  > La interfaz web sólo  tiene las funciones de enviar mensajes y leer mensajes ya que no he logrado que se capture la url de la API (en consola SI funcionan)
   > Pude 'cargar' manualmente en proyecto en AWS con los mismos servicios y  el funcionamiento es perfecto.
   > Enlace interfaz cargada en AWS manualmente: https://d1671x27qva124.cloudfront.net
 

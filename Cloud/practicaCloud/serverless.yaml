@@ -7,72 +7,115 @@ provider:
   stage: dev
   environment:
     API_ENDPOINT: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
+    MessagesTable: datahack-mensajes
+    ProductsTable: datahack-productos
+
   iam:
     role:
-      statements: 
-        - Effect: Allow
-          Action: '*'
-          Resource: '*'
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.MessagesTable}"
+            - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.ProductsTable}"
 
 plugins:
   - serverless-s3-sync
-
+  - serverless-finch
+  
 custom:
+  finch:
+    stage: ${opt:stage, self:provider.stage}
+    variables:
+      API_ENDPOINT: ${self:provider.environment.API_ENDPOINT}
+
+  client:
+    bucketName: datahack-cloud
+    distributionFolder: web
+    errorDocument: index.html
+    include:
+      - '*.html'
+      - '*.css'
+      - '*.js'
   s3Sync:
     - bucketName: datahack-cloud
       localDir: web
 
-package:
-  individually: true
-  include:
-    - web/**
-
 functions:
+  getApiEndpoint:
+    handler: handler.get_api_endpoint
+    events:
+      - http:
+          path: /get-api-endpoint
+          method: get
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
+
   insertMessage:
     handler: handler.insert_message
     events:
       - http:
-          path: insert-message
+          path: /insert-message
           method: post
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   getMessages:
     handler: handler.get_messages
     events:
       - http:
-          path: get-messages
+          path: /get-messages
           method: get
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   insertProduct:
     handler: handler.insert_product
     events:
       - http:
-          path: insert-product
+          path: /insert-product
           method: post
-          cors: true
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+            allowCredentials: false
 
   getProduct:
     handler: handler.get_products
     events:
       - http:
-          path: get-products
+          path: /get-products
           method: get
           cors: true
 
 resources:
-  Outputs:
-    ApiEndpoint:
-      Description: URL dinámica de la API
-      Value:
-        Fn::Sub: "https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}"
-
   Resources:
-    DatahackApi:
+    ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: datahack-api
-        Description: API proyecto Cloud Datahack
+        Name: ${self:provider.stage}-api-datahack
+        Description: API ${self:service}
 
     StaticSiteBucket:
       Type: AWS::S3::Bucket
@@ -106,7 +149,6 @@ resources:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
-          Description: Datahack Cloud
           HttpVersion: 'http2'
           Origins:
             - DomainName: !GetAtt StaticSiteBucket.DomainName
