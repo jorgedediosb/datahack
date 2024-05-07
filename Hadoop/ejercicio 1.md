@@ -251,3 +251,4 @@ PRÁCTICA HADOOP
 - Las consultas también pueden realizarse con la interfaz gráfica de Haddop 'HUE'
 
 ![consulta hue](images/hue-consulta1.png)
+![consulta hue](images/hue-consulta2.png)
