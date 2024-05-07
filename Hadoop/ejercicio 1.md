@@ -124,12 +124,12 @@ PRÁCTICA HADOOP
     - $ sqoop import-all-tables --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
 
     > Si no importa todas las tablas, cambiar a 'import' y añadir --table nombre_tabla al importar.
-     - --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
-     - -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto si no se especifica nada.
-     - --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
+    > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
+    > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto.
 
     - Importación de tabla ratings (al no tener Primary Key debe importarse con 'split-by'):
         - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table ratings --target-dir /hdfs-practica-hadoop/ratings --split-by UserID
+        > --split-by se utiliza para especificar la columna por la cual se debe dividir la importación de datos en mappers.
 
         ![importación sqoop](images/sqoop-import.png)
         ![importación sqoop](images/sqoop-import3.png)
@@ -217,7 +217,7 @@ PRÁCTICA HADOOP
 
 5. Otros insight valiosos que pudiéramos extraer de los datos procesados:
 
-    - Analisis de las preferencias de género cinematográfico de los usuarios para diferentes tipos de películas calculando el promedio de calificaciones de distintos géneros y cómo difieren las preferencias entre hombres y mujeres.
+    - Analisis de las preferencias de género cinematográfico de los usuarios calculando el promedio de calificaciones de los distintos géneros y cómo difieren las preferencias entre hombres y mujeres.
 
         - $ SELECT m.Genres,
             AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
@@ -226,15 +226,34 @@ PRÁCTICA HADOOP
             JOIN users u ON r.UserID = u.UserID
             GROUP BY m.Genres;
 
-    - Análisis evolución dcomportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones o en los géneros de películas más populares en diferentes momentos del año.
+        ![consulta mysql](images/mysql-consulta5.png)
 
-        - $ SELECT
-            MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
+        - El género con mayor rating en hombres y en mujeres:
+        - $ SELECT m.Genres,
+                AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
+                AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
+            FROM ratings r
+            JOIN movies m ON r.MovieID = m.MovieID
+            JOIN users u ON r.UserID = u.UserID
+            GROUP BY m.Genres
+            ORDER BY Male_Average_Rating DESC, Female_Average_Rating DESC
+            LIMIT 1;
+
+        ![consulta mysql](images/mysql-consulta6.png)
+
+
+    - Análisis del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones en diferentes momentos del año.
+
+        - $ SELECT MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
             YEAR(FROM_UNIXTIME(r.Timestamp)) AS Year,
             COUNT(*) AS Total_Ratings,
             AVG(r.Rating) AS Average_Rating FROM ratings r
             GROUP BY MONTH(FROM_UNIXTIME(r.Timestamp)), YEAR(FROM_UNIXTIME(r.Timestamp))
             ORDER BY Year, Month;
+
+        ![consulta hive](images/hive-consulta5.png)
+        
+        > El mes con más calificaciones realizadas fue noviembre del año 2.000 con 291.012 y una media de 3,57. El que menos, octubre del 2002 con 1.016 y una media de 3,55.
 
     - Análisis de la participación del usuario mediante el número total de calificaciones y el promedio de calificaciones para cada grupo de edad, género y ocupación.
 
@@ -244,6 +263,10 @@ PRÁCTICA HADOOP
             FROM ratings r JOIN users u ON r.UserID = u.UserID JOIN occupations o ON u.Occupation = o.OccupationID
             GROUP BY u.Age, u.Gender, o.OccupationName
             ORDER BY Total_Ratings DESC;
+
+        ![consulta hive](images/hive-consulta6.png)
+
+        > El grupo de edad que realiza más calificaciones son hombres entre 18 y 24 años con una ocupación de 'estudiantes' con 65.676 calificaciones. Los que menos, las mujeres entre 25 y 34 años con una ocupación de 'científica' con 2.536 calificaciones.
 
 
 **HUE**
