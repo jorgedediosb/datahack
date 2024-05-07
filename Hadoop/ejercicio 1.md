@@ -125,7 +125,7 @@ PRÁCTICA HADOOP
 
     > Si no importa todas las tablas, cambiar a 'import' y añadir --table nombre_tabla al importar.
     > --warehouse, Sqoop crea subdirectorios dentro del directorio raíz para cada tabla importada, lo que ayuda a mantener una estructura organizada en HDFS.
-    > -—num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto.
+    > --num-mappers: expecificar nº si queremos mejorar rendimiento. Se crea 1 por defecto.
 
     - Importación de tabla ratings (al no tener Primary Key debe importarse con 'split-by'):
         - $ sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table ratings --target-dir /hdfs-practica-hadoop/ratings --split-by UserID
@@ -156,23 +156,23 @@ PRÁCTICA HADOOP
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION '/hdfs-practica-hadoop2/users';
+        LOCATION '/hdfs-practica-hadoop/users';
 
     - $ CREATE EXTERNAL TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp INT)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION '/hdfs-practica-hadoop2/ratings';
+        LOCATION '/hdfs-practica-hadoop/ratings';
 
     - $ CREATE EXTERNAL TABLE occupations (OccupationID INT, OccupationName STRING)
         ROW FORMAT DELIMITED
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
-        LOCATION '/hdfs-practica-hadoop2/occupations';
+        LOCATION '/hdfs-practica-hadoop/occupations';
 
     > Hive no usa 'primary keys' ni 'foreing key' y los 'varchar' pueden ser 'string'
 
-    ![tablas hive](images/hive-tablas.png)
+    ![tablas hive](images/hive-databases.png)
 
 
 **CONSULTAS HIVE**
@@ -241,7 +241,10 @@ PRÁCTICA HADOOP
 
         ![consulta mysql](images/mysql-consulta6.png)
 
+    **HUE**
 
+    > Las consultas en Hive también pueden realizarse con la interfaz gráfica de Haddop 'HUE'
+    
     - Análisis del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones en diferentes momentos del año.
 
         - $ SELECT MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
@@ -269,9 +272,26 @@ PRÁCTICA HADOOP
         > El grupo de edad que realiza más calificaciones son hombres entre 18 y 24 años con una ocupación de 'estudiantes' con 65.676 calificaciones. Los que menos, las mujeres entre 25 y 34 años con una ocupación de 'científica' con 2.536 calificaciones.
 
 
-**HUE**
 
-- Las consultas también pueden realizarse con la interfaz gráfica de Haddop 'HUE'
+Ejercicio 1
 
-![consulta hue](images/hue-consulta1.png)
-![consulta hue](images/hue-consulta2.png)
+$ hadoop fs -put /home/cloudera/sample_dataset-main /user/cloudera/films
+$ hdfs dfs -ls
+
+sqoop export \
+  --connect jdbc:hive2://<hostname>:<port>/<database> \
+  --username <username> \
+  --password <password> \
+  --table <hive_table_name> \
+  --export-dir <hdfs_directory_path> \
+  --input-fields-terminated-by ',' \
+  --input-lines-terminated-by '\n'
+
+
+
+
+sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --target-dir /films --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
+
+sqoop export --connect jdbc:mysql://localhost/default --username root --password cloudera --target-dir /home/cloudera/sample_dataset-main --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
+
+> Carga los datos en el la base de datos 'default'
