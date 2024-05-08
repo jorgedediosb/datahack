@@ -243,7 +243,7 @@ PRÁCTICA HADOOP
 
     **HUE**
 
-    > Las consultas en Hive también pueden realizarse con la interfaz gráfica de Haddop 'HUE'
+    > Las consultas en Hive también pueden realizarse con la interfaz gráfica de Haddop 'HUE' para se vean mejor.
     
     - Análisis del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones en diferentes momentos del año.
 
@@ -271,27 +271,3 @@ PRÁCTICA HADOOP
 
         > El grupo de edad que realiza más calificaciones son hombres entre 18 y 24 años con una ocupación de 'estudiantes' con 65.676 calificaciones. Los que menos, las mujeres entre 25 y 34 años con una ocupación de 'científica' con 2.536 calificaciones.
 
-
-
-Ejercicio 1
-
-$ hadoop fs -put /home/cloudera/sample_dataset-main /user/cloudera/films
-$ hdfs dfs -ls
-
-sqoop export \
-  --connect jdbc:hive2://<hostname>:<port>/<database> \
-  --username <username> \
-  --password <password> \
-  --table <hive_table_name> \
-  --export-dir <hdfs_directory_path> \
-  --input-fields-terminated-by ',' \
-  --input-lines-terminated-by '\n'
-
-
-
-
-sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --target-dir /films --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
-
-sqoop export --connect jdbc:mysql://localhost/default --username root --password cloudera --target-dir /home/cloudera/sample_dataset-main --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
-
-> Carga los datos en el la base de datos 'default'
