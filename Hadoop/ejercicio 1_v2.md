@@ -40,7 +40,7 @@ $ CREATE EXTERNAL TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp 
 
 $ CREATE EXTERNAL TABLE occupations (OccupationID INT, OccupationName STRING);
 
-> Otra forma de crear las tablas sin hacer preprocesado es con:
+> Otra forma de crear las tablas sin hacer preprocesado es al crear las tablas en HIVE, añadir:
     ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe' 
     WITH SERDEPROPERTIES ("field.delim"="::")
 
@@ -176,21 +176,20 @@ $ INSERT INTO occupations VALUES
 **EJERCICIO 1.2**
 
 sqoop export \
---connect jdbc:mysql://<host>:<port>/<database> \
---username <username> \
---password <password> \
---table <table_name> \
---export-dir <hive_table_directory> \
+--connect jdbc:mysql://localhost/movies \
+--username root \
+--password cloudera \
+--table movies \
+--export-dir /user/hive/warehouse/movies.db \
 --input-fields-terminated-by '\t' \
---input-lines-terminated-by '\n' \
---input-null-string '\\N' \
---input-null-non-string '\\N'
+--input-lines-terminated-by '\n';
 
 
+- $ sqoop import-all-tables --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
 
 sqoop import --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --target-dir /films --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
 
-sqoop export --connect jdbc:mysql://localhost/movies --username root --password cloudera --target-dir /home/cloudera/sample_dataset-main --table movies --fields-terminated-by '::' --lines-terminated-by '\n' --hive-import --hive-table movies
+sqoop export --connect jdbc:mysql://localhost/movies --username root --password cloudera --target-dir /home/cloudera/films --table movies --fields-terminated-by '\t' --lines-terminated-by '\n' --hive-import --hive-table movies
 
 > Carga los datos en el la base de datos 'default'
 
