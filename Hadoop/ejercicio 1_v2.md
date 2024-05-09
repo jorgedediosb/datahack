@@ -1,54 +1,34 @@
 **EJERCICIO 1.1**
 
-- Usar File Manager para importar dataset 'sample_dataset-main' al entorno Cloudera (en la carpeta 'cloudera')
-- Cargamos datasets en HDFS dentro de la carpeta 'films':
-$ hadoop fs -put /home/cloudera/sample_dataset-main /user/cloudera/films
-$ hdfs dfs -ls films
-Cambiar permisos:
-$ hdfs dfs -chmod 777 /user/cloudera/films/movies.dat
-$ hdfs dfs -chmod 777 /user/cloudera/films/ratings.dat
-$ hdfs dfs -chmod 777 /user/cloudera/films/users.dat
+- Usar File Manager para importar dataset 'sample_dataset-main' al entorno Cloudera (en la carpeta 'cloudera') en /home/cloudera
+- Creación tablas en hive:
+    $ hive
+    $ create database movies;
+    $ use movies;
+    $ CREATE EXTERNAL TABLE movies (MovieID INT, Title STRING, Genres STRING)
+        ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe' 
+        WITH SERDEPROPERTIES ("field.delim"="::");
 
-Prepocesamiento de datos (cambiamos '::' por '|'):
-$ hdfs dfs -cat /user/cloudera/films/movies.dat | sed 's/::/\t/g' | hdfs dfs -put -f - /user/cloudera/films/movies_modified.dat
-$ hdfs dfs -cat /user/cloudera/films/users.dat | sed 's/::/|/g' | hdfs dfs -put -f - /user/cloudera/films/users_modified.dat
-$ hdfs dfs -cat /user/cloudera/films/ratings.dat | sed 's/::/|/g' | hdfs dfs -put -f - /user/cloudera/films/ratings_modified.dat
+    $ CREATE EXTERNAL TABLE users (UserID INT, Gender STRING, Age INT, Occupation INT, zip_code INT)
+        ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe' 
+        WITH SERDEPROPERTIES ("field.delim"="::");
 
-Cambio de permisos:
-$ hdfs dfs -chmod 777 /user/cloudera/films/users_modified.dat
+    $ CREATE EXTERNAL TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp INT)
+        ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe' 
+        WITH SERDEPROPERTIES ("field.delim"="::");
 
-Cargamos a Hive:
-> Creamos tablas en hive:
-$ hive
-$ create database movies;
-$ use movies;
+    > usamos 'SERDE' con el delimitador "::" porque los datasets tienen los campos separados por "::"
+    > si no funcionase 'SERDE' se puede prepocesar los datos cambiando '::' por '\t' y usar el archivo modificado para cargar los datos:
+        $ hdfs dfs -cat /home/cloudera/sample_dataset-main/movies.dat | sed 's/::/\t/g' | hdfs dfs -put -f - /home/cloudera/sample_dataset-main/movies_modified.dat
+        - en hive crearíamos las tablas así:
+            $ CREATE EXTERNAL TABLE movies (MovieID INT, Title STRING, Genres STRING)
+                ROW FORMAT DELIMITED
+                FIELDS TERMINATED BY '\t'
+                LINES TERMINATED BY '\n';
 
-$ CREATE EXTERNAL TABLE movies (MovieID INT, Title STRING, Genres STRING)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY '\t'
-    LINES TERMINATED BY '\n';
-
-$ CREATE EXTERNAL TABLE users (UserID INT, Gender STRING, Age INT, Occupation INT, zip_code INT)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY '|'
-    LINES TERMINATED BY '\n';
-
-$ CREATE EXTERNAL TABLE ratings (UserID INT, MovieID INT, Rating INT, Timestamp INT)
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY '|'
-    LINES TERMINATED BY '\n';
-
-$ CREATE EXTERNAL TABLE occupations (OccupationID INT, OccupationName STRING);
-
-> Otra forma de crear las tablas sin hacer preprocesado es al crear las tablas en HIVE, añadir:
-    ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.MultiDelimitSerDe' 
-    WITH SERDEPROPERTIES ("field.delim"="::")
-
-Cargamos los datos:
-$ LOAD DATA INPATH '/user/cloudera/films/movies_modified.dat' INTO TABLE movies;
-$ LOAD DATA INPATH '/user/cloudera/films/users_modified.dat' INTO TABLE users;
-$ LOAD DATA INPATH '/user/cloudera/films/ratings_modified.dat' INTO TABLE ratings;
-$ INSERT INTO occupations VALUES
+    - Creamos la tabla 'Occupations' para que aparezca en las consultas la ocupación en vez de un nº:
+    $ CREATE EXTERNAL TABLE occupations (OccupationID INT, OccupationName STRING);
+    $ INSERT INTO occupations VALUES
     (0, 'other or not specified'),
     (1, 'academic/educator'),
     (2, 'artist'),
@@ -71,9 +51,18 @@ $ INSERT INTO occupations VALUES
     (19, 'unemployed'),
     (20, 'writer');
 
-> Si al cargar los datos aparecen varias filas con valores 'null', volver a prepocesar y sobreescribir los datos con:
-    $ LOAD DATA INPATH '/user/cloudera/films/dataset_modified.dat' OVERWRITE INTO TABLE tabla;
+![creación tablas hive](images/creacionTablas.png)
 
+- Carga de los datos en las tablas 'movies', 'users' y 'ratings' de Hive desde HDFS:
+    $ hadoop fs -put /home/cloudera/sample_dataset-main/movies.dat /user/hive/warehouse/movies.db/movies
+    $ hadoop fs -put /home/cloudera/sample_dataset-main/users.dat /user/hive/warehouse/movies.db/users
+    $ hadoop fs -put /home/cloudera/sample_dataset-main/ratings.dat /user/hive/warehouse/movies.db/ratings
+
+> También podrían cargarse los datos con:
+    $ hadoop fs -put /home/cloudera/sample_dataset-main /user/cloudera/films
+    $ LOAD DATA INPATH '/user/cloudera/films/movies.dat' INTO TABLE movies;
+
+![datos tablas hive](images/hive-datosTablas.png)
 
 **CONSULTAS HIVE**
 
@@ -84,7 +73,7 @@ $ INSERT INTO occupations VALUES
         GROUP BY m.MovieID, m.Title
         ORDER BY num_opiniones DESC LIMIT 1;
 
-    ![consulta sqoop](images/hive-consulta1.png)
+    ![consulta hive](images/hive-consulta1.png)
 
 2. Los 10 usuarios más activos a la hora de puntuar películas:
     - $ SELECT UserID, COUNT(*) AS num_calificaciones FROM ratings
@@ -92,7 +81,7 @@ $ INSERT INTO occupations VALUES
         ORDER BY num_calificaciones DESC
         LIMIT 10;
 
-    ![consulta sqoop](images/hive-consulta2.png)
+    ![consulta hive](images/hive-consulta2.png)
 
 3. Las tres mejores películas según los scores:
     - $ SELECT m.MovieID, m.Title, AVG(r.Rating) AS avg_rating FROM movies m
@@ -101,24 +90,24 @@ $ INSERT INTO occupations VALUES
         ORDER BY avg_rating DESC
         LIMIT 3;
 
-    ![consulta sqoop](images/hive-consulta3.png)
+    ![consulta hive](images/hive-consulta3.png)
 
-4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad:
-    - Profesión que más calificaciones hace:
+4. Profesiones en las que deberíamos enfocar nuestros esfuerzos en publicidad por ser la que menos calificaciones hace:
     - $ SELECT o.OccupationName, COUNT(*) AS num_calificaciones
         FROM users u
         JOIN ratings r ON u.UserID = r.UserID
         JOIN occupations o ON u.Occupation = o.OccupationID
         GROUP BY o.OccupationName
-        ORDER BY num_calificaciones DESC
+        ORDER BY num_calificaciones ASC
         LIMIT 1;
     
-    ![consulta sqoop](images/hive-consulta4.png)
+    ![consulta hive](images/hive-consulta4-ASC.png)
+
+    > Las personas con ocupación de 'farmer' es la que menos calificaciones hace.
 
 5. Otros insight valiosos que pudiéramos extraer de los datos procesados:
 
-    - Analisis de las preferencias de género cinematográfico de los usuarios calculando el promedio de calificaciones de los distintos géneros y cómo difieren las preferencias entre hombres y mujeres.
-
+    - Analisis de las preferencias de género cinematográfico de los usuarios calculando el promedio de calificaciones de los distintos géneros y cómo difieren las preferencias entre hombres y mujeres:
         - $ SELECT m.Genres,
             AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
             AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
@@ -126,9 +115,9 @@ $ INSERT INTO occupations VALUES
             JOIN users u ON r.UserID = u.UserID
             GROUP BY m.Genres;
 
-        ![consulta](images/mysql-consulta5.png)
+        ![consulta hive](images/hive-consulta5.png)
 
-        - El género con mayor rating en hombres y en mujeres:
+    - El género con mayor rating en hombres y en mujeres:
         - $ SELECT m.Genres,
                 AVG(CASE WHEN u.Gender = 'M' THEN r.Rating END) AS Male_Average_Rating,
                 AVG(CASE WHEN u.Gender = 'F' THEN r.Rating END) AS Female_Average_Rating
@@ -139,12 +128,15 @@ $ INSERT INTO occupations VALUES
             ORDER BY Male_Average_Rating DESC, Female_Average_Rating DESC
             LIMIT 1;
 
-        ![consulta](images/mysql-consulta6.png)
+        ![consulta hive](images/mysql-consulta6.png)
+
+    > El género con mayor rating en hombres y mujeres es 'Sci | War' (4,46 y 4,3 respectivamente)
+
 
     **HUE**
 
     > Las consultas en Hive también pueden realizarse con la interfaz gráfica de Haddop 'HUE' para se vean mejor.
-    
+
     - Análisis del comportamiento de los usuarios analizando si hay tendencias estacionales en la cantidad de calificaciones en diferentes momentos del año.
 
         - $ SELECT MONTH(FROM_UNIXTIME(r.Timestamp)) AS Month,
@@ -154,7 +146,7 @@ $ INSERT INTO occupations VALUES
             GROUP BY MONTH(FROM_UNIXTIME(r.Timestamp)), YEAR(FROM_UNIXTIME(r.Timestamp))
             ORDER BY Year, Month;
 
-        ![consulta hive](images/hive-consulta5.png)
+        ![consulta hue](images/hue-consulta1.png)
         
         > El mes con más calificaciones realizadas fue noviembre del año 2.000 con 291.012 y una media de 3,57. El que menos, octubre del 2002 con 1.016 y una media de 3,55.
 
@@ -167,10 +159,9 @@ $ INSERT INTO occupations VALUES
             GROUP BY u.Age, u.Gender, o.OccupationName
             ORDER BY Total_Ratings DESC;
 
-        ![consulta hive](images/hive-consulta6.png)
+        ![consulta hive](images/hue-consulta2.png)
 
         > El grupo de edad que realiza más calificaciones son hombres entre 18 y 24 años con una ocupación de 'estudiantes' con 65.676 calificaciones. Los que menos, las mujeres entre 25 y 34 años con una ocupación de 'científica' con 2.536 calificaciones.
-
 
 
 **EJERCICIO 1.2**
