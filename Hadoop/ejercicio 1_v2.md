@@ -166,14 +166,18 @@
 
 **EJERCICIO 1.2**
 
-sqoop export \
---connect jdbc:mysql://localhost/movies \
---username root \
---password cloudera \
---table movies \
---export-dir /user/hive/warehouse/movies.db \
---input-fields-terminated-by '\t' \
---input-lines-terminated-by '\n';
+- Crear base de datos 'movies' en mysql:
+    $ mysql -uroot -pcloudera
+    $ CREATE DATABASE movies;
+    $ show databases;
+
+
+- Importar tablas y datos a myslq desde hive:
+    $ sqoop export-all-tables \
+    --connect jdbc:mysql://localhost/movies \
+    --username root \
+    --password cloudera \
+    --warehouse-dir /user/hive/warehouse/films.db
 
 
 - $ sqoop import-all-tables --connect jdbc:mysql://localhost/practica_hadoop --username root --password cloudera --table movies --warehouse-dir /hdfs-practica-hadoop
