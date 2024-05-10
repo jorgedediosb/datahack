@@ -29,9 +29,11 @@ Cada máquina puede tener hasta 22 discos de 2 terabytes cada uno, la capacidad 
 22 discos × 2 TB/disco = 44 TB/máquina
 
 Nº de máquinas necesarias:
-52,36 TB/año ÷ 44 TB/máquina ≈ 1,19 máquinas
+52,36 TB/año ÷ 44 TB/máquina = 1,19 máquinas
 
-Necesitaríamos **2 máquinas** para cumplir con los requisitos de almacenamiento.
+Necesitaríamos **2 máquinas** para cumplir con los requisitos minimos de almacenamiento.
+Si queremos alta disponibilidad multiplicaríamos x3 por lo que serían **4 máquinas** (52,36 TB/año x 3 = 157,08 TB/año ÷ 44 TB/máquina = 3,57 máquinas)
+Si además reservamos un 25% de almacenamiento para los datanodes se aumentaría en **5 máquinas** (157,08 + 25% = 196,36 TB/año ÷ 44 TB/máquina = 4,46 máquinas)
 
 
 **Justificación para la necesidad de esta capacidad para un clúster Hadoop:**
