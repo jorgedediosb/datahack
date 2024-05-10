@@ -18,11 +18,11 @@ Crear una máquina virtual en AWS:
     ○ Salir y volver a entrar
 
 **Cluster kafka**
-● Descargar “receta” docker-compose:
+● Descargar “receta” docker-compose (archivo 'zk-simple-kafka-multiple.txt'):
     $ wget https://raw.githubusercontent.com/sergiokhayyat/kafka-exercise s/main/1.Environment/zk-simple-kafka-multiple.yml
     
     Usar si no funciona:
-    $ curl -O https://raw.githubusercontent.com/sergiokhayyat/kafka-exercises/main/1.Environment/zk-simple-kafka-multiple.yml )
+    $ curl -O https://raw.githubusercontent.com/sergiokhayyat/kafka-exercises/main/1.Environment/zk-simple-kafka-multiple.yml
 
 ● Arrancar cluster:
     $ docker compose -f zk-simple-kafka-multiple.yml up -d
