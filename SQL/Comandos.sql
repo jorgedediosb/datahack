@@ -1,12 +1,33 @@
 --Los comandos básicos en SQL incluyen:
 
---1. SELECT: Utilizado para recuperar datos de una o varias tablas:
+--1. CREATE TABLE: Utilizado para crear una nueva tabla en la base de datos:
+CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    ...
+);
+    -- Primary Key (Clave Primaria):
+        CREATE TABLE empleados (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(100),
+        departamento VARCHAR(100)
+        );
+
+    --Foreign Key (Clave Externa):
+        CREATE TABLE ventas (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cliente_id INT,
+        total DECIMAL(10, 2),
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+        );
+
+--2. SELECT: Utilizado para recuperar datos de una o varias tablas:
 SELECT column1, column2 FROM table_name;
 
---2. INSERT INTO: Utilizado para agregar nuevos registros a una tabla:
+--3. INSERT INTO: Utilizado para agregar nuevos registros a una tabla:
 INSERT INTO table_name (column1, column2) VALUES (value1, value2);
 
---3. UPDATE: Utilizado para modificar registros existentes en una tabla:
+--4. UPDATE: Utilizado para modificar registros existentes en una tabla:
 UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;
 
     -- Actualizar el nombre de un cliente con un ID específico:
@@ -34,15 +55,15 @@ UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;
     SET categoria = 'Premium'
     WHERE precio > 100;
 
---4. DELETE: Utilizado para eliminar registros de una tabla:
+--5. DELETE: Utilizado para eliminar registros de una tabla:
 DELETE FROM table_name WHERE condition;
 
---5. CREATE TABLE: Utilizado para crear una nueva tabla en la base de datos:
-CREATE TABLE table_name (
-    column1 datatype,
-    column2 datatype,
-    ...
-);
+    -- DELETE + FOREIGN KEY (evitar que hay inconsistencia en los datos)
+    DELETE FROM pedidos WHERE cliente_id IN (SELECT id FROM clientes WHERE nombre = 'Juan');
+
+    --la sentencia DELETE eliminará todos los pedidos asociados con el cliente cuyo nombre es 'Juan' en la tabla clientes.
+    --La subconsulta selecciona el id del cliente 'Juan' en la tabla clientes,
+    --y luego la sentencia DELETE elimina todos los registros en la tabla pedidos que tienen ese id como valor de cliente_id.
 
 --6. ALTER TABLE: Utilizado para modificar una tabla existente, como agregar o eliminar columnas:
 ALTER TABLE table_name ADD column_name datatype;
