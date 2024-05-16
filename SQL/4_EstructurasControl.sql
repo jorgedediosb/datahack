@@ -36,8 +36,17 @@ BEGIN
     PRINT 'Este cliente no tiene pedidos.';
 END;
 
+--3. Bucles (WHILE): Permiten repetir un bloque de código hasta que se cumpla una condición.
+DECLARE @contador INT;
+SET @contador = 1;
 
---3. CASE: Proporciona una forma de realizar múltiples acciones condicionales en una sola expresión.
+WHILE @contador <= 5
+BEGIN
+    PRINT 'Contador: ' + CAST(@contador AS VARCHAR(10));
+    SET @contador = @contador + 1;
+END;
+
+--4. CASE: Proporciona una forma de realizar múltiples acciones condicionales en una sola expresión.
 DECLARE @dia_semana INT;
 SET @dia_semana = 3;
 
@@ -51,24 +60,16 @@ SELECT
         ELSE 'Fin de semana'
     END AS NombreDia;
 
---4. Bucles (WHILE): Permiten repetir un bloque de código hasta que se cumpla una condición.
-DECLARE @contador INT;
-SET @contador = 1;
+PRINT @dia_semana
 
-WHILE @contador <= 5
-BEGIN
-    PRINT 'Contador: ' + CAST(@contador AS VARCHAR(10));
-    SET @contador = @contador + 1;
-END;
-
---5. TRY / CATCH. Manejo de errores.
+--5. TRY / CATCH. Manejo de errores en la ejecución (errores no controlados).
 BEGIN TRY
     -- Intentar realizar alguna operación aquí
     SELECT 1 / 0; -- Esta operación generará un error de división por cero
 END TRY
 BEGIN CATCH
     -- Manejar el error aquí
-    PRINT 'Se produjo un error: ' + ERROR_MESSAGE();
+    PRINT 'Se produjo un error al dividir por 0: ' + ERROR_MESSAGE();
 END CATCH;
 
 --6. RETURN se utiliza para finalizar la ejecución de un procedimiento almacenado y devolver un valor opcional al código que lo llamó.
@@ -97,4 +98,3 @@ BEGIN
     PRINT 'Contador: ' + CAST(@contador AS VARCHAR(10));
     SET @contador = @contador + 1;
 END;
-
