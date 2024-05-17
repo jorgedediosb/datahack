@@ -36,3 +36,5 @@ Crear una máquina virtual en AWS:
     $ kafka-console-consumer --bootstrap-server kafka1:19092 --topic prueba --from-beginning
 
 > Hay que tener instalado docker
+> Conectarse por terminal:
+    ssh -i /ruta/a/la/clave.pem usuario@dirección_IP
