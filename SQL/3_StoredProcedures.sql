@@ -90,3 +90,39 @@ AS
 BEGIN
     UPDATE empleados SET salario = ISNULL(salario, 0) + @incremento;
 END;
+
+
+/*
+sp_help es un procedimiento almacenado del sistema en SQL Server que proporciona información detallada
+sobre los objetos de la base de datos, como tablas, vistas, índices y procedimientos almacenados.
+Es una herramienta muy útil para obtener rápidamente una descripción completa de la estructura
+y propiedades de un objeto en la base de datos.
+*/
+-- USOS:
+-- 1. Obtener información sobre una tabla:
+EXEC sp_help 'nombre_de_la_tabla';
+
+-- 2. Obtener información sobre otros objetos:
+EXEC sp_help 'mi_stored_procedure';
+
+-- 3. Obtener información general de la base de datos:
+EXEC sp_help;
+
+-- Ejemplo de Uso en un Procedimiento Almacenado:
+CREATE PROCEDURE ObtenerInfoTabla
+    @nombreTabla NVARCHAR(128)
+AS
+BEGIN
+    -- Ejecutar sp_help para obtener información sobre la tabla
+    EXEC sp_help @nombreTabla;
+END;
+
+
+-- sp_helptext te muestra el código fuente de estos objetos:
+EXEC sp_helptext 'nombre_del_procedimiento';
+EXEC sp_helptext 'mi_procedimiento_almacenado';
+EXEC sp_helptext 'mi_funcion';
+EXEC sp_helptext 'mi_vista';
+EXEC sp_helptext 'mi_trigger';
+
+

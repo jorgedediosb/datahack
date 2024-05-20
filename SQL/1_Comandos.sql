@@ -1,6 +1,6 @@
 --Los comandos básicos en SQL incluyen:
 
---1. CREATE TABLE: Utilizado para crear una nueva tabla en la base de datos:
+--1. CREATE: Utilizado para crear una nueva tabla en la base de datos:
 CREATE TABLE table_name (
     column1 datatype,
     column2 datatype,
@@ -20,6 +20,15 @@ CREATE TABLE table_name (
         total DECIMAL(10, 2),
         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
         );
+
+-- Creación de una función:
+CREATE FUNCTION function_name (@name_function datatype)
+RETURNS datatype
+AS
+BEGIN
+    SET @name_function = @name_function * 5
+    RETURN @name_function
+END
 
 --2. SELECT: Utilizado para recuperar datos de una o varias tablas:
 SELECT column1, column2 FROM table_name;
@@ -65,8 +74,16 @@ DELETE FROM table_name WHERE condition;
     --La subconsulta selecciona el id del cliente 'Juan' en la tabla clientes,
     --y luego la sentencia DELETE elimina todos los registros en la tabla pedidos que tienen ese id como valor de cliente_id.
 
---6. ALTER TABLE: Utilizado para modificar una tabla existente, como agregar o eliminar columnas:
-ALTER TABLE table_name ADD column_name datatype;
+--6. ALTER: Utilizado para modificar una tabla existente, como agregar o eliminar columnas:
+ALTER TABLE table_name ADD column_name datatype; -- añade una columna
+ALTER TABLE table_name ALTER COLUMN column_name datatype; -- modifica el tipo de dato de una columna
+ALTER TABLE table_name DROP COLUMN column_name; -- Elimina la columna
+ALTER TABLE table_name ADD FOREIGN KEY (column_name) REFERENCES table_name(column_name); -- Añade 'Clave Foranea' en una columna
 
---7. DROP TABLE: Utilizado para eliminar una tabla existente de la base de datos:
+--7. DROP: Utilizado para eliminar una tabla existente de la base de datos:
 DROP TABLE table_name;
+DROP DATABASE db_name;
+ALTER TABLE table_name DROP COLUMN column_name; -- Elimina la columna
+
+--8. TRUNCATE, elimina los registros de una tabla:
+TRUNCATE TABLE table_name;
