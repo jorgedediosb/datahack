@@ -16,7 +16,9 @@ SELECT departamento, COUNT(*) as total_empleados FROM empleados GROUP BY departa
 --6. WHERE: Se usa para filtrar filas basadas en una condición específica:
 SELECT * FROM productos WHERE precio > 100;
 
---7. JOIN: combina filas de dos o más tablas:
+--7. JOIN. Combina filas de dos o más tablas:
+-- Siempre que se pueda debe hacerse los 'joins' a través de las Primary Key para mejorar la 'performance'.
+
     -- INNER JOIN: Combina filas de dos tablas donde existe una coincidencia en ambas.
     SELECT clientes.cliente_id, clientes.nombre, pedidos.pedido_id, pedidos.fecha
     FROM clientes
@@ -47,9 +49,9 @@ SELECT * FROM productos WHERE precio > 100;
 se utiliza para combinar los resultados de dos o más consultas SELECT en un solo conjunto de resultados.
 La cláusula UNION selecciona solo filas distintas de ambas consultas.
 Si deseas incluir todas las filas, incluidas las duplicadas, puedes utilizar UNION ALL
+UNION ALL devuelve todos los registros, sin elininar las repeticiones.
 */
 
 SELECT cliente_id, nombre FROM clientes_2023
 UNION
 SELECT cliente_id, nombre FROM clientes_2024;
-
