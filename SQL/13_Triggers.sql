@@ -28,7 +28,7 @@ AFTER INSERT
 AS
 BEGIN
     INSERT INTO AuditoriaEmpleados (empleado_id, accion)
-    SELECT empleado_id, 'INSERT' FROM inserted;
+    SELECT empleado_id, 'INSERT' FROM inserted; --'inserted' son las filas que han sido insertadas o actualizadas en la tabla que desencadenó el trigger.
 END;
 
 /*
