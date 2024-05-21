@@ -1,13 +1,17 @@
 /*
 Tablas en Memoria
-Descripción: Las tablas en memoria, también conocidas como tablas optimizadas para memoria o tablas con almacenamiento en memoria, son tablas cuyos datos se almacenan en la memoria RAM en lugar de en el disco. Están diseñadas para operaciones de alto rendimiento y baja latencia.
+Descripción: Las tablas en memoria, también conocidas como tablas optimizadas para memoria o tablas con almacenamiento en memoria,
+son tablas cuyos datos se almacenan en la memoria RAM en lugar de en el disco. Están diseñadas para operaciones de alto rendimiento y baja latencia.
 
 Características:
 - Almacenamiento en RAM: Los datos se mantienen en la memoria principal del servidor.
 - Velocidad: Proporcionan un acceso y manipulación de datos extremadamente rápidos debido a la alta velocidad de la memoria RAM.
-- Persistencia: Pueden configurarse para ser duraderas (persistentes) o no duraderas (volátiles). Las tablas duraderas guardan los datos en el disco para recuperación en caso de fallo, mientras que las volátiles no lo hacen.
-- Optimización para Concurrencia: Utilizan técnicas avanzadas de control de concurrencia, como versiones múltiples de registros (MVCC) y control de concurrencia optimista.
-- Limitaciones: Su capacidad está limitada por la cantidad de memoria RAM disponible en el servidor. No todas las características de las tablas en disco están disponibles para tablas en memoria, dependiendo del sistema de gestión de bases de datos (DBMS).
+- Persistencia: Pueden configurarse para ser duraderas (persistentes) o no duraderas (volátiles). Las tablas duraderas guardan
+  los datos en el disco para recuperación en caso de fallo, mientras que las volátiles no lo hacen.
+- Optimización para Concurrencia: Utilizan técnicas avanzadas de control de concurrencia, como versiones múltiples de registros (MVCC)
+  y control de concurrencia optimista.
+- Limitaciones: Su capacidad está limitada por la cantidad de memoria RAM disponible en el servidor.
+  No todas las características de las tablas en disco están disponibles para tablas en memoria, dependiendo del sistema de gestión de bases de datos (DBMS).
 */
 
 --Ejemplo:
@@ -23,13 +27,15 @@ CREATE TABLE OptimizedMemory.MemTable (
 
 /*
 Tablas Físicas (En Disco)
-Descripción: Las tablas físicas son las tablas tradicionales que almacenan datos en el disco duro del servidor. Este es el tipo de tabla más común en los sistemas de bases de datos.
+Descripción: Las tablas físicas son las tablas tradicionales que almacenan datos en el disco duro del servidor.
+Este es el tipo de tabla más común en los sistemas de bases de datos.
 
 Características:
 - Almacenamiento en Disco: Los datos se almacenan en medios de almacenamiento persistentes como discos duros o unidades de estado sólido (SSD).
 - Persistencia: Todos los datos son persistentes y se recuperan después de un reinicio del sistema o fallo del servidor.
 - Escalabilidad: Pueden manejar grandes volúmenes de datos, limitados principalmente por el espacio de almacenamiento disponible en el servidor.
-- Rendimiento: Generalmente más lentas que las tablas en memoria debido a la latencia de E/S del disco, aunque el uso de SSD puede mejorar significativamente el rendimiento.
+- Rendimiento: Generalmente más lentas que las tablas en memoria debido a la latencia de E/S del disco,
+  aunque el uso de SSD puede mejorar significativamente el rendimiento.
 - Características Completas: Soportan todas las características avanzadas de un DBMS, como índices complejos, triggers, constraints y transacciones completas.
 */
 
@@ -63,6 +69,8 @@ Diferencias Clave
 - Tablas Físicas: Utilizan métodos tradicionales de bloqueo de registros y páginas.
 
 6. Casos de Uso:
-- Tablas en Memoria: Adecuadas para aplicaciones que requieren alta velocidad y bajas latencias, como sistemas de trading financiero, análisis en tiempo real, y aplicaciones que necesitan acceso rápido a datos.
-- Tablas Físicas: Adecuadas para almacenamiento de grandes volúmenes de datos, aplicaciones que requieren persistencia total, y donde el rendimiento no es el único factor crítico.
+- Tablas en Memoria: Adecuadas para aplicaciones que requieren alta velocidad y bajas latencias,
+  como sistemas de trading financiero, análisis en tiempo real, y aplicaciones que necesitan acceso rápido a datos.
+- Tablas Físicas: Adecuadas para almacenamiento de grandes volúmenes de datos, aplicaciones que requieren persistencia total,
+  y donde el rendimiento no es el único factor crítico.
 */
