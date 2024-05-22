@@ -49,7 +49,6 @@ EXEC dbo.sp_attach_schedule
 EXEC dbo.sp_start_job
     @job_name = N'RespaldoDiario';
 
-
 /*
 Resumen:
 Los jobs programados en SQL Server son una herramienta poderosa para automatizar tareas administrativas
