@@ -67,7 +67,7 @@ CREATE TABLE Producto (
 #Inicio Ejercicio II.9
 CREATE TABLE Compra (
     IdCompras INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Concepto VARCHAR(100) NOT NULL,
+    Concepto INT NOT NULL,
     Fecha DATETIME NOT NULL,
     Monto MONEY NOT NULL,
     Observaciones VARCHAR(1000) NULL
@@ -92,13 +92,13 @@ CREATE TABLE CampaniaProducto (
     IdCampania INT NOT NULL,
     IdProducto INT NOT NULL,
     Descripcion VARCHAR(100) NOT NULL,
-    PRIMARY KEY (IdCampania, IdProducto, Descripcion)
+    PRIMARY KEY (IdCampania, IdProducto)
 );
 #fin ejercicio II.12
 #Inicio Ejercicio II.13
 CREATE TABLE ConceptoCompra (
     IdConcepto INT NOT NULL PRIMARY KEY,
-    Concepto VARCHAR(50) NOT NULL
+    Concepto VARCHAR(100) NOT NULL
 );
 #fin ejercicio II.13
 #Inicio Ejercicio IV.B.1 

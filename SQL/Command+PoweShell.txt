@@ -1,0 +1,31 @@
+
+----------------------------Command---------------------------------
+
+Import-Module SqlServer
+Install-Module -Name SqlServer -AllowClobber
+Install-Module -Name SqlServer -AllowClobber -Force
+Update-Module -Name SqlServer
+Get-Module SqlServer -ListAvailable
+Backup-SqlDatabase -ServerInstance "Revolution2" -Database "Northwind" -BackupFile "C:\Data\NorthwindPowershell.bak"
+Invoke-Sqlcmd -ServerInstance "Revolution2" -Query "Select * from Northwind.dbo.Customers"
+Invoke-Sqlcmd -ServerInstance "Revolution2" -Query "Drop database MyDatabase;"
+
+
+----------------------------Script ---------------------------------
+#Intancia de SQL
+$SQLInstance = "Revolution2"
+$Server = New-Object -TypeName Microsoft.SqlServer.Management.Smo.Server 
+-ArgumentList $SQLInstanceName
+
+#Indicar la base de Datos
+$DatabaseName="Northwind"
+
+#Crear un SMO para manejar la base de datos
+$DBObject = $Server.Databases[$DatabaseName]
+
+#revisar si la base de datos existe
+if ($DBObject)
+{
+#Borra la base de datos
+$server.KillDatabase($DatabaseName)
+}
