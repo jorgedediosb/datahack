@@ -1,7 +1,6 @@
 #Inicio ejercicio I - Necesito crear una BBDD 
 CREATE DATABASE JorgeDeDios
 #fin
-
 #Inicio Ejercicio II.1
 CREATE TABLE Clientes (
     IdCliente INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -16,7 +15,6 @@ CREATE TABLE Clientes (
     FechaAlta DATETIME NOT NULL
 );
 #fin ejercicio II.1
-
 #Inicio Ejercicio II.2
 CREATE TABLE Record (
     IdRecord INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -24,7 +22,6 @@ CREATE TABLE Record (
     Observaciones VARCHAR(1000) NULL
 );
 #fin ejercicio II.2
-
 #Inicio Ejercicio II.3
 CREATE TABLE RecordCliente (
     IdRecord INT NOT NULL,
@@ -33,14 +30,12 @@ CREATE TABLE RecordCliente (
     PRIMARY KEY (IdRecord, IdCliente, IdCampania)
 );
 #fin ejercicio II.3
-
 #Inicio Ejercicio II.4
 CREATE TABLE Pais (
     IdPais CHAR(3) NOT NULL PRIMARY KEY,
     NombrePais VARCHAR(100) NOT NULL
 );
 #fin ejercicio II.4
-
 #Inicio Ejercicio II.5
 CREATE TABLE HoraCaptacion (
     idHCaptacion INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -49,7 +44,6 @@ CREATE TABLE HoraCaptacion (
     Observaciones VARCHAR(1000) NULL
 );
 #fin ejercicio II.5
-
 #Inicio Ejercicio II.6
 CREATE TABLE HoraCapClienteCampania (
     idHCaptacion INT NOT NULL,
@@ -58,21 +52,18 @@ CREATE TABLE HoraCapClienteCampania (
     PRIMARY KEY (idHCaptacion, idCliente, idCampania)
 );
 #fin ejercicio II.6
-
 #Inicio Ejercicio II.7
 CREATE TABLE HorarioEstado (
     IdEstado SMALLINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Descripcion VARCHAR(50) NOT NULL
 );
 #fin ejercicio II.7
-
 #Inicio Ejercicio II.8
 CREATE TABLE Producto (
     IdProducto INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Producto VARCHAR(100) NOT NULL
 );
 #fin ejercicio II.8
-
 #Inicio Ejercicio II.9
 CREATE TABLE Compra (
     IdCompras INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -82,7 +73,6 @@ CREATE TABLE Compra (
     Observaciones VARCHAR(1000) NULL
 );
 #fin ejercicio II.9
-
 #Inicio Ejercicio II.10
 CREATE TABLE CompraCliente (
     IdCompras INT NOT NULL,
@@ -91,14 +81,12 @@ CREATE TABLE CompraCliente (
     PRIMARY KEY (IdCompras, IdCliente, idHCaptacion)
 );
 #fin ejercicio II.10
-
 #Inicio Ejercicio II.11
 CREATE TABLE Campania (
     IdCampania INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     NombreCampaña VARCHAR(50) NOT NULL
 );
 #fin ejercicio II.11
-
 #Inicio Ejercicio II.12
 CREATE TABLE CampaniaProducto (
     IdCampania INT NOT NULL,
@@ -107,19 +95,16 @@ CREATE TABLE CampaniaProducto (
     PRIMARY KEY (IdCampania, IdProducto, Descripcion)
 );
 #fin ejercicio II.12
-
 #Inicio Ejercicio II.13
 CREATE TABLE ConceptoCompra (
     IdConcepto INT NOT NULL PRIMARY KEY,
     Concepto VARCHAR(50) NOT NULL
 );
 #fin ejercicio II.13
-
 #Inicio Ejercicio IV.B.1 
 INSERT INTO HoraCaptacion (FechaCaptacion, EstadoCaptacion, Observaciones)
 VALUES ('2024-01-01', 1, 'DESCONOCIDO');
 #fin ejercicio IV.B.1
-
 #Inicio Ejercicio IV.B.2 
 DECLARE @idHCaptacion INT;
 SET @idHCaptacion = SCOPE_IDENTITY(); --obtener el último ID insertado
@@ -128,7 +113,6 @@ DECLARE @IdCampania INT = (SELECT TOP 1 IdCampania FROM Campania);
 INSERT INTO HoraCapClienteCampania (idHCaptacion, idCliente, idCampania)
 VALUES (@idHCaptacion, @IdCliente, @IdCampania);
 #fin ejercicio IV.B.2
-
 #Inicio Ejercicio V
 SELECT * FROM Clientes;
 SELECT Nombre FROM Clientes;
