@@ -1,160 +1,51 @@
 #Inicio ejercicio I - Necesito crear una BBDD 
-CREATE DATABASE JorgeDeDios
+Código
 #fin
 #Inicio Ejercicio II.1
-CREATE TABLE Clientes (
-    IdCliente INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Apellido VARCHAR(50) NOT NULL,
-    Fnacimiento DATE NOT NULL,
-    Domicilio VARCHAR(50) NOT NULL,
-    idPais CHAR(3) NOT NULL,
-    Telefono VARCHAR(12) NULL,
-    Email VARCHAR(30) NOT NULL,
-    Observaciones VARCHAR(1000) NULL,
-    FechaAlta DATETIME NOT NULL
-);
+Código
 #fin ejercicio II.1
 #Inicio Ejercicio II.2
-CREATE TABLE Record (
-    IdRecord INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    FechaRecord DATE NOT NULL,
-    Observaciones VARCHAR(1000) NULL
-);
+Código
 #fin ejercicio II.2
 #Inicio Ejercicio II.3
-CREATE TABLE RecordCliente (
-    IdRecord INT NOT NULL,
-    IdCliente INT NOT NULL,
-    IdCampania INT NULL,
-    PRIMARY KEY (IdRecord, IdCliente, IdCampania)
-);
+Código
 #fin ejercicio II.3
 #Inicio Ejercicio II.4
-CREATE TABLE Pais (
-    IdPais CHAR(3) NOT NULL PRIMARY KEY,
-    NombrePais VARCHAR(100) NOT NULL
-);
+Código
 #fin ejercicio II.4
 #Inicio Ejercicio II.5
-CREATE TABLE HoraCaptacion (
-    idHCaptacion INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    FechaCaptacion DATE NOT NULL,
-    EstadoCaptacion SMALLINT NOT NULL,
-    Observaciones VARCHAR(1000) NULL
-);
+Código
 #fin ejercicio II.5
 #Inicio Ejercicio II.6
-CREATE TABLE HoraCapClienteCampania (
-    idHCaptacion INT NOT NULL,
-    idCliente INT NOT NULL,
-    idCampania INT NOT NULL,
-    PRIMARY KEY (idHCaptacion, idCliente, idCampania)
-);
+Código
 #fin ejercicio II.6
 #Inicio Ejercicio II.7
-CREATE TABLE HorarioEstado (
-    IdEstado SMALLINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Descripcion VARCHAR(50) NOT NULL
-);
+Código
 #fin ejercicio II.7
 #Inicio Ejercicio II.8
-CREATE TABLE Producto (
-    IdProducto INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Producto VARCHAR(100) NOT NULL
-);
+Código
 #fin ejercicio II.8
 #Inicio Ejercicio II.9
-CREATE TABLE Compra (
-    IdCompras INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Concepto INT NOT NULL,
-    Fecha DATETIME NOT NULL,
-    Monto MONEY NOT NULL,
-    Observaciones VARCHAR(1000) NULL
-);
+Código
 #fin ejercicio II.9
 #Inicio Ejercicio II.10
-CREATE TABLE CompraCliente (
-    IdCompras INT NOT NULL,
-    IdCliente INT NOT NULL,
-    idHCaptacion INT NOT NULL,
-    PRIMARY KEY (IdCompras, IdCliente, idHCaptacion)
-);
+Código
 #fin ejercicio II.10
 #Inicio Ejercicio II.11
-CREATE TABLE Campania (
-    IdCampania INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    NombreCampaña VARCHAR(50) NOT NULL
-);
+Código
 #fin ejercicio II.11
 #Inicio Ejercicio II.12
-CREATE TABLE CampaniaProducto (
-    IdCampania INT NOT NULL,
-    IdProducto INT NOT NULL,
-    Descripcion VARCHAR(100) NOT NULL,
-    PRIMARY KEY (IdCampania, IdProducto)
-);
+Código
 #fin ejercicio II.12
 #Inicio Ejercicio II.13
-CREATE TABLE ConceptoCompra (
-    IdConcepto INT NOT NULL PRIMARY KEY,
-    Concepto VARCHAR(100) NOT NULL
-);
+Código
 #fin ejercicio II.13
 #Inicio Ejercicio IV.B.1 
-INSERT INTO HoraCaptacion (FechaCaptacion, EstadoCaptacion, Observaciones)
-VALUES ('2024-01-01', 1, 'DESCONOCIDO');
+Código
 #fin ejercicio IV.B.1
 #Inicio Ejercicio IV.B.2 
-DECLARE @idHCaptacion INT;
-SET @idHCaptacion = SCOPE_IDENTITY(); --obtener el último ID insertado
-DECLARE @IdCliente INT = (SELECT TOP 1 IdCliente FROM Clientes);
-DECLARE @IdCampania INT = (SELECT TOP 1 IdCampania FROM Campania);
-INSERT INTO HoraCapClienteCampania (idHCaptacion, idCliente, idCampania)
-VALUES (@idHCaptacion, @IdCliente, @IdCampania);
+Código
 #fin ejercicio IV.B.2
 #Inicio Ejercicio V
-SELECT * FROM Clientes;
-SELECT Nombre FROM Clientes;
-SELECT TOP 3 * FROM Clientes ORDER BY Fnacimiento ASC;
-SELECT DISTINCT idPais FROM Clientes;
-UPDATE Clientes SET Email = '200@gmail.es' WHERE IdCliente = (SELECT TOP 1 IdCliente FROM Clientes ORDER BY IdCliente);
-SELECT AVG(Monto) AS PromedioMonto FROM Compra;
-SELECT * FROM HoraCaptacion WHERE FechaCaptacion BETWEEN '2024-01-01' AND '2024-01-30';
-DECLARE @Pais CHAR(3);
-SET @Pais = 'ESP';
-IF @Pais = 'ESP'
-BEGIN
-    SELECT * FROM Clientes WHERE idPais = 'ESP';
-END
-ELSE
-BEGIN
-    PRINT 'No hay clientes de España';
-END;
-SELECT IdPais, NombrePais,
-    CASE
-        WHEN IdPais IN ('ESP', 'FRA', 'DEU') THEN 'Europa'
-        WHEN IdPais IN ('USA', 'CAN') THEN 'América del Norte'
-        WHEN IdPais IN ('ARG', 'BRA') THEN 'América del Sur'
-        -- Agrega más condiciones según los países que tengas en tu tabla
-        ELSE 'Otro'
-    END AS Continente
-FROM Pais;
-ALTER TABLE Clientes ADD DNI VARCHAR(50) NULL;
-CREATE PROCEDURE Nuevo_cliente
-    @DNI VARCHAR(50),
-    @Nombre VARCHAR(50),
-    @Apellido VARCHAR(50),
-    @Fnacimiento DATE,
-    @Domicilio VARCHAR(50),
-    @idPais CHAR(3),
-    @Telefono VARCHAR(12),
-    @Email VARCHAR(30),
-    @Observaciones VARCHAR(1000)
-AS
-BEGIN
-    INSERT INTO Clientes (DNI, Nombre, Apellido, Fnacimiento, Domicilio, idPais, Telefono, Email, Observaciones, FechaAlta)
-    VALUES (@DNI, @Nombre, @Apellido, @Fnacimiento, @Domicilio, @idPais, @Telefono, @Email, @Observaciones, GETDATE());
-END;
-EXEC Nuevo_cliente '2351365', 'Raúl', 'Stuart', '1985-05-21', 'Las regasta 25', 'ESP', '655821547', 'Raul@krokimail.com', '';
+Código
 #fin ejercicio V
