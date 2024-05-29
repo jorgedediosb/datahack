@@ -1,8 +1,8 @@
-version: '2'
+version: '3.4'
 
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.2.0
+    image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -14,7 +14,7 @@ services:
       - "moby:127.0.0.1"
 
   kafka:
-    image: confluentinc/cp-kafka:5.2.0
+    image: confluentinc/cp-kafka:latest
     hostname: kafka
     container_name: kafka
     ports:
@@ -32,7 +32,7 @@ services:
       - "moby:127.0.0.1"
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.2.0
+    image: confluentinc/cp-schema-registry:latest
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -47,7 +47,7 @@ services:
       - "moby:127.0.0.1"
 
   kafka-create-topics:
-    image: confluentinc/cp-kafka:5.2.0
+    image: confluentinc/cp-kafka:latest
     depends_on:
       - kafka
     hostname: kafka-create-topics
@@ -62,12 +62,12 @@ services:
       - "moby:127.0.0.1"
 
   ksql-cli:
-    image: confluentinc/cp-ksql-cli:5.2.1
+    image: confluentinc/cp-ksql-cli:5.4.10
     depends_on:
       - ksql-server
 
   ksql-server:
-    image: confluentinc/cp-ksql-server:5.2.1
+    image: confluentinc/cp-ksql-server:5.4.10
     ports:
       - 8088:8088
     depends_on:

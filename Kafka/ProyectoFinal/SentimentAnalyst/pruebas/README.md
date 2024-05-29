@@ -4,25 +4,46 @@ How to do a sentiment analysis in real-time using the Jupyter notebook, Kafka an
 A tutorial about processing streaming data from Kafka into the Jupyter notebook
 
 We will use:
-kafka: we will use the confluent version for kafka as our streaming platform
-ksql: this is a technology from confluent that lets us create tables on top of kafka and enables us to run SQL queries in realtime. Pretty cool eh?
-jupyter notebook: our environment to run the analysis
-docker compose: we will use this to create our own kafka cluster locally
-NLTK: sentiment analysis library in python using the vader algorithm
+- kafka: we will use the confluent version for kafka as our streaming platform
+- ksql: this is a technology from confluent that lets us create tables on top of kafka and enables us to run SQL queries in realtime.
+- jupyter notebook: our environment to run the analysis
+- docker compose: we will use this to create our own kafka cluster locally
+- NLTK: sentiment analysis library in python using the vader algorithm
 
-Step 1: run docker compose
+**Step 1: run docker compose**
 In this first step we need to run docker compose to create our kafka cluster. This will run a bunch of docker containers that will create various elements of the cluster like zookeeper, brokers, topics, ksql.
 Now very briefly, kafka is a distributed streaming platform capable of handling a large number of messages, that are organised into topics. To be able to process a topic in parallel it has to be split into partitions, and the data from these partitions are stored into separate machines called brokers. And finally, zookeeper is used to manage the resources of the brokers in the clusters. This are the elements from the vanilla version of kafka. The confluent platform adds ksql as a query engine.
 
-Running docker-compose up in the root of the project will create the cluster. You should see something like the image bellow if everything has run successfully.
+Running docker-compose up (with daemon run) in the root of the project will create the cluster. You should see something like the image bellow if everything has run successfully.
 
 The ksql service will run on port 8088 and the kafka broker will be available on port 9092. We need this information to connect to kafka from jupyter. When you are finished working on the cluster you can stop all the containers by running docker-compose down.
-Step 2: install the additional dependencies
+
+
+**Step 2: install the additional dependencies**
 We are using a few python packages that maybe we have not used before, therefore we need to install them. At the root of the project, we have a requirements.txt file. To install it run the following command in the console:
 $ pip install -r requirements.txt
 
+> Si la instalación da problemas:
+- Crear entorno viertual: python3 -m venv venv
+- Activar entorno virtual: source venv/bin/activate
+- Instalar requerimientos: pip install -r requirements.txt
+    Si da problemas:
+    - Instalar setuptools y wheel: pip install setuptools wheel
+    - Intalar dependencias por separado:
+        pip install ksql
+        pip install confluent_kafka nltk
 
-Step 3: run the kafka producer
+> Si da problemas crea un archivo llamado Dockerfile en tu proyecto con el siguiente contenido:
+    FROM python:3.9-slim
+    WORKDIR /SentimentAnalyst
+    COPY requirements.txt requirements.txt
+    RUN pip install --no-cache-dir -r requirements.txt
+    COPY . .
+    CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--allow-root"]
+
+    - Actualiza tu archivo docker-compose.yaml para incluir el servicio de Jupyter Notebook:
+
+**Step 3: run the kafka producer in Jupyter Notebook**
 To be able to consume data in realtime we first must write some messages into kafka. We will use the confluent_kafka library in python to write a producer:
 
 def confluent_kafka_producer():
