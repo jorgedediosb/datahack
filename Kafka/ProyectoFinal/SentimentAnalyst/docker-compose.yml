@@ -1,4 +1,4 @@
-version: '3.4'
+#version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.2
@@ -38,6 +38,7 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_CREATE_TOPICS: 'input-topic:1:1'
 
   schema-registry:
@@ -142,27 +143,24 @@ services:
 
   mongodb:
     container_name: mongo
-    image: mongo:6.0.2
+    image: mongo:4.2.8-bionic
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27017:27017"
 
   sentiment-analysis:
-    image: python:3.9
+    build:
+        context: ./app
     container_name: sentiment-analysis
     depends_on:
       - broker
       - mongodb
     volumes:
       - ./app:/app
-    working_dir: /app
-    command: >
-      bash -c "
-      pip install confluent_kafka textblob &&
-      python app.py
-      "
     environment:
       - KAFKA_BROKER=broker:29092
-      - KAFKA_TOPIC=input_topic
+      - KAFKA_TOPIC=input-topic
       - KAFKA_GROUP_ID=sentiment_group
       - MONGO_URI=mongodb://admin:admin@mongo:27017/
