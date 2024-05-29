@@ -102,3 +102,17 @@ We treat theTypeError as a signal that we have reached the end of the list for o
  {'compound': 0.4215, 'neg': 0.0, 'neu': 0.517, 'pos': 0.483}]
 
 Each row represents the result for one sentence, and the sentiment can be either positive, neutral or negative. This is it! We can see how in a few steps we can process and analyse realtime data in the Jupyter notebook in an environment that is easy to use for the data scientists.
+
+_____________________________________________________
+EJECUTAR ANALISIS EN TIEMPO REAL:
+- Terminal 1 (productor):
+    python producer_realtime.py
+- Terminal 2 (consumidor):
+    python consumer_realtime.py
+
+______________________________________________________
+EJECUTAR ANALISIS DESDE ARCHIVO:
+- Terminal 1 (productor):
+    python producer-file.py
+- Terminal 2 (consumidor):
+    python consumer-file.py
