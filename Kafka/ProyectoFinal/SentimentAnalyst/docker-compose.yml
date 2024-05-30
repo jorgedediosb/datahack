@@ -39,7 +39,7 @@ services:
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_CREATE_TOPICS: 'input-topic:1:1'
+      KAFKA_CREATE_TOPICS: 'input-topic:3:3,stream-topic:3:3'
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.2.2

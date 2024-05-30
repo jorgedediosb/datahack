@@ -1,5 +1,4 @@
 este es el texto que quiero analizar
 Genial! cada linea es un mensaje de texto
 Si esto no funciona será una cagada horrible!
-Este mensaje es en tiempo real
-
+Nuevo mensaje!!
