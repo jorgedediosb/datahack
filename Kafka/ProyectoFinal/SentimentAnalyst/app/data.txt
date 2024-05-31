@@ -2,3 +2,15 @@ este es el texto que quiero analizar
 Genial! cada linea es un mensaje de texto
 Si esto no funciona será una cagada horrible!
 Nuevo mensaje!!
+modifico el mensaje
+mensaje 2
+mensaje3
+hola
+mensaje4
+mensaje5
+mensaje6
+mensaje7
+mensaje8: Esto es un infierno y huele mal!!
+el proyecto es una mierda, no tiene sentido. Es malísimo.
+mensaje9
+el proyecto es una mierda, no tiene sentido. Es malísimo.
