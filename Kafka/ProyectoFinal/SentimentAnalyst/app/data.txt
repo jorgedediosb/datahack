@@ -1,16 +1,14 @@
-este es el texto que quiero analizar
-Genial! cada linea es un mensaje de texto
-Si esto no funciona será una cagada horrible!
-Nuevo mensaje!!
-modifico el mensaje
-mensaje 2
+Este debería ser un texto neutro
+Este es un texto maravilloso, me encanta
+Este en un texto horrible, me parece malísimo
+Este mensaje es muy feo y debería guardarse en mongo
+mensaje1
+mensaje2
 mensaje3
-hola
+mensaje4este es un texto horrible que debe ser malísimo
 mensaje4
-mensaje5
-mensaje6
-mensaje7
-mensaje8: Esto es un infierno y huele mal!!
-el proyecto es una mierda, no tiene sentido. Es malísimo.
-mensaje9
-el proyecto es una mierda, no tiene sentido. Es malísimo.
+
+esta aplicación  es maravillosa me ha resultado súper útil. Un 10 para el programador!
+esta aplicación  es un asco, no me ha resultado nada útil. Un 0 para el programador!
+esta aplicación es horrible, no me ha resultado nada útil. No funciona
+No me gusta nada lo que has dicho, tendrían que ahorcarte!!

@@ -1,4 +1,5 @@
-
+'''
+#VERSIÓN CORRECTA (NO TOCAR)
 from confluent_kafka import Producer
 import os
 
@@ -20,70 +21,44 @@ with open('data.txt', 'r') as file:
 
 p.flush()
 '''
-import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-from confluent_kafka import Producer
+from confluent_kafka import Producer, KafkaError
 import os
+import time
 
 kafka_broker = os.getenv('KAFKA_BROKER', 'broker:29092')
 kafka_topic = os.getenv('KAFKA_TOPIC', 'input-topic')
-data_file = 'data.txt'
-progress_file = 'progress.txt'
 
-# Configurar el productor de Kafka
-producer = Producer({'bootstrap.servers': kafka_broker})
+p = Producer({'bootstrap.servers': kafka_broker})
 
-def acked(err, msg):
+def delivery_report(err, msg):
     if err is not None:
-        print(f"Failed to deliver message: {err}")
+        print('Message delivery failed: {}'.format(err))
     else:
-        print(f"Message produced: {msg.value().decode('utf-8')}")
+        print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
 
-def read_progress():
-    if not os.path.exists(progress_file):
-        return 0
-    with open(progress_file, 'r') as f:
-        try:
-            return int(f.readline().strip())
-        except ValueError:
-            return 0
+def produce_from_file():
+    with open('data.txt', 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            p.produce(kafka_topic, line.strip(), callback=delivery_report)
+            p.poll(0)
+            time.sleep(0.1)  # Añadir un pequeño retraso para evitar saturar el productor
 
-def write_progress(lines_processed):
-    with open(progress_file, 'w') as f:
-        f.write(str(lines_processed))
-
-class FileChangeHandler(FileSystemEventHandler):
-    def __init__(self):
-        super().__init__()
-        self.lines_processed = read_progress()
-        self.process_new_lines(initial=True)
-
-    def on_modified(self, event):
-        if event.src_path == os.path.abspath(data_file):
-            self.process_new_lines()
-
-    def process_new_lines(self, initial=False):
-        with open(data_file, 'r') as f:
-            lines = f.readlines()
-            new_lines = lines[self.lines_processed:]
-            for line in new_lines:
-                producer.produce(kafka_topic, line.strip(), callback=acked)
-                producer.flush()
-                self.lines_processed += 1
-            write_progress(self.lines_processed)
+def wait_for_new_lines():
+    with open('data.txt', 'r') as file:
+        # Ir a la última posición del archivo
+        file.seek(0, 2)
+        while True:
+            # Leer nuevas líneas
+            line = file.readline()
+            if not line:
+                # Si no hay nuevas líneas, esperar un poco antes de revisar nuevamente
+                time.sleep(0.1)
+                continue
+            # Enviar la nueva línea al consumidor
+            p.produce(kafka_topic, line.strip(), callback=delivery_report)
+            p.poll(0)
 
 if __name__ == '__main__':
-    event_handler = FileChangeHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path='.', recursive=False)
-    observer.start()
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
-
-'''
-
+    produce_from_file()
+    wait_for_new_lines()
