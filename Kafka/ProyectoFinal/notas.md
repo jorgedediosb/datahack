@@ -1,61 +1,67 @@
-REQUERIMIENTOS:
-- docker
-
-Crear topic manualmente si no se crea al lanzar el docker-compose.yaml:
-$ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --partitions 1 --replication-factor 1
-
-Reiniciar servicio:
-$ docker-compose restart sentiment-analysis
-
-Ver los topics del broker:
-$ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --list
-
-verificar si el servicio está funcionando correctamente:
-$ docker-compose exec sentiment-analysis ps aux
-
-Iniciar servicios:
-$ docker-compose up -d
-
-Enviar los datos al tópico de Kafka, accede al contenedor del servicio de análisis de sentimiento y ejecuta el productor:
-$ docker-compose exec sentiment-analysis bash
-$ python3 producer.py
-
-Leer datos en el consumidor (en otra terminal):
-$ docker-compose exec sentiment-analysis bash
-$ python3 consumer.py
-
-Acceder al contenedor mongo (el cliente MongoDB debe estar instalado):
-$ docker ps (para ver el ID del contenedor)
-$ docker exec -it ID_Contenedor /bin/bash
-ó
-$ docker exec -it mongo bash
-$ mongo --username admin --password admin --authenticationDatabase admin
-$ use sentiment_analysis
-$ db.results.find().pretty()
-
-Ejecución de Queries:
-- Con KSQL:
-    1. Crear un flujo (stream) en ksqlDB que lea los datos del topic 'input-topic':
-    $ CREATE STREAM sentiment_data (line VARCHAR) WITH (KAFKA_TOPIC='input-topic', VALUE_FORMAT='DELIMITED');
-    2. Hacer la consulta:
-    $ SELECT AVG(sentiment) AS average_sentiment FROM sentiment_data;
-
-- Con PYTHON/SHELL:
-    Verificar nombres de contenedores:
-    $ docker ps
-    - Queries Shell:
-    $ docker exec -it mongo bash -c "cd /app/queries && ./query_average_sentiment.sh"
-    - Queries Python (debe estar python instalado):
-    $ docker exec -it mongo bash -c "python /app/queries/query_average_sentiment.py"
-
-Acceso a la interfaz del 'Control Center' desde un navegador web:
-http://localhost:9021
+PROBLEMAS:
+- KAFKA_CREATE_TOPICS: 'input-topic:3:3' No crea topics con 3 particiones y un factor de replicación 3.
+- Los mensajes que recibe el topic input-topic vienen repetidos por 3.
+- El dataset no se copia en data.txt
 
 Reiniciar después de hacer cambios:
 $ docker-compose up -d --build
 $ docker-compose up -d --build sentiment-analysis (nombre del servicio que se ha hecho cambios)
 $ docker-compose down && docker-compose up -d
 
+Crear topic manualmente si no se crea al lanzar el docker-compose.yaml:
+$ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --create --topic input-topic --partitions 1 --replication-factor 1
+
+___________________________________________________________
+REQUERIMIENTOS:
+- docker o docker desktop?
+- cliente MongoDB?
+
+EJECUTAR LA APLICACION
+    Iniciar servicios:
+        $ docker-compose up -d
+    Verificar si el servicio está funcionando correctamente:
+        $ docker-compose ps
+    Reiniciar servicio si fuese necesario:
+        $ docker-compose restart nombre_servicio
+    Enviar los datos del archivo data.txt a través del productor para ser analizados por el consumidor:
+        > Esperar unos segundos hasta que todos los servicios estén corriendo correctamente
+        $ docker-compose exec sentiment-analysis bash -c "python3 producer.py & python3 consumer.py"
+        $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py"
+
+
+MONGO
+    Acceder a la base de datos:
+        $ docker exec -it mongo bash
+        $ mongo --username admin --password admin --authenticationDatabase admin
+        $ use sentiment_analysis
+        $ db.results.find().pretty()
+
+Ejecución de Queries:
+    - Con KSQL:
+        Aceder a KSQLDB:
+            $ docker-compose exec ksqldb-cli ksql http://ksqldb-server:8088
+        Crear un flujo (stream) que lea los datos del topic 'input-topic':
+            $ CREATE STREAM my_input_stream (message VARCHAR) 
+            WITH (KAFKA_TOPIC='input-topic', VALUE_FORMAT='DELIMITED');
+            $ SELECT * FROM my_input_stream;
+
+    - con Python:
+        Media de sentimiento:
+            $ docker-compose exec sentiment-analysis python3 /app/queries/query_average_sentiment.py
+        Mensajes negativos:
+        $ docker-compose exec sentiment-analysis python3 /app/queries/negative_messages.py
+
+INTERFAZ CONTROL CENTER:
+    Acceso a la interfaz del 'Control Center' desde un navegador web: http://localhost:9021
+
+INFORMACIÓN  TOPICS:
+    Ver los topics que se han creado:
+        $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
+    Información de un topic:
+        $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
+    Mensajes recibidos a un topic:
+        $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
+    
 ___________________________________________________
 Polarity (Polaridad)
 La polaridad mide la orientación emocional del texto. Es un valor que varía entre -1.0 y 1.0:
