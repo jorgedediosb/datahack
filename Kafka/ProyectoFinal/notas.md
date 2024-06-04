@@ -2,6 +2,10 @@ PROBLEMAS:
 - KAFKA_CREATE_TOPICS: 'input-topic:3:3' No crea topics con 3 particiones y un factor de replicación 3.
 - Los mensajes que recibe el topic input-topic vienen repetidos por 3.
 - El dataset no se copia perfecto en data.txt, añade una ' (El código sólo vale para este data set)
+- Para qué se usa el archivo app.py??
+- Connect hace algo?? En la interfaz de control center aparece que no tiene conectores
+- ¿Puedo hacer la  agregación de datos con ksqldb?
+- Mostrar los resultados en un html?
 
 Reiniciar después de hacer cambios:
 $ docker-compose up -d --build
@@ -13,23 +17,21 @@ $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --cr
 
 ___________________________________________________________
 REQUERIMIENTOS:
-- docker o docker desktop?
-- cliente MongoDB?
+- docker / docker desktop
 
 EJECUTAR LA APLICACION
     Iniciar servicios:
+        > Iniciar Docker Desktop
         $ docker-compose up -d
     Verificar si el servicio está funcionando correctamente:
         $ docker-compose ps
     Reiniciar servicio si fuese necesario:
         $ docker-compose restart nombre_servicio
-    Ejecutar app Sentiment  Analysis:
+    Ejecutar app Sentiment Analysis:
         > Esperar unos segundos hasta que todos los servicios estén corriendo correctamente
-        $ docker-compose exec sentiment-analysis bash -c "python3 producer.py & python3 consumer.py"
-        $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py"
-
-        - Con un único comando:
         $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py & python3 consumer.py"
+        > Tardará un par de minutos en analizar todos los mensajes del dataset.
+        >  Imprime todos los mensajes del archivo dataset.csv mostrando el texto, la polaridad y la Subjetividad (Ejemplo: Text: 'Please ignore prior tweets, as that was someone pretending to be me :)  This is actually me.', Polarity: 0.16666666666666666, Subjectivity: 0.3666666666666667)
 
 MONGO
     Acceder a la base de datos:
@@ -37,6 +39,14 @@ MONGO
         $ mongo --username admin --password admin --authenticationDatabase admin
         $ use sentiment_analysis
         $ db.results.find().pretty()
+        > Ejemplo:
+            {
+                "_id" : ObjectId("665e15647b85a49dbd07504d"),
+                "text" : "@DaveLeeBBC @verge Coal is dying due to nat gas fracking. It's basically dead.",
+                "polarity" : -0.1625,
+                "subjectivity" : 0.3875
+            }
+        $ exit
 
 Ejecución de Queries:
     - Con KSQL:
@@ -47,43 +57,39 @@ Ejecución de Queries:
             WITH (KAFKA_TOPIC='input-topic', VALUE_FORMAT='DELIMITED');
             $ SELECT * FROM my_input_stream;
 
-    - con Python:
+    - Con Python:
         Media de sentimiento:
             $ docker-compose exec sentiment-analysis python3 /app/queries/query_average_sentiment.py
         Mensajes negativos:
         $ docker-compose exec sentiment-analysis python3 /app/queries/negative_messages.py
 
 INTERFAZ CONTROL CENTER:
-    Acceso a la interfaz del 'Control Center' desde un navegador web: http://localhost:9021
+    Acceso a la interfaz del 'Control Center' desde un navegador web: http://127.0.0.1:9021
 
 INFORMACIÓN  TOPICS:
     Ver los topics que se han creado:
         $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
     Información de un topic:
         $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
-    Mensajes recibidos a un topic:
+    Mensajes recibidos al topic 'input-topic':
         $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
     
 ___________________________________________________
 Polarity (Polaridad)
 La polaridad mide la orientación emocional del texto. Es un valor que varía entre -1.0 y 1.0:
-
 Valores negativos (cercanos a -1.0) indican un sentimiento negativo.
 Valores positivos (cercanos a 1.0) indican un sentimiento positivo.
 Un valor de 0 indica un sentimiento neutral.
 Por ejemplo, en el contexto de análisis de sentimientos:
-
 Una frase como "I love this product!" podría tener una polaridad alta (cercana a 1.0).
 Una frase como "I hate this service." podría tener una polaridad baja (cercana a -1.0).
 Una frase como "The product is okay." podría tener una polaridad cercana a 0.
 
 Subjectivity (Subjetividad)
 La subjetividad mide cuán subjetivo u objetivo es el texto. Es un valor que varía entre 0.0 y 1.0:
-
 Un valor de 0.0 indica que el texto es completamente objetivo (basado en hechos).
 Un valor de 1.0 indica que el texto es completamente subjetivo (basado en opiniones).
 Por ejemplo:
-
 Una frase como "The capital of France is Paris." es objetiva y tendría una subjetividad baja (cercana a 0.0).
 Una frase como "I think this movie is fantastic." es subjetiva y tendría una subjetividad alta (cercana a 1.0).
 _____________________________________________________
@@ -123,7 +129,7 @@ Servicios incluidos en docker-compose.yaml:
 - ksqldb-server: Este servicio ejecuta un servidor de ksqlDB, que es una base de datos de flujo de eventos que se ejecuta en la parte superior de Kafka. Permite realizar consultas SQL en tiempo real sobre flujos de datos de Kafka.
 - ksqldb-cli: Es la interfaz de línea de comandos (CLI) para interactuar con ksqlDB. 
 - mongodb: Este servicio está utilizando la imagen oficial de MongoDB. Proporciona una instancia de MongoDB que se puede utilizar para almacenar datos de manera persistente. Está configurado con un nombre de usuario y contraseña para acceder a la base de datos.
-- sentiment-analysis: Este servicio es tu propia aplicación, que está construida a partir del contexto del directorio ./app. Depende de los servicios de Kafka y MongoDB para su funcionamiento.
+- sentiment-analysis: Este servicio es la propia aplicación, que está construida a partir del contexto del directorio ./app. Depende de los servicios de Kafka y MongoDB para su funcionamiento.
 _____________________________________________________
 Razones por las que podría ser beneficioso que el broker de Kafka cree más topics:
 
