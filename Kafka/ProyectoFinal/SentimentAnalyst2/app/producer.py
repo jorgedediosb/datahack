@@ -19,7 +19,7 @@ def produce_from_file():
         for line in lines:
             p.produce(kafka_topic, line.strip(), callback=delivery_report)
             p.poll(0)
-            time.sleep(0.1)  # Añadir un pequeño retraso para evitar saturar el productor
+            time.sleep(0.1)  # Añadir retraso para evitar saturar el productor
 
 def wait_for_new_lines():
     with open('data.txt', 'r') as file:

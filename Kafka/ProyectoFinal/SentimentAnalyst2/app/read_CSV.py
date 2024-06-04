@@ -15,7 +15,7 @@ with open(output_file, 'a') as file:
             for row in reader:
                 # Obtener el texto de la columna 'text' y limpiarlo
                 text = row['text'].strip('"b').replace("\\", "")
-                # Escribir el texto en el archivo de salida
+                # Escribir el texto en el archivo de salida y añadir un salto de línea
                 file.write(text + '\n')
     except FileNotFoundError:
         print(f"Error: Archivo '{csv_file}' no encontrado.")
