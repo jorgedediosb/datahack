@@ -1,7 +1,7 @@
 PROBLEMAS:
 - KAFKA_CREATE_TOPICS: 'input-topic:3:3' No crea topics con 3 particiones y un factor de replicación 3.
 - Los mensajes que recibe el topic input-topic vienen repetidos por 3.
-- El dataset no se copia en data.txt
+- El dataset no se copia perfecto en data.txt, añade una ' (El código sólo vale para este data set)
 
 Reiniciar después de hacer cambios:
 $ docker-compose up -d --build
@@ -23,11 +23,13 @@ EJECUTAR LA APLICACION
         $ docker-compose ps
     Reiniciar servicio si fuese necesario:
         $ docker-compose restart nombre_servicio
-    Enviar los datos del archivo data.txt a través del productor para ser analizados por el consumidor:
+    Ejecutar app Sentiment  Analysis:
         > Esperar unos segundos hasta que todos los servicios estén corriendo correctamente
         $ docker-compose exec sentiment-analysis bash -c "python3 producer.py & python3 consumer.py"
         $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py"
 
+        - Con un único comando:
+        $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py & python3 consumer.py"
 
 MONGO
     Acceder a la base de datos:
