@@ -1,0 +1,18 @@
+{
+    "name": "mongodb-sink-connector",
+    "config": {
+      "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+      "tasks.max": "1",
+      "topics": "input-topic",
+      "connection.uri": "mongodb://admin:admin@mongodb:27017",
+      "database": "sentiment_analysis",
+      "collection": "results",
+      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+      "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+      "value.converter.schemas.enable": "false",
+      "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy",
+      "document.id.strategy.partial.value.projection.list": "id",
+      "document.id.strategy.partial.value.projection.type": "AllowList"
+    }
+  }
+  

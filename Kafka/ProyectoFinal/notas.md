@@ -2,8 +2,8 @@ PROBLEMAS:
 - KAFKA_CREATE_TOPICS: 'input-topic:3:3' No crea topics con 3 particiones y un factor de replicación 3.
 - Los mensajes que recibe el topic input-topic vienen repetidos por 3.
 - El dataset no se copia perfecto en data.txt, añade una ' (El código sólo vale para este data set)
-- Para qué se usa el archivo app.py??
-- Connect hace algo?? En la interfaz de control center aparece que no tiene conectores
+- Para qué se usa el archivo app.py?? NADA!!!
+- Connect hace algo?? CREAR CONECTOR CON MONGO!! En la interfaz de control center aparece que no tiene conectores
 - ¿Puedo hacer la agregación de datos con ksqldb?
 - Mostrar los resultados en un html?
 - Configuraciones manuales? Cargar sólo mensajes nuevos?
