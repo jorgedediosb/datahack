@@ -1,0 +1,4 @@
+confluent_kafka
+textblob
+pymongo
+kafka-python
