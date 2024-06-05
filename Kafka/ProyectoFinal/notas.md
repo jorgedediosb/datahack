@@ -4,8 +4,10 @@ PROBLEMAS:
 - El dataset no se copia perfecto en data.txt, añade una ' (El código sólo vale para este data set)
 - Para qué se usa el archivo app.py??
 - Connect hace algo?? En la interfaz de control center aparece que no tiene conectores
-- ¿Puedo hacer la  agregación de datos con ksqldb?
+- ¿Puedo hacer la agregación de datos con ksqldb?
 - Mostrar los resultados en un html?
+- Configuraciones manuales? Cargar sólo mensajes nuevos?
+- Hacer tests?
 
 Reiniciar después de hacer cambios:
 $ docker-compose up -d --build
@@ -23,10 +25,10 @@ EJECUTAR LA APLICACION
     Iniciar servicios:
         > Iniciar Docker Desktop
         $ docker-compose up -d
-    Verificar si el servicio está funcionando correctamente:
+    Verificar si todos los servicios están funcionando correctamente:
         $ docker-compose ps
-    Reiniciar servicio si fuese necesario:
-        $ docker-compose restart nombre_servicio
+    Reiniciar algún servicio si fuese necesario (alguna vez se han detenido en broker, creo que por sobrecalientamiento del ordenador):
+        $ docker-compose restart nombre_del_servicio
     Ejecutar app Sentiment Analysis:
         > Esperar unos segundos hasta que todos los servicios estén corriendo correctamente
         $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py & python3 consumer.py"
@@ -35,7 +37,7 @@ EJECUTAR LA APLICACION
 
 MONGO
     Acceder a la base de datos:
-        $ docker exec -it mongo bash
+        $ docker exec -it mongodb bash
         $ mongo --username admin --password admin --authenticationDatabase admin
         $ use sentiment_analysis
         $ db.results.find().pretty()
@@ -48,23 +50,24 @@ MONGO
             }
         $ exit
 
-Ejecución de Queries:
+Ejecución Queries:
     - Con KSQL:
         Aceder a KSQLDB:
             $ docker-compose exec ksqldb-cli ksql http://ksqldb-server:8088
         Crear un flujo (stream) que lea los datos del topic 'input-topic':
-            $ CREATE STREAM my_input_stream (message VARCHAR) 
+            $ CREATE STREAM input_topic_data (message VARCHAR) 
             WITH (KAFKA_TOPIC='input-topic', VALUE_FORMAT='DELIMITED');
-            $ SELECT * FROM my_input_stream;
+            $ SELECT * FROM input_topic_data;
+            $ exit
 
     - Con Python:
         Media de sentimiento:
             $ docker-compose exec sentiment-analysis python3 /app/queries/query_average_sentiment.py
         Mensajes negativos:
-        $ docker-compose exec sentiment-analysis python3 /app/queries/negative_messages.py
+            $ docker-compose exec sentiment-analysis python3 /app/queries/negative_messages.py
 
 INTERFAZ CONTROL CENTER:
-    Acceso a la interfaz del 'Control Center' desde un navegador web: http://127.0.0.1:9021
+    Acceso a la interfaz 'Control Center': http://127.0.0.1:9021
 
 INFORMACIÓN  TOPICS:
     Ver los topics que se han creado:
