@@ -1,13 +1,17 @@
 **MANUAL DE USO**
 
 INFORMACIÓN TOPICS:
+
     - Topics creados:
         $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
+
     - Información de un topic:
         $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
         $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic results-topic
+    
     - Mensajes recibidos en el topic 'input-topic':
         $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
+    
     - Mensajes recibidos en el topic 'results-topic':
         $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic results-topic --from-beginning
 
