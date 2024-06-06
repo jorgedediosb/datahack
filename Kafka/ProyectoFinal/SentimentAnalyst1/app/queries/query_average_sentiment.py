@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Configuración
-mongo_uri = "mongodb://admin:admin@mongodb:27017"
+mongo_uri = "mongodb://admin:admin@mongo:27017"
 database_name = "sentiment_analysis"
 collection_name = "results"
 
