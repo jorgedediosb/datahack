@@ -3,6 +3,7 @@
 COMPONENTES:
 
 KAFKA:
+
     - Zookeeper: Proporciona la funcionalidad de coordinación distribuida necesaria para Kafka. Zookeeper administra y coordina los brokers de Kafka para garantizar que la operación del clúster sea coordinada y confiable.
 
     - Broker: Es el componente que administra el almacenamiento y la transmisión de los mensajes. Crea el topic 'input-topic' que recibe los mensajes del Productor. Una vez recibidos, el consumidor los analiza y envía el resultado al topic 'results-topic'
@@ -22,6 +23,7 @@ KAFKA:
     - Mongodb: Almacena los mensajes analizados por el Consumidor y enviados por el Conector. Está configurado con un nombre de usuario (admin) y contraseña (admin) para acceder a la base de datos donde se guardan (sentiment_analysis).
 
 APP
+
     - Sentiment-analysis: Es la propia aplicación de análisis de sentimiento. Está construida a partir del directorio ./app que incluye (en orden de ejecución):
 
         - requirements.txt: requerimientos para la ejecución de los scripts (en la imagen de la app que se construye con el dockerfile)
