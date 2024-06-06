@@ -1,23 +1,23 @@
 **MANUAL DE USO**
 
 INFORMACIÓN TOPICS:
-    Topics creados:
+    - Topics creados:
         $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
-    Información de un topic:
+    - Información de un topic:
         $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
         $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic results-topic
-    Mensajes recibidos en el topic 'input-topic':
+    - Mensajes recibidos en el topic 'input-topic':
         $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
-    Mensajes recibidos en el topic 'results-topic':
+    - Mensajes recibidos en el topic 'results-topic':
         $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic results-topic --from-beginning
 
 MONGODB
-    Acceso:
+    - Acceso:
         $ docker exec -it mongodb bash
         $ mongo --username admin --password admin --authenticationDatabase admin
         $ use sentiment_analysis
 
-    Imprimir datos:
+    - Imprimir datos:
         $ db.results.find().pretty()
         > Ejemplo:
             {
@@ -40,11 +40,17 @@ EJECICIÓN QUERIES:
             $ SELECT * FROM input_topic_data;
     
     - Con Python:
-        Media de sentimiento:
+        - Media de sentimiento:
             $ docker-compose exec sentiment-analysis python3 /app/queries/query_average_sentiment.py
+            Salida:
+                Average Polarity: 0.14234062933555217
+                Average Subjectivity: 0.34904894054548186
             
-        Mensajes negativos:
+        - Mensajes negativos:
             $ docker-compose exec sentiment-analysis python3 /app/queries/negative_messages.py
+            Salida:
+                Text: 'Got called randomly by Kanye West today and received a download of his thoughts, ranging from shoes to Moses. He was polite, but opaque.', Polarity: -0.5
+
 
 INTERFAZ CONTROL CENTER:
-    Acceso a la interfaz 'Control Center': http://127.0.0.1:9021
+    - Acceso a la interfaz 'Control Center': http://127.0.0.1:9021

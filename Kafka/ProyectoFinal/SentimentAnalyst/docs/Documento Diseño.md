@@ -11,9 +11,9 @@ KAFKA:
 
     - Connect: Poroporciona la conexión entre Kafka y el resto de componentes. Gestiona el conector que envía los datos del topic 'results-topic' a MongoDB.
 
-    - Connector-registration: ejecuta de forma automática el conector 'mongo-sink-results.json' (en la carpeta 'connectors') para enviar los datos del topic 'results-topic' a Mongo. Se ejecuta gracias al plugin de Mongo (en la carpeta 'plugins'). Es un servicio que depende de 'Connect' pero tenerlo separado ofrece  mayor flexibilidad y simplicidad.
+    - Connector-registration: ejecuta de forma automática el conector 'mongo-sink-results.json' (en la carpeta 'connectors') para enviar los datos del topic 'results-topic' a Mongo. Se ejecuta gracias al plugin de Mongo (en la carpeta 'plugins'). Es un servicio que depende de 'Connect' pero tenerlo separado ofrece  mayor flexibilidad y simplicidad. Una vez se despliega el docker-compose, este servicio 'expira' ya que está esperando a que se ejecute la app para recibir los datos y enviarlos a Mongo. El connector tarda unos segundos en estar activo una vez se ejecuta la aplicación.
 
-    - Control-center: Es una interfaz gráfica para administrar y monitorear el clúster de Kafka. Proporciona métricas, monitoreo de consumidores, información sobre topics y conectores, etc.
+    - Control-center: Es una interfaz gráfica para administrar y monitorear el clúster de Kafka. Proporciona métricas, monitoreo de consumidores, información sobre topics y conectores, etc. Tarda en arrancar.
 
     - Ksqldb-server: Ejecuta un servidor ksqlDB, que es una base de datos de flujo de eventos. Permite realizar las consultas SQL en tiempo real.
 

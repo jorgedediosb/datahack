@@ -6,7 +6,7 @@ REQUERIMIENTOS:
 
 EJECUCIÓN DE LA APP
 
-    Iniciar servicios:
+    Desplegar servicios:
         $ docker-compose up -d
 
     Verificar que todos los servicios están funcionando correctamente:
