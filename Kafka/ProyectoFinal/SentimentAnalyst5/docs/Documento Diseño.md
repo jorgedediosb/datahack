@@ -11,7 +11,7 @@ KAFKA:
 
     - Connect: Poroporciona la conexión entre Kafka y el resto de componentes. Gestiona el conector que envía los datos del topic 'results-topic' a MongoDB.
 
-    - Connector-registration: ejecuta de forma automática el conector 'mongo-sink-results.json' (en la carpeta 'connectors') para enviar los datos del topic 'results-topic' a Mongo. Se ejecuta gracias al plugin de Mongo (en la carpeta 'plugins'). Es un servicio que depende de 'Connect' pero tenerlo separado ofrece  mayor flexibilidad y simplicidad. 
+    - Connector-registration: ejecuta de forma automática el conector 'mongo-sink-results.json' (en la carpeta 'connectors') para enviar los datos del topic 'results-topic' a Mongo. Se ejecuta gracias al plugin de Mongo (en la carpeta 'plugins'). Es un servicio que depende de 'Connect' pero tenerlo separado ofrece  mayor flexibilidad y simplicidad.
 
     - Control-center: Es una interfaz gráfica para administrar y monitorear el clúster de Kafka. Proporciona métricas, monitoreo de consumidores, información sobre topics y conectores, etc.
 
@@ -22,14 +22,14 @@ KAFKA:
     - Mongodb: Almacena los mensajes analizados por el Consumidor y enviados por el Conector. Está configurado con un nombre de usuario (admin) y contraseña (admin) para acceder a la base de datos donde se guardan (sentiment_analysis).
 
 APP
-    - sentiment-analysis: Es la propia aplicación de análisis de sentimiento. Está construida a partir del directorio ./app que incluye (en orden de ejecución):
+    - Sentiment-analysis: Es la propia aplicación de análisis de sentimiento. Está construida a partir del directorio ./app que incluye (en orden de ejecución):
 
-        - requirements.txt: requerimientos para la ejecución de los Scripts (en la imagen de la app que se construye con el dockerfile)
+        - requirements.txt: requerimientos para la ejecución de los scripts (en la imagen de la app que se construye con el dockerfile)
         - dataset.csv: Dataset con Tweets (de Elon Musk).
         - read_CSV.py: Script que transforma los Tweets del dataset cogiendo sólo el texto y mandánsolo como líneas individuales a data.txt 
         - data.txt: Recibe los textos de los tweets en líneas individuales.
-        - producer.py: Es el productor.  Recoge los datos de data.txt y los envía al topic 'input-topic'
-        - consumer.py: Es el consumidor. Recoge los datos del topic 'input-topic', los analiza y los manda al topic 'results-topic'
+        - producer.py: Es el productor.  Script que recoge los datos de data.txt y los envía al topic 'input-topic'
+        - consumer.py: Es el consumidor. Script que recoge los datos del topic 'input-topic', los analiza y los manda al topic 'results-topic'
         - Queries: Scripts que ejecutan las consultas en MongoDB sentimiento medio y mensajes negativos.
 
 

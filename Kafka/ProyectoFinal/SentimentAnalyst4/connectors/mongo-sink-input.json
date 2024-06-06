@@ -1,0 +1,13 @@
+{
+  "name": "mongo-sink-input",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "tasks.max": "1",
+    "topics": "input-topic",
+    "connection.uri": "mongodb://admin:admin@mongodb:27017",
+    "database": "sentiment_analysis",
+    "collection": "input_topic_data",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}

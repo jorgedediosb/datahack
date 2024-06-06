@@ -1,3 +1,5 @@
+#version: '3.8'
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.2
@@ -38,7 +40,7 @@ services:
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_CREATE_TOPICS: 'input-topic:3:3'
+      KAFKA_CREATE_TOPICS: 'input-topic:3:3,results-topic:3:3'
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.2.2
@@ -77,12 +79,26 @@ services:
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      # CLASSPATH required due to CC-2422
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-6.2.0.jar
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-6.2.0.jar:/usr/share/java/kafka/plugins/*
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/plugins"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+    volumes:
+      - ./connectors:/connectors
+      - ./plugins:/usr/share/java/kafka/plugins
+
+  connector-registration:
+    image: appropriate/curl
+    container_name: connector-registration
+    depends_on:
+      - connect
+    command: >
+      sh -c "sleep 30 &&
+      curl -X POST -H 'Content-Type: application/json' --data @/connectors/mongo-sink-input.json http://connect:8083/connectors &&
+      curl -X POST -H 'Content-Type: application/json' --data @/connectors/mongo-sink-results.json http://connect:8083/connectors"
+    volumes:
+      - ./connectors:/connectors
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:7.2.2
@@ -106,6 +122,7 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+      CONTROL_CENTER_CONNECTORS: 'connect'
 
   ksqldb-server:
     image: confluentinc/cp-ksqldb-server:7.2.2
@@ -113,29 +130,25 @@ services:
     container_name: ksqldb-server
     depends_on:
       - broker
-      - connect
+      - schema-registry
     ports:
       - "8088:8088"
     environment:
-      KSQL_CONFIG_DIR: "/etc/ksql"
+      KSQL_CONFIG_DIR: "/etc/ksqldb"
       KSQL_BOOTSTRAP_SERVERS: "broker:29092"
-      KSQL_HOST_NAME: ksqldb-server
+      KSQL_HOST_NAME: "ksqldb-server"
       KSQL_LISTENERS: "http://0.0.0.0:8088"
       KSQL_CACHE_MAX_BYTES_BUFFERING: 0
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
-      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
+    volumes:
+      - ./ksql:/etc/ksqldb
 
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.2.2
     container_name: ksqldb-cli
     depends_on:
-      - broker
-      - connect
       - ksqldb-server
     entrypoint: /bin/sh
     tty: true
@@ -163,4 +176,4 @@ services:
       - KAFKA_BROKER=broker:29092
       - KAFKA_TOPIC=input-topic
       - KAFKA_GROUP_ID=sentiment_group
-      - MONGO_URI=mongodb://admin:admin@mongodb:27017/
+      - MONGO_URI=mongodb://admin:admin@mongodb:27017

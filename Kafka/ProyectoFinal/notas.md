@@ -1,11 +1,7 @@
 PROBLEMAS:
 - KAFKA_CREATE_TOPICS: 'input-topic:3:3' No crea topics con 3 particiones y un factor de replicación 3.
 - Los mensajes que recibe el topic input-topic vienen repetidos por 3.
-- El dataset no se copia perfecto en data.txt, añade una ' (El código sólo vale para este data set)
-- Para qué se usa el archivo app.py?? NADA!!!
-- Connect hace algo?? CREAR CONECTOR CON MONGO!! En la interfaz de control center aparece que no tiene conectores
 - ¿Puedo hacer la agregación de datos con ksqldb?
-- Mostrar los resultados en un html?
 - Configuraciones manuales? Cargar sólo mensajes nuevos?
 - Hacer tests?
 
@@ -23,7 +19,6 @@ REQUERIMIENTOS:
 
 EJECUTAR LA APLICACION
     Iniciar servicios:
-        > Iniciar Docker Desktop
         $ docker-compose up -d
     Verificar si todos los servicios están funcionando correctamente:
         $ docker-compose ps
@@ -32,8 +27,19 @@ EJECUTAR LA APLICACION
     Ejecutar app Sentiment Analysis:
         > Esperar unos segundos hasta que todos los servicios estén corriendo correctamente
         $ docker-compose exec sentiment-analysis bash -c "python3 read_CSV.py & python3 consumer.py"
-        > Tardará un par de minutos en analizar todos los mensajes del dataset.
-        >  Imprime todos los mensajes del archivo dataset.csv mostrando el texto, la polaridad y la Subjetividad (Ejemplo: Text: 'Please ignore prior tweets, as that was someone pretending to be me :)  This is actually me.', Polarity: 0.16666666666666666, Subjectivity: 0.3666666666666667)
+        > Imprime todos los mensajes del archivo dataset.csv mostrando el texto, la polaridad y la Subjetividad. Ejemplo:
+            Text: 'Please ignore prior tweets, as that was someone pretending to be me :)  This is actually me.', Polarity: 0.16666666666666666, Subjectivity: 0.3666666666666667
+
+INFORMACIÓN TOPICS:
+    Ver los topics que se han creado:
+        $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
+    Información de un topic:
+        $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
+        $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic results-topic
+    Mensajes recibidos en el topic 'input-topic':
+        $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
+    Mensajes recibidos en el topic 'results-topic':
+        $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic results-topic --from-beginning
 
 MONGO
     Acceder a la base de datos:
@@ -54,11 +60,10 @@ Ejecución Queries:
     - Con KSQL:
         Aceder a KSQLDB:
             $ docker-compose exec ksqldb-cli ksql http://ksqldb-server:8088
-        Crear un flujo (stream) que lea los datos del topic 'input-topic':
+        - Imprimir todos los mensajes del topic 'input-topic':
             $ CREATE STREAM input_topic_data (message VARCHAR) 
             WITH (KAFKA_TOPIC='input-topic', VALUE_FORMAT='DELIMITED');
             $ SELECT * FROM input_topic_data;
-            $ exit
 
     - Con Python:
         Media de sentimiento:
@@ -68,14 +73,6 @@ Ejecución Queries:
 
 INTERFAZ CONTROL CENTER:
     Acceso a la interfaz 'Control Center': http://127.0.0.1:9021
-
-INFORMACIÓN  TOPICS:
-    Ver los topics que se han creado:
-        $ docker-compose exec broker kafka-topics --list --bootstrap-server localhost:9092
-    Información de un topic:
-        $ docker-compose exec broker kafka-topics --bootstrap-server localhost:9092 --describe --topic input-topic
-    Mensajes recibidos al topic 'input-topic':
-        $ docker-compose exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic input-topic --from-beginning
     
 ___________________________________________________
 Polarity (Polaridad)

@@ -1,0 +1,14 @@
+{
+    "name": "mongo-sink-results",
+    "config": {
+        "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+        "tasks.max": "1",
+        "topics": "results-topic",
+        "connection.uri": "mongodb://admin:admin@mongodb:27017",
+        "database": "sentiment_analysis",
+        "collection": "results",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "value.converter": "org.apache.kafka.connect.storage.StringConverter"
+    }
+}
+  

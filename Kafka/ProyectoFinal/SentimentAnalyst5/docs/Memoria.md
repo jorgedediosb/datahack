@@ -1,10 +1,8 @@
-**MEMORIA**
-
-SENTIMENT ANALYST
+**MEMORIA INFORMATIVA**
 
 La aplicación recoge tweets de Elon Musk y analiza el texto de cada uno según la orientación emocional y la subjetividad.
 
-___________________________________________________
+
 ANALISIS DE SENTIMIENTOS
 
 Cada mensaje se guarda con su texto y un valor de 'polarity' y otro de 'subjectivity'
@@ -28,9 +26,9 @@ Subjectivity (Subjetividad):
     Por ejemplo,
     - Un texto como "The capital of France is Paris." es objetiva y tendría una subjetividad baja (cercana a 0.0).
     - Un texto como "I think this movie is fantastic." es subjetiva y tendría una subjetividad alta (cercana a 1.0).
-_____________________________________________________
 
-Elección de MongoDB:
+
+ELECCIÓN DE MONGODB:
 
 Ventajas:
 - Flexible y Escalable: Maneja datos semi-estructurados y permite escalar horizontalmente.
@@ -43,4 +41,3 @@ Desventajas:
 - Consistencia Eventual: Puede no ser tan fuerte como las garantías ACID completas en todas las situaciones.
 
 > Aunque para el análisis en tiempo real puede ser mejor Elasticsearch, he elegigo MongoDB por que creo que tiene una manipulación y almacenamiento de datos más flexible, lo que supone una mayor variedad de casos de uso.
-______________________________________________________
