@@ -1,6 +1,7 @@
 - Ejercicios 'Spark Introduction':
+
 · Abrir Databrick Community
-· Compute: crear 'Compute'
+· Compute: crear Cluster
 · Workspace: Importar ejercicios
 
 
