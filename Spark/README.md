@@ -1,7 +1,7 @@
-- Ejercicios 'Spark Introduction':
+**NOTAS MÓDULO SPARK**
 
-· Abrir Databrick Community
-· Compute: crear Cluster
-· Workspace: Importar ejercicios
+Ejecución de Ejercicios:
 
-
+    · Abrir Databrick Community (https://community.cloud.databricks.com)
+    · Compute: crear Cluster
+    · Workspace: Importar ejercicios
