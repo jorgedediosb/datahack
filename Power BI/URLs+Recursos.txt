@@ -1,3 +1,6 @@
+Curso:
+https://ibmcsr.udemy.com/course/curso-microsoft-power-bi/
+
 Kaggle:
 https://www.kaggle.com/residentmario/iowa-liquor-sales
 
