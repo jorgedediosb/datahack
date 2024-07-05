@@ -2,7 +2,7 @@
 
 La aplicación recoge tweets de Elon Musk y analiza el texto de cada uno según la orientación emocional y la subjetividad.
 
-El repositorio con el proyecto esté en: https://github.com/jorgedediosb/datahack/tree/main/Kafka/ProyectoFinal/SentimentAnalyst
+El repositorio con el proyecto está en: https://github.com/jorgedediosb/datahack/tree/main/Kafka/ProyectoFinal/SentimentAnalyst
 
 
 ANALISIS DE SENTIMIENTOS
