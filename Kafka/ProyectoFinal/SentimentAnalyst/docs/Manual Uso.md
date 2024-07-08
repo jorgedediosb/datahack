@@ -31,8 +31,9 @@ MONGODB
                 "subjectivity" : 0.3875
             }
         $ exit
+        $ exit
 
-EJECICIÓN QUERIES:
+EJECUCIÓN QUERIES:
 
     - Con KSQL:
         Aceder a KSQLDB:
